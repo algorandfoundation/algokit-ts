@@ -11,6 +11,19 @@ describe('TransactionComposer', () => {
     await fixture.beforeEach()
   })
 
+  test('infers extra pages for ABI creation when extraProgramPages is undefined', async () => {
+    const { algorand, testAccount } = fixture.context
+    const transaction = await algorand.createTransaction.appCreateMethodCall({
+      sender: testAccount,
+      method: new algosdk.ABIMethod({ name: 'create', args: [], returns: { type: 'void' } }),
+      approvalProgram: new Uint8Array(2049),
+      clearStateProgram: new Uint8Array(),
+      extraProgramPages: undefined,
+    })
+
+    expect(transaction.transactions.at(-1)?.applicationCall?.extraPages).toBe(1)
+  })
+
   describe('error transformers', () => {
     const errorTransformers = [
       async (e: Error) => {
