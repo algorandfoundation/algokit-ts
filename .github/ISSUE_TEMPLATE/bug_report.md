@@ -6,6 +6,10 @@ labels: new-bug
 assignees: ''
 ---
 
+### Package
+
+<!-- Which package is this about? algokit-utils-ts, algokit-client-generator-ts or algokit-subscriber-ts -->
+
 ### Subject of the issue
 
 <!-- Describe your issue here. -->

@@ -1,0 +1,22 @@
+# https://docs.github.com/github/administering-a-repository/configuration-options-for-dependency-updates
+
+# One config for the whole pnpm workspace. Dependabot reads the root `pnpm-lock.yaml` and updates
+# versions in the `catalog` in `pnpm-workspace.yaml`, so every package that uses a dependency moves together.
+version: 2
+updates:
+  - package-ecosystem: 'npm'
+    directory: '/'
+    schedule:
+      interval: 'weekly'
+    # Matches `minimumReleaseAge` in `pnpm-workspace.yaml`.
+    cooldown:
+      default-days: 7
+    commit-message:
+      prefix: 'chore(deps)'
+    groups:
+      all:
+        patterns:
+          - '*'
+        update-types:
+          - 'minor'
+          - 'patch'

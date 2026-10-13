@@ -71,8 +71,6 @@ Outstanding work from the move to a monorepo and semfrag:
 - [ ] **npm trusted publishing**: each package's trusted publisher on npmjs.com still points at its old repository. Change it to this repository with the workflow `release.yml`.
 - [ ] **Release bot**: add the `BOT_ID` and `BOT_SK` secrets to this repository. Allow the `engineering-ci` app to push to `main` past branch protection, because each release commits the changelog and version to `main`.
 - [ ] **Docs publishing**: the GitHub Pages deploy (previously run on the `release` branch) and the `publish-devportal-docs.yml` workflows in `algokit-utils-ts/` and `algokit-subscriber-ts/` haven't been migrated. They don't run from a package folder. Before they move to the root, decide where the two docs sites are hosted, since a repository has only one Pages site. The DevPortal workflow is triggered by `v*` tags, which no longer exist. Releases now use package-prefixed tags such as `algokit-utils-v9.2.3`. CI only builds the docs for now.
-- [ ] **Dependabot**: each package's `.github/dependabot.yml` is ignored outside the repository root. Replace them with one root config covering the pnpm workspace.
-- [ ] **Issue and PR templates**: each package's `ISSUE_TEMPLATE/` and `pull_request_template.md` are ignored outside the repository root. Merge them into a root `.github/`.
 
 ## How the history was preserved
 

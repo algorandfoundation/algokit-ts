@@ -6,6 +6,10 @@ labels: new-feature-request
 assignees: ''
 ---
 
+## Package
+
+<!-- Which package is this about? algokit-utils-ts, algokit-client-generator-ts or algokit-subscriber-ts -->
+
 ## Problem
 
 <!-- What is the problem that we’re trying to solve? -->
