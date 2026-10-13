@@ -16,7 +16,6 @@
     "check-types": "tsc --noEmit",
     "audit": "pnpm --filter . audit",
     "format": "prettier --write .",
-    "commit-lint": "commitlint --edit -o",
     "docs:dev": "pnpm --dir docs run dev",
     "docs:build": "pnpm --dir docs run build",
     "docs:preview": "pnpm --dir docs run preview",
@@ -74,8 +73,6 @@
   "devDependencies": {
     "@algorandfoundation/algokit-client-generator": "workspace:*",
     "@algorandfoundation/algokit-utils": "workspace:*",
-    "@commitlint/cli": "catalog:",
-    "@commitlint/config-conventional": "catalog:",
     "@eslint/js": "catalog:",
     "@prisma/client": "catalog:",
     "@rollup/plugin-typescript": "catalog:",

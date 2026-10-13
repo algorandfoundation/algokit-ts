@@ -54,8 +54,6 @@ catalogMode: strict
 catalog:
   '@algorandfoundation/tealscript': ^0.107.2
   '@astrojs/starlight': ^0.37.7
-  '@commitlint/cli': ^19.8.1
-  '@commitlint/config-conventional': ^19.8.1
   '@eslint/js': ^10.0.1
   '@noble/ed25519': ^2.3.0
   '@prisma/client': ^5.15.1

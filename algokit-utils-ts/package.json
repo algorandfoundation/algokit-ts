@@ -54,7 +54,6 @@
     "check-types": "tsc --project tsconfig.typecheck.json --noEmit",
     "audit": "pnpm --filter . audit",
     "format": "prettier --write .",
-    "commit-lint": "commitlint --edit -o",
     "docs:dev": "pnpm --dir docs run dev",
     "docs:build": "pnpm --dir docs run build",
     "docs:preview": "pnpm --dir docs run preview",
@@ -68,8 +67,6 @@
   },
   "devDependencies": {
     "@algorandfoundation/tealscript": "catalog:",
-    "@commitlint/cli": "catalog:",
-    "@commitlint/config-conventional": "catalog:",
     "@eslint/js": "catalog:",
     "@tsconfig/node22": "catalog:",
     "@types/json-bigint": "catalog:",
