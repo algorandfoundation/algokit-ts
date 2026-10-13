@@ -60,5 +60,5 @@ algokit localnet start
 To run tests you can use VS Code, or:
 
 ```
-npm run test
+pnpm run test
 ```

@@ -1,0 +1,41 @@
+packages:
+  - algokit-client-generator-ts
+  - algokit-subscriber-ts
+  - algokit-subscriber-ts/docs
+  - algokit-utils-ts
+  - algokit-utils-ts/docs
+
+# Only install package versions that have been published for at least 7 days (in minutes).
+# Replaces the per-package `.npmrc` `min-release-age=7`.
+minimumReleaseAge: 10080
+
+# Dependencies allowed to run install scripts.
+allowBuilds:
+  '@prisma/client': true
+  '@prisma/engines': true
+  esbuild: true
+  prisma: true
+  sharp: true
+
+# Merged from the `overrides` of the individual packages. pnpm applies overrides workspace-wide.
+overrides:
+  ajv@^6: ^6.15.0
+  brace-expansion: ^5.0.12
+  cross-spawn: '>=7.0.5'
+  esbuild: 0.25.0
+  fast-uri: '>=4.1.5'
+  handlebars: ^4.7.9
+  js-yaml: ^4.3.2
+  minimatch@^3: ^3.1.5
+  picomatch: ^4.0.5
+  postcss: '>=8.5.23'
+  undici: ^7.29.0
+
+# Accepted audit findings (previously tracked per package in `.nsprc` for better-npm-audit).
+auditConfig:
+  ignoreGhsas:
+    # braces stack-exhaustion DoS via deeply nested patterns. Affects every published version (latest is 3.0.3,
+    # verified 2026-10-09), so no upgrade or override is possible. Reached only through dev tooling (fast-glob/micromatch)
+    # operating on repo-controlled glob patterns, never untrusted input. Not shipped in any published package.
+    # Review 2026-12-01.
+    - GHSA-vfj7-8cjw-p6xm

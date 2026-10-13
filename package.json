@@ -1,0 +1,14 @@
+{
+  "name": "algokit-monorepo-ts",
+  "private": true,
+  "packageManager": "pnpm@12.11.2",
+  "engines": {
+    "node": ">=22.0"
+  },
+  "scripts": {
+    "build": "pnpm --filter \"./algokit-*-ts\" run build",
+    "test": "pnpm --filter \"./algokit-*-ts\" run test",
+    "lint": "pnpm --filter \"./algokit-*-ts\" run lint",
+    "audit": "pnpm --filter \"./algokit-*-ts\" run audit"
+  }
+}

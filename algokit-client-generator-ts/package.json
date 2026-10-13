@@ -18,7 +18,7 @@
   },
   "type": "commonjs",
   "scripts": {
-    "audit": "better-npm-audit audit",
+    "audit": "pnpm --filter . audit",
     "dev": "run-s dev:*",
     "dev:helloworld": "tsx scripts/generate-clients.ts ./examples/smart_contracts/artifacts/hello_world/HelloWorld.arc32.json",
     "dev:reti": "tsx scripts/generate-clients.ts ./examples/smart_contracts/artifacts/reti/Reti.arc56.json",
@@ -52,7 +52,7 @@
     "test": "vitest run --coverage --passWithNoTests",
     "update-approvals": "tsx scripts/update-approvals.ts",
     "contract-build": "poetry run python -m examples",
-    "pre-commit": "npm run lint:fix && npm run test && npm run audit && npm run build"
+    "pre-commit": "pnpm run lint:fix && pnpm run test && pnpm run audit && pnpm run build"
   },
   "bin": {
     "@algorandfoundation/algokit-client-generator": "bin/cli.mjs",
@@ -81,8 +81,8 @@
     "@rollup/plugin-node-resolve": "^16.0.1",
     "@rollup/plugin-typescript": "^12.1.4",
     "@tsconfig/node22": "^22.0.5",
+    "@types/node": "^26.6.4",
     "@vitest/coverage-v8": "^4.1.11",
-    "better-npm-audit": "^3.11.0",
     "conventional-changelog-conventionalcommits": "8.0.0",
     "eslint": "^9.39.5",
     "eslint-config-prettier": "^10.1.8",

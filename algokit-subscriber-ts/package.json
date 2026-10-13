@@ -3,6 +3,7 @@
   "version": "1.0.0",
   "private": false,
   "scripts": {
+    "postinstall": "prisma generate",
     "build": "run-s build:*",
     "build:0-clean": "rimraf dist coverage",
     "build:1-compile": "rollup -c --configPlugin typescript --configImportAttributesKey with",
@@ -13,19 +14,19 @@
     "lint": "eslint \"src/**/*.ts\"",
     "lint:fix": "eslint \"src/**/*.ts\" --fix",
     "check-types": "tsc --noEmit",
-    "audit": "better-npm-audit audit",
+    "audit": "pnpm --filter . audit",
     "format": "prettier --write .",
     "commit-lint": "commitlint --edit -o",
     "semantic-release": "semantic-release",
-    "docs:dev": "pnpm run --prefix docs dev",
-    "docs:build": "pnpm run --prefix docs build",
-    "docs:preview": "pnpm run --prefix docs preview",
+    "docs:dev": "pnpm --dir docs run dev",
+    "docs:build": "pnpm --dir docs run build",
+    "docs:preview": "pnpm --dir docs run preview",
     "generate:contract-client": "cd tests/contract && poetry run python -m build",
     "pre-commit": "run-s check-types lint:fix audit format test docs:build",
     "dhm": "ts-node-dev --project tsconfig.dev.json --transpile-only --watch .env -r dotenv/config ./examples/data-history-museum/index.ts",
-    "watch-dhm": "cross-env RUN_LOOP=true npm run dhm",
-    "xgov": "npx prisma migrate dev && ts-node-dev --project tsconfig.dev.json --transpile-only --watch .env -r dotenv/config ./examples/xgov-voting/index.ts",
-    "watch-xgov": "cross-env RUN_LOOP=true npm run xgov",
+    "watch-dhm": "cross-env RUN_LOOP=true pnpm run dhm",
+    "xgov": "pnpm exec prisma migrate dev && ts-node-dev --project tsconfig.dev.json --transpile-only --watch .env -r dotenv/config ./examples/xgov-voting/index.ts",
+    "watch-xgov": "cross-env RUN_LOOP=true pnpm run xgov",
     "usdc": "ts-node-dev --project tsconfig.dev.json --transpile-only --watch .env -r dotenv/config ./examples/usdc/index.ts"
   },
   "prisma": {
@@ -78,14 +79,15 @@
     "@eslint/js": "^10.0.1",
     "@prisma/client": "^5.15.1",
     "@rollup/plugin-typescript": "^12.1.2",
+    "@types/node": "^26.6.4",
     "@vitest/coverage-v8": "^4.1.2",
-    "better-npm-audit": "^3.7.3",
     "conventional-changelog-conventionalcommits": "8.0.0",
     "cpy-cli": "^7.0.0",
     "cross-env": "^7.0.3",
     "dotenv-cli": "^7.4.1",
     "eslint": "^10.10.0",
     "eslint-config-prettier": "^10.1.8",
+    "fast-glob": "^3.3.3",
     "npm-run-all2": "^8.0.4",
     "prettier": "3.2.5",
     "prisma": "^5.15.1",
@@ -109,16 +111,6 @@
   },
   "publishConfig": {
     "access": "public"
-  },
-  "overrides": {
-    "ajv@^6": "^6.15.0",
-    "brace-expansion": "^5.0.9",
-    "esbuild": "0.25.0",
-    "handlebars": "^4.7.9",
-    "js-yaml": "^4.3.2",
-    "minimatch@^3": "^3.1.5",
-    "picomatch": "^4.0.5",
-    "undici": "^7.29.0"
   },
   "release": {
     "branches": [

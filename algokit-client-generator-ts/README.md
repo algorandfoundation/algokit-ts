@@ -119,7 +119,7 @@ If you want to contribute to this project the following information will be help
    - Bootstrap your local environment; run `algokit bootstrap all` within this folder, which will:
      - Install `Poetry` - [Link](https://python-poetry.org/docs/#installation): The minimum required version is `1.2`. Ensure you can execute `poetry -V` and get `1.2`+
      - Run `poetry install` in the root directory, which will set up a `.venv` folder with a Python virtual environment and also install all Python dependencies
-     - Run `npm install`
+     - Run `pnpm install`
 
 3. Open the project and start debugging / developing via:
    - VS Code
@@ -132,7 +132,7 @@ If you want to contribute to this project the following information will be help
      3. Run tests
    - Other
      1. Open the repository root in your text editor of choice
-     2. Run `npm run test`
+     2. Run `pnpm run test`
 
 ### Subsequently
 
@@ -151,7 +151,7 @@ poetry run python -m examples
 
 Or in Visual Studio Code you can use the default build task (Ctrl+Shift+B).
 
-To regenerate the generated clients run `npm run update-approvals`.
+To regenerate the generated clients run `pnpm run update-approvals`.
 
 ### Continuous Integration / Continuous Deployment (CI/CD)
 
@@ -162,4 +162,4 @@ This project uses [GitHub Actions](https://docs.github.com/en/actions/learn-gith
 Making any changes to the generated code will result in the approval tests failing. The approval tests work by generating a version of client
 and outputting it to `./examples/APP_NAME/client.generated.ts` then comparing to the approved version `./examples/APP_NAME/client.ts`. If you
 make a change and break the approval tests, you will need to update the approved version by overwriting it with the generated version.
-You can run `npm run update-approvals` to update all approved clients in one go.
+You can run `pnpm run update-approvals` to update all approved clients in one go.

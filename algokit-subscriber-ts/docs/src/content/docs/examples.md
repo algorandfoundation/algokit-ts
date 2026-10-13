@@ -14,21 +14,21 @@ filters, sync behaviour and watermark persistence.
 ```bash
 git clone https://github.com/algorandfoundation/algokit-subscriber-ts.git
 cd algokit-subscriber-ts
-npm install
+pnpm install
 
 # Point the examples at the node you want to use
 cp .env.sample .env
 ```
 
-Each example is launched via an npm script. The scripts that are prefixed with `watch-` set `RUN_LOOP=true`, which
+Each example is launched via a package script. The scripts that are prefixed with `watch-` set `RUN_LOOP=true`, which
 makes the example call `subscriber.start()` and keep polling; without it the example does a single `subscriber.pollOnce()`
 and exits.
 
 | Example                                                                                                                  | Run once                    | Run continuously     |
 | ------------------------------------------------------------------------------------------------------------------------ | --------------------------- | -------------------- |
-| [Data History Museum](https://github.com/algorandfoundation/algokit-subscriber-ts/tree/main/examples/data-history-museum) | `npm run dhm`               | `npm run watch-dhm`  |
-| [USDC transfers](https://github.com/algorandfoundation/algokit-subscriber-ts/tree/main/examples/usdc)                     | n/a — always runs in a loop | `npm run usdc`       |
-| [xGov voting](https://github.com/algorandfoundation/algokit-subscriber-ts/tree/main/examples/xgov-voting)                 | `npm run xgov`              | `npm run watch-xgov` |
+| [Data History Museum](https://github.com/algorandfoundation/algokit-subscriber-ts/tree/main/examples/data-history-museum) | `pnpm run dhm`               | `pnpm run watch-dhm`  |
+| [USDC transfers](https://github.com/algorandfoundation/algokit-subscriber-ts/tree/main/examples/usdc)                     | n/a — always runs in a loop | `pnpm run usdc`       |
+| [xGov voting](https://github.com/algorandfoundation/algokit-subscriber-ts/tree/main/examples/xgov-voting)                 | `pnpm run xgov`              | `pnpm run watch-xgov` |
 
 You can also press F5 in Visual Studio Code to get breakpoint debugging against one of the examples.
 
@@ -163,8 +163,8 @@ It demonstrates:
   atomically — the [transactional outbox](../concepts/watermarking/) pattern
 - Using a typed app client to read the voting round's global state and metadata before subscribing
 
-Before running it you need to apply the Prisma migrations, which `npm run xgov` does for you:
+Before running it you need to apply the Prisma migrations, which `pnpm run xgov` does for you:
 
 ```bash
-npm run xgov
+pnpm run xgov
 ```

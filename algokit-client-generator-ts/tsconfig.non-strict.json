@@ -7,7 +7,6 @@
     "moduleResolution": "Bundler",
     "resolveJsonModule": true,
     "esModuleInterop": true,
-    "preserveSymlinks": true,
     "strict": false
   },
   "include": ["src/**/*.ts", "rollup.config.ts", "examples/**/*.ts"],

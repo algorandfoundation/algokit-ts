@@ -35,7 +35,7 @@ export default defineConfig({
             exclude: ['**/*.spec.ts'],
             excludeReferences: true,
             // We are generating reference docs, not type-checking the project
-            // (that is handled by `npm run check-types`), so skip TypeDoc's
+            // (that is handled by `pnpm run check-types`), so skip TypeDoc's
             // type-checking pass which otherwise fails the docs build.
             skipErrorChecking: true,
             gitRevision: 'main',

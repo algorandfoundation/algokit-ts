@@ -8,8 +8,8 @@
       "type": "node",
       "request": "launch",
       "name": "Debug Vitest Test",
-      "runtimeExecutable": "npm",
-      "runtimeArgs": ["test", "--", "--run", "--no-coverage", "${file}"],
+      "runtimeExecutable": "pnpm",
+      "runtimeArgs": ["test", "--run", "--no-coverage", "${file}"],
       "cwd": "${fileDirname}/..",
       "console": "integratedTerminal",
       "internalConsoleOptions": "neverOpen"
