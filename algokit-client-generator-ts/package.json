@@ -71,7 +71,7 @@
     "algosdk": "^3.2.0"
   },
   "devDependencies": {
-    "@algorandfoundation/algokit-utils": "^9.0.0",
+    "@algorandfoundation/algokit-utils": "workspace:*",
     "@algorandfoundation/tealscript": "^0.107.0",
     "@commitlint/cli": "^19.8.1",
     "@commitlint/config-conventional": "^19.8.1",
@@ -103,7 +103,9 @@
     "vitest": "^4.1.11"
   },
   "publishConfig": {
-    "access": "public"
+    "access": "public",
+    "directory": "dist",
+    "linkDirectory": true
   },
   "release": {
     "branches": [

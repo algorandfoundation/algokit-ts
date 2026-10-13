@@ -21,7 +21,9 @@ pnpm run audit       # audit each package's dependencies
 pnpm --filter ./algokit-utils-ts run test   # run a script in a single package
 ```
 
-Workspace-wide settings (overrides, `minimumReleaseAge`, allowed build scripts and accepted audit findings) live in `pnpm-workspace.yaml`.
+Packages that depend on each other use the local copy via `workspace:*`: `algokit-client-generator-ts` uses `algokit-utils-ts`, and `algokit-subscriber-ts` uses both. These links point at each dependency's built `dist/` folder, so run `pnpm run build` after a fresh clone, and after changing a package, before type-checking or testing the packages that depend on it. The root `build` script builds the packages in dependency order.
+
+Workspace-wide settings (overrides, `minimumReleaseAge`, allowed build scripts, peer dependency rules and accepted audit findings) live in `pnpm-workspace.yaml`.
 
 ## How the history was preserved
 
@@ -82,3 +84,17 @@ Things that broke and how they were fixed:
 - **Audit**: `better-npm-audit` wraps `npm audit` and needs a `package-lock.json`. It was removed, and each package's `audit` script now runs `pnpm --filter . audit`, which audits only that package. The accepted findings from the `.nsprc` files moved to `auditConfig.ignoreGhsas` in `pnpm-workspace.yaml`. Only one of those findings still applies: the `braces` advisory (GHSA-vfj7-8cjw-p6xm), which has no fix. The other exceptions were for packages bundled inside npm itself, which pnpm's audit doesn't check.
 - **npm commands in scripts and docs**: `npm run`/`npx` in package scripts, VS Code launch configs and contributor docs were changed to `pnpm run`/`pnpm exec`. Install instructions for end users still use `npm install`.
 - **VS Code test launch config** (`algokit-utils-ts`): `npm test -- --run <file>` became `pnpm test --run <file>`. pnpm passes a literal `--` through to vitest, which then ignores the file filter and runs every test.
+
+### `workspace:*` linking
+
+The packages previously installed each other from npm: client-generator used `@algorandfoundation/algokit-utils@^9.0.0`, and subscriber used `@algorandfoundation/algokit-client-generator@^5.0.0` plus algokit-utils as an auto-installed peer dependency. They now use the local workspace copies:
+
+- `algokit-client-generator-ts` has `@algorandfoundation/algokit-utils: workspace:*` in `devDependencies`.
+- `algokit-subscriber-ts` has `@algorandfoundation/algokit-utils: workspace:*` and `@algorandfoundation/algokit-client-generator: workspace:*` in `devDependencies`. This moves subscriber from client-generator 5.x to the local 6.x, including the `algokitgen` binary that `algokit generate client` uses to regenerate `tests/contract/client.ts`.
+- `peerDependencies` ranges are unchanged, because they're what consumers of the published packages see. `devDependencies` aren't copied into the published `package.json`, so `workspace:*` never gets published.
+
+Things that broke and how they were fixed:
+
+- **Packages are published from `dist/`**: utils and client-generator build into `dist/` and semantic-release publishes that folder, so the package roots have no `index.js`. Both now set `publishConfig.directory: "dist"` and `publishConfig.linkDirectory: true`, which makes pnpm link dependents to `dist/` rather than the package root. Because of this the dependency has to be built before its dependents are type-checked or tested. On a fresh clone the links dangle until `pnpm run build` runs.
+- **pnpm-only `publishConfig` keys leaking into the published package**: `scripts/copy-package-json.ts` copies `publishConfig` into `dist/package.json`. It now removes `directory` and `linkDirectory`, and removes `publishConfig` entirely if that leaves it empty, so the published `package.json` is the same as before.
+- **Peer dependency warnings**: workspace packages have placeholder versions (`0.1.0` and `0.0.0`) because semantic-release sets the real version when publishing, so peer ranges like `^9.0.0` never match the linked copy. `peerDependencyRules.allowedVersions` in `pnpm-workspace.yaml` accepts any version of the two linked packages.

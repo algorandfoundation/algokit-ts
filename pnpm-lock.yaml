@@ -223,8 +223,8 @@ importers:
         version: 1.5.0
     devDependencies:
       '@algorandfoundation/algokit-utils':
-        specifier: ^9.0.0
-        version: 9.2.2(algosdk@3.8.0)
+        specifier: workspace:*
+        version: link:../algokit-utils-ts/dist
       '@algorandfoundation/tealscript':
         specifier: ^0.107.0
         version: 0.107.2
@@ -312,12 +312,10 @@ importers:
       vitest:
         specifier: ^4.1.11
         version: 4.1.11(@types/node@26.6.4)(@vitest/coverage-v8@4.1.11)(vite@6.4.4(@types/node@26.6.4)(jiti@2.6.1)(tsx@4.23.15)(yaml@2.9.1))
+    publishDirectory: dist
 
   algokit-subscriber-ts:
     dependencies:
-      '@algorandfoundation/algokit-utils':
-        specifier: ^9.0.0
-        version: 9.2.2(algosdk@3.8.0)
       algosdk:
         specifier: ^3.8.0
         version: 3.8.0
@@ -326,8 +324,11 @@ importers:
         version: 0.9.0
     devDependencies:
       '@algorandfoundation/algokit-client-generator':
-        specifier: ^5.0.0
-        version: 5.0.0(@algorandfoundation/algokit-utils@9.2.2(algosdk@3.8.0))(algosdk@3.8.0)
+        specifier: workspace:*
+        version: link:../algokit-client-generator-ts/dist
+      '@algorandfoundation/algokit-utils':
+        specifier: workspace:*
+        version: link:../algokit-utils-ts/dist
       '@commitlint/cli':
         specifier: ^19.2.1
         version: 19.8.1(@types/node@26.6.4)(typescript@6.0.3)
@@ -549,6 +550,7 @@ importers:
       vitest-fetch-mock:
         specifier: ^0.4.5
         version: 0.4.5(vitest@4.1.11)
+    publishDirectory: dist
 
   algokit-utils-ts/docs:
     dependencies:
@@ -594,20 +596,6 @@ packages:
 
   '@actions/io@3.0.2':
     resolution: {integrity: sha512-nRBchcMM+QK1pdjO7/idu86rbJI5YHUKCvKs0KxnSYbVe3F51UfGxuZX4Qy/fWlp6l7gWFwIkrOzN+oUK03kfw==}
-
-  '@algorandfoundation/algokit-client-generator@5.0.0':
-    resolution: {integrity: sha512-dJQVpBHrWtqigElSG5BkaRPdT9Y76XNOsI4mOUnwQAa5EzX0n/z19eEo83CzVzq670fpK8cFeIEW9galoyMZuA==}
-    engines: {node: '>=20.0'}
-    hasBin: true
-    peerDependencies:
-      '@algorandfoundation/algokit-utils': ^9.0.0
-      algosdk: ^3.0.0
-
-  '@algorandfoundation/algokit-utils@9.2.2':
-    resolution: {integrity: sha512-3UWFF/vNJNEAGK4w+ZRSOGs1tbsDYtom3L3mpUBqb0J6mWif/c1Z36emCC2gV1s+XKOKDtgodqqI7cLWf7FGAQ==}
-    engines: {node: '>=22.0'}
-    peerDependencies:
-      algosdk: ^3.5.2
 
   '@algorandfoundation/tealscript@0.106.3':
     resolution: {integrity: sha512-IOlJx5nx1GfDt/zknNM/kQ6ZwXWKyibSgsRJPt7QA9Qpz8LuHAxw8BZM49FB/TZExiA/lQohzdSS/gvHnOkCTw==}
@@ -5445,20 +5433,6 @@ snapshots:
       undici: 7.30.0
 
   '@actions/io@3.0.2': {}
-
-  '@algorandfoundation/algokit-client-generator@5.0.0(@algorandfoundation/algokit-utils@9.2.2(algosdk@3.8.0))(algosdk@3.8.0)':
-    dependencies:
-      '@algorandfoundation/algokit-utils': 9.2.2(algosdk@3.8.0)
-      algosdk: 3.8.0
-      chalk: 4.1.2
-      change-case: 5.4.4
-      commander: 11.1.0
-      jsonschema: 1.5.0
-
-  '@algorandfoundation/algokit-utils@9.2.2(algosdk@3.8.0)':
-    dependencies:
-      algosdk: 3.8.0
-      buffer: 6.0.3
 
   '@algorandfoundation/tealscript@0.106.3':
     dependencies:

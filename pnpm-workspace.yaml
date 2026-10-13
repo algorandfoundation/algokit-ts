@@ -17,6 +17,13 @@ allowBuilds:
   prisma: true
   sharp: true
 
+# Workspace packages have placeholder versions (semantic-release sets the real one at publish time), so peer ranges
+# like `^9.0.0` never match the linked workspace copy.
+peerDependencyRules:
+  allowedVersions:
+    '@algorandfoundation/algokit-utils': '*'
+    '@algorandfoundation/algokit-client-generator': '*'
+
 # Merged from the `overrides` of the individual packages. pnpm applies overrides workspace-wide.
 overrides:
   ajv@^6: ^6.15.0

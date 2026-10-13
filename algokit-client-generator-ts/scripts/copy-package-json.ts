@@ -45,6 +45,10 @@ const types = 'index.d.ts'
 const customSections = ['module', 'main', 'type', 'types', 'exports']
 
 const packageJson = JSON.parse(readFileSync(join(inputFolder, 'package.json'), 'utf-8'))
+// `directory` and `linkDirectory` only tell pnpm to link workspace dependents to dist/, so they aren't published
+delete packageJson.publishConfig?.directory
+delete packageJson.publishConfig?.linkDirectory
+if (packageJson.publishConfig && Object.keys(packageJson.publishConfig).length === 0) delete packageJson.publishConfig
 const sectionsToUse = [...standardSectionWhitelist, ...customSections]
 const output = { main, types, scripts: {}, files: ['**'], ...pick(packageJson, ...(sectionsToUse as (keyof typeof packageJson)[])) }
 writeFileSync(join(outputFolder, 'package.json'), `${JSON.stringify(output, undefined, 2)}\n`, 'utf-8')

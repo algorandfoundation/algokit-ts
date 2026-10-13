@@ -167,5 +167,9 @@
       ],
       "@semantic-release/github"
     ]
+  },
+  "publishConfig": {
+    "directory": "dist",
+    "linkDirectory": true
   }
 }
