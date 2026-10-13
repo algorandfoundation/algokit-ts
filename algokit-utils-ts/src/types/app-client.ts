@@ -1456,7 +1456,7 @@ export class AppClient {
             // For read-only calls with max opcode budget, fee issues should be rare
             // but we can still provide helpful error message if they occur
             if (params.coverAppCallInnerTransactionFees && error && error.message && error.message.match(/fee ([\w.]+\s+)?too small/)) {
-              throw Error(`Fees were too small. You may need to increase the transaction maxFee.`)
+              throw Error(`Fees were too small. You may need to increase the transaction maxFee.`, { cause: e })
             }
             throw e
           }

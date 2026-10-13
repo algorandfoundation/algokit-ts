@@ -23,7 +23,17 @@ pnpm --filter ./algokit-utils-ts run test   # run a script in a single package
 
 Packages that depend on each other use the local copy via `workspace:*`: `algokit-client-generator-ts` uses `algokit-utils-ts`, and `algokit-subscriber-ts` uses both. These links point at each dependency's built `dist/` folder, so run `pnpm run build` after a fresh clone, and after changing a package, before type-checking or testing the packages that depend on it. The root `build` script builds the packages in dependency order.
 
-Workspace-wide settings (overrides, `minimumReleaseAge`, allowed build scripts, peer dependency rules and accepted audit findings) live in `pnpm-workspace.yaml`.
+Workspace-wide settings (the dependency catalog, overrides, `minimumReleaseAge`, allowed build scripts, peer dependency rules and accepted audit findings) live in `pnpm-workspace.yaml`.
+
+Dependency versions are defined once in the `catalog` in `pnpm-workspace.yaml`, and each `package.json` references them with `"<dep>": "catalog:"`. `catalogMode: strict` means you should add and update dependencies with pnpm rather than editing `package.json` by hand:
+
+```sh
+pnpm --filter ./algokit-utils-ts add -D some-dep   # adds some-dep to the catalog and writes "catalog:"
+pnpm --filter ./algokit-utils-ts add -D vitest     # already cataloged: writes "catalog:"
+pnpm --filter ./algokit-utils-ts add -D vitest@3   # fails: outside the catalog's range
+```
+
+To upgrade a dependency, change its version in the catalog and run `pnpm install`. Every package that uses it moves together. `peerDependencies` are the exception: they stay as ranges in each `package.json`.
 
 ## How the history was preserved
 
@@ -98,3 +108,19 @@ Things that broke and how they were fixed:
 - **Packages are published from `dist/`**: utils and client-generator build into `dist/` and semantic-release publishes that folder, so the package roots have no `index.js`. Both now set `publishConfig.directory: "dist"` and `publishConfig.linkDirectory: true`, which makes pnpm link dependents to `dist/` rather than the package root. Because of this the dependency has to be built before its dependents are type-checked or tested. On a fresh clone the links dangle until `pnpm run build` runs.
 - **pnpm-only `publishConfig` keys leaking into the published package**: `scripts/copy-package-json.ts` copies `publishConfig` into `dist/package.json`. It now removes `directory` and `linkDirectory`, and removes `publishConfig` entirely if that leaves it empty, so the published `package.json` is the same as before.
 - **Peer dependency warnings**: workspace packages have placeholder versions (`0.1.0` and `0.0.0`) because semantic-release sets the real version when publishing, so peer ranges like `^9.0.0` never match the linked copy. `peerDependencyRules.allowedVersions` in `pnpm-workspace.yaml` accepts any version of the two linked packages.
+
+### Dependency catalog
+
+Each package previously listed its own dependency versions, and shared tools had drifted apart (for example TypeScript 5.4 to 6.0 and ESLint 9 to 10). Every external dependency version now lives in the [pnpm catalog](https://pnpm.io/catalogs) in `pnpm-workspace.yaml`, and `package.json` files use `catalog:`:
+
+- **Shared dependencies** were aligned on the newest version any package used. This upgraded TypeScript to 6.0 and ESLint to 10 in client-generator and utils, Prettier from 3.2.5 to 3.9 in subscriber, and `eslint-config-prettier` (10), `cpy-cli` (7) and `@algorandfoundation/tealscript` (0.107) in utils.
+- **Single-package dependencies** were moved into the catalog with their existing ranges, so their resolved versions didn't change.
+- **Not cataloged**: `peerDependencies`, because each package's range is its own minimum supported version and is what consumers see, and the `workspace:*` links between packages.
+- **`catalogMode: strict`**: `pnpm add` writes `catalog:`, adds new dependencies to the catalog, and rejects versions outside the catalog range. This only applies to `pnpm add`. pnpm doesn't check versions edited into `package.json` by hand.
+
+Things that broke and how they were fixed:
+
+- **`catalog:` would be published as-is**: releases use semantic-release's npm plugin, which runs `npm publish`. Unlike `pnpm publish`, it doesn't replace `catalog:` with a version, and `scripts/copy-package-json.ts` copies `dependencies` and `peerDependencies` into `dist/package.json` unchanged. The script now reads versions from `pnpm-workspace.yaml` (using `yaml`, a new dev dependency) and fails the build if a catalog entry is missing or a `workspace:` specifier would be published.
+- **TypeScript 6** (utils): `baseUrl` is deprecated and fails the `dist` type check. Nothing depended on it (there are no `paths` or imports relative to the root), so it was removed from `tsconfig.base.json`.
+- **ESLint 10's recommended rules** (utils): `no-useless-assignment` flagged dead `getAccountConfigFromEnvironment` calls in `getAccount` and an unused `0n` initial value in `assetOptOut`. Both were removed. `preserve-caught-error` flagged the "Fees were too small" error in `AppClient`, which now sets `cause` to the original error.
+- **Prettier 3.9** (subscriber): the subscriber code didn't match Prettier's output even before the upgrade, and formatting isn't checked in CI, so `pnpm run format` would reformat 9 files. They were left unformatted for a separate change.

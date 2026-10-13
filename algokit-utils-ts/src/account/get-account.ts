@@ -3,7 +3,6 @@ import { AccountConfig, SigningAccount } from '../types/account'
 import { AccountManager } from '../types/account-manager'
 import { AlgoAmount } from '../types/amount'
 import { ClientManager } from '../types/client-manager'
-import { getAccountConfigFromEnvironment } from './get-account-config-from-environment'
 import Account = algosdk.Account
 import Algodv2 = algosdk.Algodv2
 import Kmd = algosdk.Kmd
@@ -109,18 +108,14 @@ export async function getAccount(
 ): Promise<Account | SigningAccount> {
   let name: string
   let fundWith: AlgoAmount | undefined = undefined
-  let config: AccountConfig
 
   if (typeof account === 'string') {
     name = account
-    config = getAccountConfigFromEnvironment(name)
   } else if ('name' in account) {
     name = account.name
-    config = getAccountConfigFromEnvironment(name)
     fundWith = account.fundWith
   } else if ('config' in account) {
-    config = account.config
-    name = config.accountName
+    name = account.config.accountName
     fundWith = account.fundWith
   } else {
     throw new Error('Missing name or account config')

@@ -522,7 +522,7 @@ export class AlgorandClientTransactionSender {
     } & SendParams,
   ) => {
     if (params.ensureZeroBalance) {
-      let balance = 0n
+      let balance: bigint
       try {
         const accountAssetInfo = await this._assetManager.getAccountInformation(params.sender, params.assetId)
         balance = accountAssetInfo.balance
