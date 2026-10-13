@@ -1,0 +1,35 @@
+name: Pull Request
+
+on:
+  pull_request:
+    branches: [main]
+
+concurrency:
+  group: pr-${{ github.ref }}
+  cancel-in-progress: true
+
+permissions:
+  contents: read
+
+jobs:
+  ci:
+    uses: ./.github/workflows/ci.yml
+
+  changelog:
+    runs-on: ubuntu-latest
+    strategy:
+      fail-fast: false
+      matrix:
+        package: [algokit-utils-ts, algokit-client-generator-ts, algokit-subscriber-ts]
+    steps:
+      - name: Checkout
+        uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6
+        with:
+          fetch-depth: 0
+
+      - name: Check changelog
+        uses: joe-p/semfrag/actions/check@5d7d5262582b0147cfb359379d8efebb63ac13d9 # v0.11.0
+        with:
+          changelog: ${{ matrix.package }}/CHANGELOG.md
+          fragments-dir: ${{ matrix.package }}/changelog.d
+          require-fragment-for: ^${{ matrix.package }}/src/

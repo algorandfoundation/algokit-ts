@@ -1,6 +1,6 @@
 {
   "name": "@algorandfoundation/algokit-utils",
-  "version": "0.1.0",
+  "version": "9.2.3-beta.1",
   "private": false,
   "description": "A set of core Algorand utilities written in TypeScript and released via npm that make it easier to build solutions on Algorand.",
   "author": "Algorand Foundation",
@@ -55,7 +55,6 @@
     "audit": "pnpm --filter . audit",
     "format": "prettier --write .",
     "commit-lint": "commitlint --edit -o",
-    "semantic-release": "semantic-release",
     "docs:dev": "pnpm --dir docs run dev",
     "docs:build": "pnpm --dir docs run build",
     "docs:preview": "pnpm --dir docs run preview",
@@ -78,7 +77,6 @@
     "@types/uuid": "catalog:",
     "@typescript-eslint/eslint-plugin": "catalog:",
     "@vitest/coverage-v8": "catalog:",
-    "conventional-changelog-conventionalcommits": "catalog:",
     "cpy-cli": "catalog:",
     "dotenv-cli": "catalog:",
     "eslint": "catalog:",
@@ -91,7 +89,6 @@
     "replace-in-files-cli": "catalog:",
     "rimraf": "catalog:",
     "rolldown": "catalog:",
-    "semantic-release": "catalog:",
     "tiny-invariant": "catalog:",
     "ts-node": "catalog:",
     "tsx": "catalog:",
@@ -101,73 +98,6 @@
     "vitest": "catalog:",
     "vitest-fetch-mock": "catalog:",
     "yaml": "catalog:"
-  },
-  "release": {
-    "branches": [
-      {
-        "name": "main",
-        "prerelease": "beta"
-      },
-      {
-        "name": "release"
-      }
-    ],
-    "plugins": [
-      [
-        "@semantic-release/commit-analyzer",
-        {
-          "preset": "conventionalcommits",
-          "releaseRules": [
-            {
-              "type": "build",
-              "release": "patch"
-            },
-            {
-              "type": "chore",
-              "release": "patch"
-            },
-            {
-              "type": "refactor",
-              "release": "patch"
-            }
-          ]
-        }
-      ],
-      [
-        "@semantic-release/release-notes-generator",
-        {
-          "preset": "conventionalcommits",
-          "presetConfig": {
-            "types": [
-              {
-                "type": "feat",
-                "section": "Features"
-              },
-              {
-                "type": "fix",
-                "section": "Bug Fixes"
-              },
-              {
-                "type": "build",
-                "section": "Dependencies and Other Build Updates",
-                "hidden": false
-              },
-              {
-                "type": "refactor",
-                "section": "Code Refactoring"
-              }
-            ]
-          }
-        }
-      ],
-      [
-        "@semantic-release/npm",
-        {
-          "pkgRoot": "dist"
-        }
-      ],
-      "@semantic-release/github"
-    ]
   },
   "publishConfig": {
     "directory": "dist",

@@ -1,6 +1,6 @@
 {
   "name": "@algorandfoundation/algokit-subscriber",
-  "version": "1.0.0",
+  "version": "3.4.0",
   "private": false,
   "scripts": {
     "postinstall": "prisma generate",
@@ -17,7 +17,6 @@
     "audit": "pnpm --filter . audit",
     "format": "prettier --write .",
     "commit-lint": "commitlint --edit -o",
-    "semantic-release": "semantic-release",
     "docs:dev": "pnpm --dir docs run dev",
     "docs:build": "pnpm --dir docs run build",
     "docs:preview": "pnpm --dir docs run preview",
@@ -82,7 +81,6 @@
     "@rollup/plugin-typescript": "catalog:",
     "@types/node": "catalog:",
     "@vitest/coverage-v8": "catalog:",
-    "conventional-changelog-conventionalcommits": "catalog:",
     "cpy-cli": "catalog:",
     "cross-env": "catalog:",
     "dotenv-cli": "catalog:",
@@ -94,7 +92,6 @@
     "prisma": "catalog:",
     "rimraf": "catalog:",
     "rollup": "catalog:",
-    "semantic-release": "catalog:",
     "tiny-invariant": "catalog:",
     "ts-node-dev": "catalog:",
     "tslib": "catalog:",
@@ -113,68 +110,5 @@
   },
   "publishConfig": {
     "access": "public"
-  },
-  "release": {
-    "branches": [
-      {
-        "name": "main",
-        "prerelease": "beta"
-      },
-      {
-        "name": "alpha",
-        "prerelease": "alpha"
-      },
-      {
-        "name": "release"
-      }
-    ],
-    "plugins": [
-      [
-        "@semantic-release/commit-analyzer",
-        {
-          "preset": "conventionalcommits",
-          "releaseRules": [
-            {
-              "type": "build",
-              "release": "patch"
-            },
-            {
-              "type": "chore",
-              "release": "patch"
-            }
-          ]
-        }
-      ],
-      [
-        "@semantic-release/release-notes-generator",
-        {
-          "preset": "conventionalcommits",
-          "presetConfig": {
-            "types": [
-              {
-                "type": "feat",
-                "section": "Features"
-              },
-              {
-                "type": "fix",
-                "section": "Bug Fixes"
-              },
-              {
-                "type": "build",
-                "section": "Dependencies and Other Build Updates",
-                "hidden": false
-              }
-            ]
-          }
-        }
-      ],
-      [
-        "@semantic-release/npm",
-        {
-          "pkgRoot": "dist"
-        }
-      ],
-      "@semantic-release/github"
-    ]
   }
 }

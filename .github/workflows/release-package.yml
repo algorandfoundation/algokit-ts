@@ -1,0 +1,115 @@
+name: Release package
+
+on:
+  workflow_call:
+    inputs:
+      package:
+        description: Directory of the package
+        required: true
+        type: string
+      tag-prefix:
+        description: Prefix of the package's release tags
+        required: true
+        type: string
+      prerelease:
+        description: Prerelease channel (`beta`), or empty for a stable release
+        required: false
+        type: string
+        default: ""
+
+permissions:
+  contents: write
+  id-token: write
+
+jobs:
+  release:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Generate bot token
+        uses: actions/create-github-app-token@bcd2ba49218906704ab6c1aa796996da409d3eb1 # v3
+        id: app_token
+        with:
+          app-id: ${{ secrets.BOT_ID }}
+          private-key: ${{ secrets.BOT_SK }}
+
+      # Check out the branch tip rather than the pushed commit, so a queued run
+      # releases everything that has landed on main since, including the
+      # release commits of packages released earlier in this run.
+      - name: Checkout
+        uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6
+        with:
+          ref: main
+          fetch-depth: 0
+          token: ${{ steps.app_token.outputs.token }}
+
+      - name: Set up pnpm
+        uses: pnpm/action-setup@0e279bb959325dab635dd2c09392533439d90093 # v6
+
+      - name: Use Node.js 24.x
+        uses: actions/setup-node@48b55a011bda9f5d6aeb4c2d9c7362e8dae4041e # v6
+        with:
+          node-version: 24.x
+          registry-url: https://registry.npmjs.org
+          cache: pnpm
+
+      # npm trusted publishing (OIDC) needs npm 11.5.1 or later
+      - name: Update npm
+        run: npm install -g npm@latest
+
+      - name: Install dependencies
+        run: pnpm install --frozen-lockfile
+
+      - name: Prepare release
+        id: semfrag
+        uses: joe-p/semfrag/actions/prepare@5d7d5262582b0147cfb359379d8efebb63ac13d9 # v0.11.0
+        with:
+          changelog: ${{ inputs.package }}/CHANGELOG.md
+          fragments-dir: ${{ inputs.package }}/changelog.d
+          prerelease: ${{ inputs.prerelease }}
+
+      - name: Bump package.json version
+        if: steps.semfrag.outputs.released == 'true'
+        working-directory: ${{ inputs.package }}
+        env:
+          VERSION: ${{ steps.semfrag.outputs.version }}
+        run: npm pkg set "version=${VERSION}"
+
+      # Built before anything is pushed, so a failing build doesn't need a
+      # rollback. The package's workspace dependencies are built first because
+      # it links to their dist/ folders.
+      - name: Build
+        if: steps.semfrag.outputs.released == 'true'
+        working-directory: ${{ inputs.package }}
+        run: pnpm --filter "$(npm pkg get name | tr -d '"')..." run build
+
+      - name: Commit, tag and create GitHub release
+        if: steps.semfrag.outputs.released == 'true'
+        uses: joe-p/semfrag/actions/publish@5d7d5262582b0147cfb359379d8efebb63ac13d9 # v0.11.0
+        with:
+          branch: main
+          tag-prefix: ${{ inputs.tag-prefix }}
+          git-user-name: engineering-ci[bot]
+          git-user-email: 179917785+engineering-ci[bot]@users.noreply.github.com
+          token: ${{ steps.app_token.outputs.token }}
+
+      # Prereleases keep the `main` dist-tag that semantic-release published
+      # betas from main under.
+      - name: Publish to npm
+        if: steps.semfrag.outputs.released == 'true'
+        working-directory: ${{ inputs.package }}
+        env:
+          VERSION: ${{ steps.semfrag.outputs.version }}
+          DIST_TAG: ${{ inputs.prerelease && 'main' || 'latest' }}
+        run: |
+          name="$(npm pkg get name | tr -d '"')"
+          if npm view "${name}@${VERSION}" version >/dev/null 2>&1; then
+            echo "${name}@${VERSION} is already published."
+          else
+            npm publish ./dist --tag "${DIST_TAG}" --access public
+          fi
+
+      - name: Roll back failed release
+        if: failure() || cancelled()
+        uses: joe-p/semfrag/actions/rollback@5d7d5262582b0147cfb359379d8efebb63ac13d9 # v0.11.0
+        with:
+          token: ${{ steps.app_token.outputs.token }}

@@ -17,8 +17,8 @@ allowBuilds:
   prisma: true
   sharp: true
 
-# Workspace packages have placeholder versions (semantic-release sets the real one at publish time), so peer ranges
-# like `^9.0.0` never match the linked workspace copy.
+# Between stable releases the workspace packages carry prerelease versions (e.g. `9.2.3-beta.1`), which peer ranges
+# like `^9.0.0` never match, so accept any version of the linked workspace copy.
 peerDependencyRules:
   allowedVersions:
     '@algorandfoundation/algokit-utils': '*'
@@ -74,7 +74,6 @@ catalog:
   chalk: ^5.4.1
   change-case: ^5.4.4
   commander: ^14.0.0
-  conventional-changelog-conventionalcommits: '8.0.0'
   cpy-cli: ^7.0.0
   cross-env: ^7.0.3
   dotenv-cli: ^7.4.4
@@ -95,7 +94,6 @@ catalog:
   rimraf: ^6.1.3
   rolldown: ^1.0.0-rc.12
   rollup: ^4.64.0
-  semantic-release: ^25.0.9
   sharp: ^0.34.5
   shx: ^0.4.0
   starlight-typedoc: ^0.21.5

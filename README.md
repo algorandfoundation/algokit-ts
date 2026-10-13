@@ -2,11 +2,11 @@
 
 This repository combines the following AlgoKit TypeScript projects into a single monorepo:
 
-| Directory                      | Source repository                                                        |
+| Directory | Source repository |
 | ------------------------------ | ------------------------------------------------------------------------ |
-| `algokit-client-generator-ts/` | https://github.com/algorandfoundation/algokit-client-generator-ts       |
-| `algokit-subscriber-ts/`       | https://github.com/algorandfoundation/algokit-subscriber-ts             |
-| `algokit-utils-ts/`            | https://github.com/algorandfoundation/algokit-utils-ts                  |
+| `algokit-client-generator-ts/` | https://github.com/algorandfoundation/algokit-client-generator-ts |
+| `algokit-subscriber-ts/` | https://github.com/algorandfoundation/algokit-subscriber-ts |
+| `algokit-utils-ts/` | https://github.com/algorandfoundation/algokit-utils-ts |
 
 ## Development
 
@@ -34,6 +34,46 @@ pnpm --filter ./algokit-utils-ts add -D vitest@3   # fails: outside the catalog'
 ```
 
 To upgrade a dependency, change its version in the catalog and run `pnpm install`. Every package that uses it moves together. `peerDependencies` are the exception: they stay as ranges in each `package.json`.
+
+## Releases
+
+Each package is versioned and released independently with [semfrag](https://github.com/joe-p/semfrag), which replaced semantic-release. The packages share the sections in the root `semfrag.json`. Each package has its own `CHANGELOG.md` and `changelog.d/` directory.
+
+Every change to a package's `src/` needs a fragment in that package's `changelog.d/`. The PR workflow checks for one. A fragment is a markdown file with one or more of the sections from `semfrag.json`:
+
+```md
+## Fixes
+
+- Describe the change from the user's point of view
+```
+
+Fragment sections and the version bump each one triggers:
+
+| Section | Bump |
+| ------------------ | ----- |
+| `Breaking Changes` | major |
+| `Features` | minor |
+| `Fixes` | patch |
+
+The release workflow (`.github/workflows/release.yml`) runs after CI passes. It releases the packages one at a time, in dependency order: utils, client-generator, then subscriber. Each package with pending fragments is released like this:
+
+1. **Push to `main`**: the fragments are merged into the changelog and promoted to the next beta, e.g. `9.2.3-beta.2`, which is published to npm under the `main` dist-tag.
+1. **Manual run** (*Run workflow*, choosing all packages or one): the package's betas are promoted to a stable release, e.g. `9.2.3`, and published under `latest`. This replaces the old `release` branch and *Prod Publish* workflow.
+
+Each release commits the changelog and the `package.json` version to `main`. It also creates a git tag and a GitHub release named after the package, for example `algokit-utils-v9.2.3`, `algokit-client-generator-v6.0.2` and `algokit-subscriber-v3.4.1`.
+
+To preview a release locally, run [`semfrag`](https://github.com/joe-p/semfrag#install) from a package directory: `semfrag generate --dry-run`.
+
+## TODO
+
+Outstanding work from the move to a monorepo and semfrag:
+
+- [ ] **npm trusted publishing**: each package's trusted publisher on npmjs.com still points at its old repository. Change it to this repository with the workflow `release.yml`.
+- [ ] **Release bot**: add the `BOT_ID` and `BOT_SK` secrets to this repository. Allow the `engineering-ci` app to push to `main` past branch protection, because each release commits the changelog and version to `main`.
+- [ ] **Docs publishing**: the GitHub Pages deploy (previously run on the `release` branch) and the `publish-devportal-docs.yml` workflows in `algokit-utils-ts/` and `algokit-subscriber-ts/` haven't been migrated. They don't run from a package folder. Before they move to the root, decide where the two docs sites are hosted, since a repository has only one Pages site. The DevPortal workflow is triggered by `v*` tags, which no longer exist. Releases now use package-prefixed tags such as `algokit-utils-v9.2.3`. CI only builds the docs for now.
+- [ ] **Dependabot**: each package's `.github/dependabot.yml` is ignored outside the repository root. Replace them with one root config covering the pnpm workspace.
+- [ ] **Issue and PR templates**: each package's `ISSUE_TEMPLATE/` and `pull_request_template.md` are ignored outside the repository root. Merge them into a root `.github/`.
+- [ ] **Commit linting**: commitlint was dropped from CI because it only drove semantic-release's versioning. Remove the per-package `commitlint.config.cjs` files and `commit-lint` scripts, or add commitlint back to `ci.yml` if conventional commits should still be enforced.
 
 ## How the history was preserved
 
@@ -105,9 +145,9 @@ The packages previously installed each other from npm: client-generator used `@a
 
 Things that broke and how they were fixed:
 
-- **Packages are published from `dist/`**: utils and client-generator build into `dist/` and semantic-release publishes that folder, so the package roots have no `index.js`. Both now set `publishConfig.directory: "dist"` and `publishConfig.linkDirectory: true`, which makes pnpm link dependents to `dist/` rather than the package root. Because of this the dependency has to be built before its dependents are type-checked or tested. On a fresh clone the links dangle until `pnpm run build` runs.
+- **Packages are published from `dist/`**: utils and client-generator build into `dist/` and releases publish that folder, so the package roots have no `index.js`. Both now set `publishConfig.directory: "dist"` and `publishConfig.linkDirectory: true`, which makes pnpm link dependents to `dist/` rather than the package root. Because of this the dependency has to be built before its dependents are type-checked or tested. On a fresh clone the links dangle until `pnpm run build` runs.
 - **pnpm-only `publishConfig` keys leaking into the published package**: `scripts/copy-package-json.ts` copies `publishConfig` into `dist/package.json`. It now removes `directory` and `linkDirectory`, and removes `publishConfig` entirely if that leaves it empty, so the published `package.json` is the same as before.
-- **Peer dependency warnings**: workspace packages have placeholder versions (`0.1.0` and `0.0.0`) because semantic-release sets the real version when publishing, so peer ranges like `^9.0.0` never match the linked copy. `peerDependencyRules.allowedVersions` in `pnpm-workspace.yaml` accepts any version of the two linked packages.
+- **Peer dependency warnings**: workspace packages had placeholder versions (`0.1.0` and `0.0.0`) because semantic-release set the real version when publishing, so peer ranges like `^9.0.0` never matched the linked copy. They now carry their real versions (see [Releases](#releases)), but between stable releases these are prereleases such as `9.2.3-beta.1`, which `^9.0.0` doesn't match either. `peerDependencyRules.allowedVersions` in `pnpm-workspace.yaml` accepts any version of the two linked packages.
 
 ### Dependency catalog
 
@@ -120,7 +160,7 @@ Each package previously listed its own dependency versions, and shared tools had
 
 Things that broke and how they were fixed:
 
-- **`catalog:` would be published as-is**: releases use semantic-release's npm plugin, which runs `npm publish`. Unlike `pnpm publish`, it doesn't replace `catalog:` with a version, and `scripts/copy-package-json.ts` copies `dependencies` and `peerDependencies` into `dist/package.json` unchanged. The script now reads versions from `pnpm-workspace.yaml` (using `yaml`, a new dev dependency) and fails the build if a catalog entry is missing or a `workspace:` specifier would be published.
+- **`catalog:` would be published as-is**: releases run `npm publish` on `dist/`. Unlike `pnpm publish`, it doesn't replace `catalog:` with a version, and `scripts/copy-package-json.ts` copies `dependencies` and `peerDependencies` into `dist/package.json` unchanged. The script now reads versions from `pnpm-workspace.yaml` (using `yaml`, a new dev dependency) and fails the build if a catalog entry is missing or a `workspace:` specifier would be published.
 - **TypeScript 6** (utils): `baseUrl` is deprecated and fails the `dist` type check. Nothing depended on it (there are no `paths` or imports relative to the root), so it was removed from `tsconfig.base.json`.
 - **ESLint 10's recommended rules** (utils): `no-useless-assignment` flagged dead `getAccountConfigFromEnvironment` calls in `getAccount` and an unused `0n` initial value in `assetOptOut`. Both were removed. `preserve-caught-error` flagged the "Fees were too small" error in `AppClient`, which now sets `cause` to the original error.
 - **Prettier 3.9** (subscriber): the subscriber code didn't match Prettier's output even before the upgrade, and formatting isn't checked in CI, so `pnpm run format` would reformat 9 files. They were left unformatted for a separate change.

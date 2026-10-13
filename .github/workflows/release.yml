@@ -1,0 +1,65 @@
+name: Release
+
+# Pushes to main publish a beta of each package with pending changelog
+# fragments (npm dist-tag `main`). Running this workflow manually promotes the
+# selected packages' betas to stable releases (npm dist-tag `latest`).
+on:
+  push:
+    branches: [main]
+  workflow_dispatch:
+    inputs:
+      package:
+        description: Package to promote to a stable release
+        type: choice
+        default: all
+        options:
+          - all
+          - algokit-utils
+          - algokit-client-generator
+          - algokit-subscriber
+
+concurrency:
+  group: release
+  cancel-in-progress: false
+
+permissions:
+  contents: write
+  id-token: write
+
+# Each package releases independently. The jobs run one at a time, because each
+# pushes a release commit to main, and in dependency order, so a package is
+# built against the released versions of the packages it depends on. A job
+# skipped by the package input doesn't skip the jobs after it.
+jobs:
+  ci:
+    uses: ./.github/workflows/ci.yml
+
+  algokit-utils:
+    needs: ci
+    if: ${{ github.event_name == 'push' || contains(fromJSON('["all","algokit-utils"]'), inputs.package) }}
+    uses: ./.github/workflows/release-package.yml
+    secrets: inherit
+    with:
+      package: algokit-utils-ts
+      tag-prefix: algokit-utils-v
+      prerelease: ${{ github.event_name == 'push' && 'beta' || '' }}
+
+  algokit-client-generator:
+    needs: [ci, algokit-utils]
+    if: ${{ !cancelled() && !contains(needs.*.result, 'failure') && (github.event_name == 'push' || contains(fromJSON('["all","algokit-client-generator"]'), inputs.package)) }}
+    uses: ./.github/workflows/release-package.yml
+    secrets: inherit
+    with:
+      package: algokit-client-generator-ts
+      tag-prefix: algokit-client-generator-v
+      prerelease: ${{ github.event_name == 'push' && 'beta' || '' }}
+
+  algokit-subscriber:
+    needs: [ci, algokit-client-generator]
+    if: ${{ !cancelled() && !contains(needs.*.result, 'failure') && (github.event_name == 'push' || contains(fromJSON('["all","algokit-subscriber"]'), inputs.package)) }}
+    uses: ./.github/workflows/release-package.yml
+    secrets: inherit
+    with:
+      package: algokit-subscriber-ts
+      tag-prefix: algokit-subscriber-v
+      prerelease: ${{ github.event_name == 'push' && 'beta' || '' }}

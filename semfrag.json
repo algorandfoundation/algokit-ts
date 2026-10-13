@@ -1,0 +1,7 @@
+{
+  "sections": [
+    { "title": "Breaking Changes", "bump": "MAJOR" },
+    { "title": "Features", "bump": "MINOR" },
+    { "title": "Fixes", "bump": "PATCH" }
+  ]
+}
