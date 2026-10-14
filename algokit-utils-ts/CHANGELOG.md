@@ -1,3 +1,9 @@
+# 9.3.0-beta.1 - October 14th, 2026
+
+## Features
+
+- Added nothing to test release
+
 # 9.2.3-beta.1 - October 5th, 2026
 
 ## Fixes
