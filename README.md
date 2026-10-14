@@ -64,13 +64,52 @@ Each release commits the changelog and the `package.json` version to `main`. It 
 
 To preview a release locally, run [`semfrag`](https://github.com/joe-p/semfrag#install) from a package directory: `semfrag generate --dry-run`.
 
+## Docs
+
+The `algokit-utils-ts` and `algokit-subscriber-ts` docs sites are published together to this repository's GitHub Pages site, each under its own path:
+
+| Path | Site |
+| -------------- | ------------------------------------------------ |
+| `/` | Landing page linking to each site (`.github/pages/index.html`) |
+| `/utils/` | `algokit-utils-ts/docs` |
+| `/subscriber/` | `algokit-subscriber-ts/docs` |
+
+The docs workflow (`.github/workflows/pages.yml`) runs on every push to `main` and can be run manually. It builds the packages and both sites, combines them with the landing page and deploys the result. A repository has only one Pages deployment, so every run rebuilds and replaces all the sites together.
+
+Each site reads its URL from environment variables, set by the workflow from `actions/configure-pages` so the sites work under any repository name or custom domain:
+
+- `DOCS_SITE`: the origin, e.g. `https://algorandfoundation.github.io`.
+- `DOCS_BASE`: the path the site is served under, e.g. `/algokit-monorepo-ts/utils/`.
+
+Without them the sites fall back to their old standalone paths (`/algokit-utils-ts/` and `/algokit-subscriber-ts/`), so `pnpm run docs:dev` in a package works as before. To build a site the way it's deployed:
+
+```sh
+DOCS_BASE=/algokit-monorepo-ts/utils/ pnpm --dir algokit-utils-ts run docs:build
+```
+
+To add another package's site, build it with its own `DOCS_BASE` in `pages.yml`, copy its `dist/` into `_site/`, and link it from the landing page.
+
+### DevPortal
+
+The [Algorand Developer Portal](https://github.com/algorandfoundation/devportal) imports the same docs from a tarball, `devportal-docs.tar.gz`, attached to a rolling GitHub prerelease. The DevPortal docs workflow (`.github/workflows/devportal-docs.yml`) runs on every push to `main` and can be run manually. For each package it builds the docs site, packages its content, sidebar and a `manifest.json`, and uploads the tarball to that package's release:
+
+| Package | Release |
+| ----------------------- | -------------------------------- |
+| `algokit-utils-ts` | `algokit-utils-docs-latest` |
+| `algokit-subscriber-ts` | `algokit-subscriber-docs-latest` |
+
+The sites are built with their standalone base paths (`/algokit-utils-ts/`, `/algokit-subscriber-ts/`), which the manifest's `base` passes on so the DevPortal can rewrite links.
+
 ## TODO
 
 Outstanding work from the move to a monorepo and semfrag:
 
 - [ ] **npm trusted publishing**: each package's trusted publisher on npmjs.com still points at its old repository. Change it to this repository with the workflow `release.yml`.
 - [ ] **Release bot**: add the `BOT_ID` and `BOT_SK` secrets to this repository. Allow the `engineering-ci` app to push to `main` past branch protection, because each release commits the changelog and version to `main`.
-- [ ] **Docs publishing**: the GitHub Pages deploy (previously run on the `release` branch) and the `publish-devportal-docs.yml` workflows in `algokit-utils-ts/` and `algokit-subscriber-ts/` haven't been migrated. They don't run from a package folder. Before they move to the root, decide where the two docs sites are hosted, since a repository has only one Pages site. The DevPortal workflow is triggered by `v*` tags, which no longer exist. Releases now use package-prefixed tags such as `algokit-utils-v9.2.3`. CI only builds the docs for now.
+- [ ] **GitHub Pages**: in the repository settings, set *Pages* → *Source* to *GitHub Actions*, otherwise the docs deploy fails.
+- [ ] **Old docs sites**: the `algokit-utils-ts` and `algokit-subscriber-ts` repositories still serve their last docs build at `algorandfoundation.github.io/algokit-utils-ts/` and `/algokit-subscriber-ts/`, and it won't be updated. The package READMEs now link to the new site. Turn off Pages in those repositories once the new site is live, or leave the old sites up for existing links.
+- [ ] **DevPortal import**: the DevPortal still imports `algokit-utils-ts` and `algokit-subscriber-ts` docs from the old repositories' `docs-latest` releases. Its import configs (`imports/configs/algokit-utils` and `imports/configs/algokit-subscriber`) need to point at this repository, and its import script (`scripts/import-release-docs.ts`) needs to support a release tag per variant, since it always uses `docs-latest`. Each package now publishes to its own release (see [DevPortal](#devportal)).
+- [ ] **Client generator docs**: `algokit-client-generator-ts/docs` is plain markdown with no docs site, so it isn't published to Pages.
 
 ## How the history was preserved
 
@@ -161,3 +200,12 @@ Things that broke and how they were fixed:
 - **TypeScript 6** (utils): `baseUrl` is deprecated and fails the `dist` type check. Nothing depended on it (there are no `paths` or imports relative to the root), so it was removed from `tsconfig.base.json`.
 - **ESLint 10's recommended rules** (utils): `no-useless-assignment` flagged dead `getAccountConfigFromEnvironment` calls in `getAccount` and an unused `0n` initial value in `assetOptOut`. Both were removed. `preserve-caught-error` flagged the "Fees were too small" error in `AppClient`, which now sets `cause` to the original error.
 - **Prettier 3.9** (subscriber): the subscriber code didn't match Prettier's output even before the upgrade, and formatting isn't checked in CI, so `pnpm run format` would reformat 9 files. They were left unformatted for a separate change.
+
+### Docs publishing
+
+Each docs site was previously deployed to its own repository's GitHub Pages site, at a fixed base path (`/algokit-utils-ts/` and `/algokit-subscriber-ts/`). They're now deployed together from this repository (see [Docs](#docs)):
+
+- **Base path**: each `astro.config.mjs` reads `site` and `base` from `DOCS_SITE` and `DOCS_BASE`, falling back to the old values.
+- **Hardcoded links** (utils): many hand-written pages link to other pages with absolute paths starting `/algokit-utils-ts/`. Rather than editing them, a new remark plugin (`docs/plugins/remark-rebase-links.ts`) rewrites that prefix to the configured base at build time. The homepage hero links, which are in frontmatter and aren't processed by remark, were made relative, matching the subscriber site.
+- **DevPortal**: the per-package `publish-devportal-docs.yml` workflows were replaced by `.github/workflows/devportal-docs.yml` at the root. They used the DevPortal's shared `publish-devportal-docs` action, which can't be used from a monorepo: it names the docs after the repository and uploads every package's tarball to the same `docs-latest` release, so the packages would overwrite each other. The new workflow repeats the action's steps, with a release per package. Tarballs are no longer attached to versioned releases. The DevPortal only imports `docs-latest`, and the `v*` tags that triggered that upload no longer exist.
+- **README links**: the package READMEs now link to the new site. The utils README's migration guide links, which pointed at files that no longer exist, link to the guides on the site.

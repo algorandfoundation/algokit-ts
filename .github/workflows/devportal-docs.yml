@@ -1,0 +1,98 @@
+name: DevPortal Docs
+
+# Packages each docs site's content for the Algorand Developer Portal
+# (https://github.com/algorandfoundation/devportal), which downloads
+# `devportal-docs.tar.gz` from a rolling GitHub prerelease and imports it.
+#
+# This replaces the per-package `publish-devportal-docs.yml` workflows, which
+# used the DevPortal's shared action. That action can't be used from a
+# monorepo: it names the docs after the repository and publishes every package
+# to the same `docs-latest` release, so the packages would overwrite each
+# other. These steps are the same, but each package gets its own release.
+on:
+  push:
+    branches: [main]
+  workflow_dispatch:
+
+concurrency:
+  group: devportal-docs
+  cancel-in-progress: true
+
+permissions:
+  contents: write
+
+jobs:
+  publish:
+    runs-on: ubuntu-latest
+    strategy:
+      fail-fast: false
+      matrix:
+        include:
+          - package: algokit-utils-ts
+            release: algokit-utils-docs-latest
+            title: AlgoKit Utils Documentation (Latest)
+          - package: algokit-subscriber-ts
+            release: algokit-subscriber-docs-latest
+            title: AlgoKit Subscriber Documentation (Latest)
+    steps:
+      - name: Checkout
+        uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6
+
+      - name: Set up pnpm
+        uses: pnpm/action-setup@0e279bb959325dab635dd2c09392533439d90093 # v6
+
+      - name: Use Node.js 24.x
+        uses: actions/setup-node@48b55a011bda9f5d6aeb4c2d9c7362e8dae4041e # v6
+        with:
+          node-version: 24.x
+          cache: pnpm
+
+      - name: Install dependencies
+        run: pnpm install --frozen-lockfile
+
+      # The API reference is generated from the packages, which link to each
+      # other's dist/.
+      - name: Build
+        run: pnpm run build
+
+      # Built without DOCS_BASE, so the site uses its standalone base path
+      # (e.g. `/algokit-utils-ts/`). The hand-written pages link with that
+      # prefix too, and the DevPortal rewrites links starting with the
+      # manifest's `base`.
+      - name: Build docs
+        run: pnpm --dir ${{ matrix.package }} run docs:build
+
+      - name: Package docs
+        working-directory: ${{ matrix.package }}/docs
+        env:
+          BASE: ${{ matrix.package }}
+          TAG: ${{ matrix.release }}
+        run: |
+          mkdir -p dist-devportal/content
+          cp -R src/content/docs/. dist-devportal/content/
+          if [ -f sidebar.config.json ]; then
+            cp sidebar.config.json dist-devportal/sidebar.json
+          fi
+          cat > dist-devportal/manifest.json <<EOF
+          {
+            "base": "${BASE}",
+            "repo": "${GITHUB_REPOSITORY}",
+            "ref": "${GITHUB_SHA}",
+            "tag": "${TAG}",
+            "timestamp": "$(date -u +%Y-%m-%dT%H:%M:%SZ)"
+          }
+          EOF
+          tar czf devportal-docs.tar.gz -C dist-devportal .
+
+      - name: Publish to release
+        working-directory: ${{ matrix.package }}/docs
+        env:
+          GH_TOKEN: ${{ github.token }}
+          TAG: ${{ matrix.release }}
+          TITLE: ${{ matrix.title }}
+        run: |
+          if ! gh release view "$TAG" >/dev/null 2>&1; then
+            gh release create "$TAG" --prerelease --target "$GITHUB_SHA" --title "$TITLE" \
+              --notes "Rolling prerelease with the latest documentation build for the Algorand Developer Portal."
+          fi
+          gh release upload "$TAG" devportal-docs.tar.gz --clobber

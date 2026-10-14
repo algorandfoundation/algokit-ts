@@ -8,8 +8,9 @@ import remarkFixIndexUrls from './plugins/remark-fix-index-urls';
 
 // https://astro.build/config
 export default defineConfig({
-  site: 'https://algorandfoundation.github.io',
-  base: '/algokit-subscriber-ts/',
+  // The combined GitHub Pages deployment sets DOCS_SITE and DOCS_BASE to serve this site under a sub-path.
+  site: process.env.DOCS_SITE ?? 'https://algorandfoundation.github.io',
+  base: process.env.DOCS_BASE ?? '/algokit-subscriber-ts/',
   trailingSlash: 'always',
   markdown: {
     remarkPlugins: [remarkGithubAlerts, remarkFixIndexUrls],

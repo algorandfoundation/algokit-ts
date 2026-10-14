@@ -4,14 +4,18 @@ import { defineConfig } from 'astro/config'
 import remarkGithubAlerts from 'remark-github-alerts'
 import starlightTypeDoc from 'starlight-typedoc'
 import remarkFixIndexUrls from './plugins/remark-fix-index-urls'
+import remarkRebaseLinks from './plugins/remark-rebase-links'
 import sidebarConfig from './sidebar.config.json'
+
+// The combined GitHub Pages deployment sets DOCS_SITE and DOCS_BASE to serve this site under a sub-path.
+const base = process.env.DOCS_BASE ?? '/algokit-utils-ts/'
 
 // https://astro.build/config
 export default defineConfig({
-  site: 'https://algorandfoundation.github.io',
-  base: '/algokit-utils-ts/',
+  site: process.env.DOCS_SITE ?? 'https://algorandfoundation.github.io',
+  base,
   markdown: {
-    remarkPlugins: [remarkGithubAlerts, remarkFixIndexUrls],
+    remarkPlugins: [remarkGithubAlerts, remarkFixIndexUrls, [remarkRebaseLinks, { from: '/algokit-utils-ts/', to: base }]],
   },
   integrations: [
     starlight({

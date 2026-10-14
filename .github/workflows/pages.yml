@@ -1,0 +1,78 @@
+name: Docs
+
+# Builds every package's docs site and publishes them together to GitHub Pages,
+# each under its own sub-path (e.g. `<pages url>/utils/`), with a landing page
+# at the root linking to them.
+on:
+  push:
+    branches: [main]
+  workflow_dispatch:
+
+concurrency:
+  group: pages
+  cancel-in-progress: true
+
+permissions:
+  contents: read
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6
+
+      - name: Set up pnpm
+        uses: pnpm/action-setup@0e279bb959325dab635dd2c09392533439d90093 # v6
+
+      - name: Use Node.js 24.x
+        uses: actions/setup-node@48b55a011bda9f5d6aeb4c2d9c7362e8dae4041e # v6
+        with:
+          node-version: 24.x
+          cache: pnpm
+
+      - name: Install dependencies
+        run: pnpm install --frozen-lockfile
+
+      # The API reference is generated from the packages, which link to each
+      # other's dist/.
+      - name: Build
+        run: pnpm run build
+
+      # Provides the Pages URL (custom domain or `<owner>.github.io/<repo>`) so
+      # the sites are built for wherever they're served.
+      - name: Configure Pages
+        id: pages
+        uses: actions/configure-pages@v5
+
+      - name: Build docs
+        env:
+          DOCS_SITE: ${{ steps.pages.outputs.origin }}
+          PAGES_BASE: ${{ steps.pages.outputs.base_path }}
+        run: |
+          DOCS_BASE="$PAGES_BASE/utils/" pnpm --dir algokit-utils-ts run docs:build
+          DOCS_BASE="$PAGES_BASE/subscriber/" pnpm --dir algokit-subscriber-ts run docs:build
+
+      - name: Assemble site
+        run: |
+          mkdir -p _site
+          cp -r algokit-utils-ts/docs/dist _site/utils
+          cp -r algokit-subscriber-ts/docs/dist _site/subscriber
+          cp .github/pages/index.html _site/
+
+      - name: Upload Pages artifact
+        uses: actions/upload-pages-artifact@v3
+
+  deploy:
+    needs: build
+    runs-on: ubuntu-latest
+    permissions:
+      pages: write
+      id-token: write
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    steps:
+      - name: Deploy to GitHub Pages
+        id: deployment
+        uses: actions/deploy-pages@v4
