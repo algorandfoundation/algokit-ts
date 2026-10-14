@@ -70,7 +70,7 @@ The `algokit-utils-ts` and `algokit-subscriber-ts` docs sites are published toge
 
 | Path | Site |
 | -------------- | ------------------------------------------------ |
-| `/` | Landing page linking to each site (`.github/pages/index.html`) |
+| `/` | Landing page linking to each site, and to the `algokit-client-generator-ts/docs` folder on GitHub (`.github/pages/index.html`) |
 | `/utils/` | `algokit-utils-ts/docs` |
 | `/subscriber/` | `algokit-subscriber-ts/docs` |
 
@@ -105,11 +105,8 @@ The sites are built with their standalone base paths (`/algokit-utils-ts/`, `/al
 Outstanding work from the move to a monorepo and semfrag:
 
 - [ ] **npm trusted publishing**: each package's trusted publisher on npmjs.com still points at its old repository. Change it to this repository with the workflow `release.yml`.
-- [ ] **Release bot**: add the `BOT_ID` and `BOT_SK` secrets to this repository. Allow the `engineering-ci` app to push to `main` past branch protection, because each release commits the changelog and version to `main`.
-- [ ] **GitHub Pages**: in the repository settings, set *Pages* → *Source* to *GitHub Actions*, otherwise the docs deploy fails.
 - [ ] **Old docs sites**: the `algokit-utils-ts` and `algokit-subscriber-ts` repositories still serve their last docs build at `algorandfoundation.github.io/algokit-utils-ts/` and `/algokit-subscriber-ts/`, and it won't be updated. The package READMEs now link to the new site. Turn off Pages in those repositories once the new site is live, or leave the old sites up for existing links.
 - [ ] **DevPortal import**: the DevPortal still imports `algokit-utils-ts` and `algokit-subscriber-ts` docs from the old repositories' `docs-latest` releases. Its import configs (`imports/configs/algokit-utils` and `imports/configs/algokit-subscriber`) need to point at this repository, and its import script (`scripts/import-release-docs.ts`) needs to support a release tag per variant, since it always uses `docs-latest`. Each package now publishes to its own release (see [DevPortal](#devportal)).
-- [ ] **Client generator docs**: `algokit-client-generator-ts/docs` is plain markdown with no docs site, so it isn't published to Pages.
 
 ## How the history was preserved
 
