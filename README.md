@@ -112,34 +112,30 @@ Outstanding work from the move to a monorepo and semfrag:
 
 ## How the history was preserved
 
-Each project's full commit history from its `main` branch was imported. The history was rewritten so that each file appears to have always been in its subdirectory. Commands like `git log -- algokit-utils-ts/src/...` and `git blame` therefore work normally on any file without needing `--follow`.
+Each project's full commit history reachable from its `main` branch was imported with a non-squashed subtree merge. Original commits, including their SHAs and signatures, are preserved. The monorepo is the only source of truth for future development; the imports do not require ongoing synchronization with the source repositories.
 
-The import was done with [`git filter-repo`](https://github.com/newren/git-filter-repo):
+Files in original commits retain their original root-level paths. The subtree import places them under each project's directory without rewriting those commits. Path-filtered commands such as `git log -- algokit-utils-ts/src/...` do not automatically show the pre-import history; inspect an original import SHA with the original paths to explore that history.
+
+The import was done with `git subtree add` (without `--squash`), using the same source commits as the initial migration:
 
 ```sh
-WORK=$(mktemp -d)
-REPOS="algokit-client-generator-ts algokit-subscriber-ts algokit-utils-ts"
-
-# 1. Clone each source repo and rewrite its history into a subdirectory
-for r in $REPOS; do
-  git clone --no-local --single-branch --branch main ../../algorandfoundation/$r $WORK/$r
-  uvx git-filter-repo --source $WORK/$r --target $WORK/$r --to-subdirectory-filter $r
-done
-
-# 2. Start an empty root commit and merge each rewritten history into it
+# Start in a new, empty repository
+git init
 git checkout --orphan main
 git commit --allow-empty -m "chore: init monorepo"
-for r in $REPOS; do
-  git fetch --no-tags $WORK/$r main:import/$r
-  git merge --allow-unrelated-histories --no-edit import/$r -m "chore: import $r history"
-  git branch -D import/$r
-done
+
+git subtree add --prefix=algokit-client-generator-ts \
+  ../../algorandfoundation/algokit-client-generator-ts c55e01fd7aa3b1fc90916c036d6153f832f7f379
+git subtree add --prefix=algokit-subscriber-ts \
+  ../../algorandfoundation/algokit-subscriber-ts 3710d57ac335f121ff154240cea1070495861822
+git subtree add --prefix=algokit-utils-ts \
+  ../../algorandfoundation/algokit-utils-ts d467f20a240473fcb95663a98c3dd04159485a38
 ```
 
 Notes:
 
-- Only commits on each repo's `main` branch were imported. Other branches and tags were not.
-- Commit hashes differ from the original repositories because the file paths changed. Authors, dates and commit messages are unchanged.
+- Only commits reachable from each repo's selected `main` tip were imported. Unmerged branch history and tag refs were not imported.
+- Original commit hashes, authors, dates, messages and signatures are unchanged. Post-import monorepo changes were replayed onto the subtree imports, so those monorepo commit hashes differ from the initial migration. Existing monorepo tags were not moved.
 - The source repos were at the following commits when they were imported:
   - `algokit-client-generator-ts`: `c55e01f` (326 commits)
   - `algokit-subscriber-ts`: `3710d57` (278 commits)
