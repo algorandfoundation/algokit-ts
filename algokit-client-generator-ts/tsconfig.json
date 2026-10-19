@@ -1,0 +1,14 @@
+{
+  "extends": "@tsconfig/node22/tsconfig.json",
+  "compilerOptions": {
+    "noEmit": true,
+    "target": "ES2024",
+    "module": "ESNext",
+    "moduleResolution": "Bundler",
+    "resolveJsonModule": true,
+    "esModuleInterop": true,
+    "preserveSymlinks": true
+  },
+  "include": ["src/**/*.ts", "rollup.config.ts", "vitest.config.ts", "examples/**/*.ts", "scripts/**/*.ts"],
+  "exclude": ["examples/**/*.algo.ts"]
+}
