@@ -1,0 +1,10 @@
+{
+  "recommendations": [
+    "esbenp.prettier-vscode",
+    "mikestead.dotenv",
+    "EditorConfig.EditorConfig",
+    "vitest.explorer",
+    "dbaeumer.vscode-eslint",
+    "Prisma.prisma"
+  ]
+}
