@@ -62,6 +62,8 @@ The release workflow (`.github/workflows/release.yml`) runs after CI passes. It 
 
 Each release commits the changelog and the `package.json` version to `main`. It also creates a git tag and a GitHub release named after the package, for example `algokit-utils-v9.2.3`, `algokit-client-generator-v6.0.2` and `algokit-subscriber-v3.4.1`.
 
+Releases start from the exact commit validated by CI. Each package job passes its release commit to the next job; jobs that have nothing to release pass their input commit through unchanged. If unrelated changes advance `main`, the run stops rather than including unvalidated code. A push arriving after the branch check is also protected by the release action's non-force push. Let the newer push's workflow validate and release the remaining changes. For a stable promotion, dispatch a new manual run from the latest `main` instead of rerunning the outdated run.
+
 To preview a release locally, run [`semfrag`](https://github.com/joe-p/semfrag#install) from a package directory: `semfrag generate --dry-run`.
 
 ## Docs

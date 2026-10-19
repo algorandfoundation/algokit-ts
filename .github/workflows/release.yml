@@ -30,6 +30,8 @@ permissions:
 # pushes a release commit to main, and in dependency order, so a package is
 # built against the released versions of the packages it depends on. A job
 # skipped by the package input doesn't skip the jobs after it.
+# Start at the CI-tested SHA and pass only this run's release commits forward.
+# If main advances independently, stop instead of releasing unvalidated code.
 jobs:
   ci:
     uses: ./.github/workflows/ci.yml
@@ -40,6 +42,7 @@ jobs:
     uses: ./.github/workflows/release-package.yml
     secrets: inherit
     with:
+      ref: ${{ github.sha }}
       package: algokit-utils-ts
       tag-prefix: algokit-utils-v
       prerelease: ${{ github.event_name == 'push' && 'beta' || '' }}
@@ -50,16 +53,18 @@ jobs:
     uses: ./.github/workflows/release-package.yml
     secrets: inherit
     with:
+      ref: ${{ needs.algokit-utils.outputs.commit-sha || github.sha }}
       package: algokit-client-generator-ts
       tag-prefix: algokit-client-generator-v
       prerelease: ${{ github.event_name == 'push' && 'beta' || '' }}
 
   algokit-subscriber:
-    needs: [ci, algokit-client-generator]
+    needs: [ci, algokit-utils, algokit-client-generator]
     if: ${{ !cancelled() && !contains(needs.*.result, 'failure') && (github.event_name == 'push' || contains(fromJSON('["all","algokit-subscriber"]'), inputs.package)) }}
     uses: ./.github/workflows/release-package.yml
     secrets: inherit
     with:
+      ref: ${{ needs.algokit-client-generator.outputs.commit-sha || needs.algokit-utils.outputs.commit-sha || github.sha }}
       package: algokit-subscriber-ts
       tag-prefix: algokit-subscriber-v
       prerelease: ${{ github.event_name == 'push' && 'beta' || '' }}

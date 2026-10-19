@@ -3,6 +3,10 @@ name: Release package
 on:
   workflow_call:
     inputs:
+      ref:
+        description: CI-tested commit, or the release commit returned by the preceding package job
+        required: true
+        type: string
       package:
         description: Directory of the package
         required: true
@@ -16,6 +20,10 @@ on:
         required: false
         type: string
         default: ""
+    outputs:
+      commit-sha:
+        description: Release commit, or the input commit if no release was needed
+        value: ${{ jobs.release.outputs.commit-sha }}
 
 permissions:
   contents: write
@@ -24,6 +32,8 @@ permissions:
 jobs:
   release:
     runs-on: ubuntu-latest
+    outputs:
+      commit-sha: ${{ steps.publish.outputs.commit-sha || inputs.ref }}
     steps:
       - name: Generate bot token
         uses: actions/create-github-app-token@bcd2ba49218906704ab6c1aa796996da409d3eb1 # v3
@@ -32,15 +42,27 @@ jobs:
           app-id: ${{ secrets.BOT_ID }}
           private-key: ${{ secrets.BOT_SK }}
 
-      # Check out the branch tip rather than the pushed commit, so a queued run
-      # releases everything that has landed on main since, including the
-      # release commits of packages released earlier in this run.
+      # Never absorb unrelated changes from a moving main. Later package jobs
+      # receive only the release commits produced earlier in this run.
       - name: Checkout
         uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6
         with:
-          ref: main
+          ref: ${{ inputs.ref }}
           fetch-depth: 0
           token: ${{ steps.app_token.outputs.token }}
+
+      - name: Verify main has not advanced
+        shell: bash
+        run: |
+          set -euo pipefail
+          expected="$(git rev-parse HEAD)"
+          actual="$(git ls-remote --exit-code origin refs/heads/main | cut -f1)"
+          if [ "$actual" != "$expected" ]; then
+            echo "::error::main has changed since the validated release commit. Stop this run and release from a newly validated commit."
+            exit 1
+          fi
+          # If main advances after this check, the publish action's ordinary
+          # (non-force) push rejects the release rather than incorporating it.
 
       - name: Set up pnpm
         uses: pnpm/action-setup@0e279bb959325dab635dd2c09392533439d90093 # v6
@@ -83,6 +105,7 @@ jobs:
         run: pnpm --filter "$(npm pkg get name | tr -d '"')..." run build
 
       - name: Commit, tag and create GitHub release
+        id: publish
         if: steps.semfrag.outputs.released == 'true'
         uses: joe-p/semfrag/actions/publish@5d7d5262582b0147cfb359379d8efebb63ac13d9 # v0.11.0
         with:
