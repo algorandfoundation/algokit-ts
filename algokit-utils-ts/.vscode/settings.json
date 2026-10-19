@@ -1,0 +1,12 @@
+{
+  "editor.formatOnSave": true,
+  "editor.defaultFormatter": "esbenp.prettier-vscode",
+  "editor.codeActionsOnSave": {
+    "source.fixAll.eslint": "explicit",
+    "source.organizeImports": "explicit"
+  },
+  "jest.enable": false,
+  "vitest.enable": true,
+  "vitest.watchOnStartup": false,
+  "dotenv.enableAutocloaking": false
+}
