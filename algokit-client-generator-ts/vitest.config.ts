@@ -1,10 +1,3 @@
-import { defineConfig } from 'vitest/config'
+import base from '../tooling/vitest.base'
 
-export default defineConfig({
-  test: {
-    coverage: {
-      include: ['src/**/*.ts'],
-      reporter: ['text', 'html'],
-    },
-  },
-})
+export default base

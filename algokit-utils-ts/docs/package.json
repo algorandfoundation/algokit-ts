@@ -18,9 +18,5 @@
     "typedoc": "catalog:",
     "typedoc-plugin-markdown": "catalog:"
   },
-  "devDependencies": {
-    "@types/mdast": "catalog:",
-    "unist-util-visit": "catalog:"
-  },
   "private": true
 }

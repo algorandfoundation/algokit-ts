@@ -1,0 +1,29 @@
+{
+  "name": "algokit-tooling",
+  "private": true,
+  "description": "Build, lint, test and docs setup shared by the packages in this monorepo",
+  "type": "module",
+  "scripts": {
+    "lint": "eslint .",
+    "lint:fix": "eslint . --fix",
+    "check-types": "tsc --noEmit",
+    "format": "prettier --write . --ignore-path ../.gitignore --ignore-path ../.prettierignore"
+  },
+  "devDependencies": {
+    "@eslint/js": "catalog:",
+    "@tsconfig/node22": "catalog:",
+    "@types/mdast": "catalog:",
+    "@types/node": "catalog:",
+    "eslint": "catalog:",
+    "eslint-config-prettier": "catalog:",
+    "eslint-plugin-unused-imports": "catalog:",
+    "fast-glob": "catalog:",
+    "prettier": "catalog:",
+    "rolldown": "catalog:",
+    "typescript": "catalog:",
+    "typescript-eslint": "catalog:",
+    "unist-util-visit": "catalog:",
+    "vitest": "catalog:",
+    "yaml": "catalog:"
+  }
+}

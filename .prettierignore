@@ -1,0 +1,26 @@
+# Package-specific paths are prefixed with the package directory. The packages' `format` scripts read this file, the
+# root .gitignore and their own .gitignore.
+
+# don't format generated types
+**/generated/types.d.ts
+**/generated/types.ts
+# don't format ide files
+.idea
+# don't format the lockfile
+pnpm-lock.yaml
+
+algokit-client-generator-ts/src/schema/application.d.ts
+algokit-client-generator-ts/examples/**/client.ts
+algokit-client-generator-ts/examples/**/application.json
+algokit-client-generator-ts/examples/**/*.generated.ts
+
+# don't format docs (Astro has its own formatting)
+algokit-subscriber-ts/docs
+
+# don't format auto generated code docs
+algokit-utils-ts/docs/code
+# don't format test contract artifacts
+algokit-utils-ts/tests/example-contracts/**/*.json
+algokit-utils-ts/test_data.json
+# don't format slidev presentations (breaks frontmatter)
+algokit-utils-ts/presentations

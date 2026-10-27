@@ -1,19 +1,22 @@
 // @ts-check
-import { defineConfig } from 'astro/config';
-import starlight from '@astrojs/starlight';
-import starlightTypeDoc from 'starlight-typedoc';
-import sidebar from './sidebar.config.json';
-import remarkGithubAlerts from 'remark-github-alerts';
-import remarkFixIndexUrls from './plugins/remark-fix-index-urls';
+import starlight from '@astrojs/starlight'
+import { defineConfig } from 'astro/config'
+import remarkGithubAlerts from 'remark-github-alerts'
+import starlightTypeDoc from 'starlight-typedoc'
+import remarkFixIndexUrls from '../../tooling/remark-fix-index-urls'
+import remarkRebaseLinks from '../../tooling/remark-rebase-links'
+import sidebarConfig from './sidebar.config.json'
+
+// The combined GitHub Pages deployment sets DOCS_SITE and DOCS_BASE to serve this site under a sub-path.
+const base = process.env.DOCS_BASE ?? '/algokit-subscriber-ts/'
 
 // https://astro.build/config
 export default defineConfig({
-  // The combined GitHub Pages deployment sets DOCS_SITE and DOCS_BASE to serve this site under a sub-path.
   site: process.env.DOCS_SITE ?? 'https://algorandfoundation.github.io',
-  base: process.env.DOCS_BASE ?? '/algokit-subscriber-ts/',
+  base,
   trailingSlash: 'always',
   markdown: {
-    remarkPlugins: [remarkGithubAlerts, remarkFixIndexUrls],
+    remarkPlugins: [remarkGithubAlerts, remarkFixIndexUrls, [remarkRebaseLinks, { from: '/algokit-subscriber-ts/', to: base }]],
   },
   integrations: [
     starlight({
@@ -43,7 +46,7 @@ export default defineConfig({
           },
         }),
       ],
-      sidebar,
+      sidebar: sidebarConfig,
     }),
   ],
-});
+})

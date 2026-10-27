@@ -1,7 +1,6 @@
 import fg from 'fast-glob'
 import { builtinModules } from 'node:module'
-import { LogLevel, LogOrStringHandler, RollupLog, defineConfig } from 'rolldown'
-import workspacePkg from './package.json' with { type: 'json' }
+import { LogLevel, LogOrStringHandler, RollupLog, RolldownOptions, defineConfig } from 'rolldown'
 
 type StringOrRegExp = string | RegExp
 
@@ -16,11 +15,19 @@ const nodeBuiltins = builtinModules.flatMap((m) => [m, `node:${m}`])
 // `skipLibCheck: true` silently received as `any`. The source uses that alias form in 132 places, so
 // declaration emit stays with tsc, which passes it through untouched.
 
-export default function createConfig(externalDependencies: StringOrRegExp[], input: string[] = ['src/index.ts']): typeof config {
+type PackageJson = { dependencies?: Record<string, string>; peerDependencies?: Record<string, string> }
+
+// `pkg` is the package's package.json: its dependencies and peer dependencies are never bundled
+export default function createConfig(
+  pkg: PackageJson,
+  input: string[] = ['src/index.ts'],
+  externalDependencies: StringOrRegExp[] = [],
+): RolldownOptions[] {
   const external: StringOrRegExp[] = [
     ...nodeBuiltins,
-    ...[...Object.keys(workspacePkg.dependencies || {}), ...externalDependencies]
-      .map(dep => typeof dep === 'string' ? new RegExp(`^${dep}($|\\/|\\\\)`) : dep),
+    ...[...Object.keys(pkg.dependencies || {}), ...Object.keys(pkg.peerDependencies || {}), ...externalDependencies].map((dep) =>
+      typeof dep === 'string' ? new RegExp(`^${dep}($|\\/|\\\\)`) : dep,
+    ),
   ]
 
   const resolvedInput = input.flatMap((pattern) => {

@@ -8,7 +8,9 @@
   "scripts": {
     "build": "pnpm --filter \"./algokit-*-ts\" run build",
     "test": "pnpm --filter \"./algokit-*-ts\" run test",
-    "lint": "pnpm --filter \"./algokit-*-ts\" run lint",
-    "audit": "pnpm --filter \"./algokit-*-ts\" run audit"
+    "lint": "pnpm --filter \"./algokit-*-ts\" --filter ./tooling run lint",
+    "audit": "pnpm --filter \"./algokit-*-ts\" run audit",
+    "check-types": "pnpm --filter \"./algokit-*-ts\" --filter ./tooling --if-present run check-types",
+    "format": "pnpm --filter \"./algokit-*-ts\" --filter ./tooling run format"
   }
 }

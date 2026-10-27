@@ -1,14 +1,8 @@
+// Type checks the source and the examples (including the generated clients) with `strict` off
 {
-  "extends": "@tsconfig/node22/tsconfig.json",
+  "extends": "./tsconfig.json",
   "compilerOptions": {
-    "noEmit": true,
-    "target": "ES2024",
-    "module": "ESNext",
-    "moduleResolution": "Bundler",
-    "resolveJsonModule": true,
-    "esModuleInterop": true,
     "strict": false
   },
-  "include": ["src/**/*.ts", "rollup.config.ts", "examples/**/*.ts"],
-  "exclude": ["examples/**/*.algo.ts"]
+  "include": ["src/**/*.ts", "examples/**/*.ts"]
 }

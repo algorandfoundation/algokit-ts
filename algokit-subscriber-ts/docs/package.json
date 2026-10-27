@@ -9,11 +9,6 @@
     "preview": "astro preview",
     "astro": "astro"
   },
-  "devDependencies": {
-    "@types/mdast": "catalog:",
-    "tsx": "catalog:",
-    "unist-util-visit": "catalog:"
-  },
   "dependencies": {
     "@astrojs/starlight": "catalog:",
     "astro": "catalog:",

@@ -204,15 +204,6 @@ catalogs:
     '@prisma/client':
       specifier: ^5.15.1
       version: 5.22.0
-    '@rollup/plugin-json':
-      specifier: ^6.1.0
-      version: 6.1.0
-    '@rollup/plugin-node-resolve':
-      specifier: ^16.0.1
-      version: 16.0.3
-    '@rollup/plugin-typescript':
-      specifier: ^12.3.0
-      version: 12.3.0
     '@tsconfig/node22':
       specifier: ^22.0.6
       version: 22.0.6
@@ -228,9 +219,6 @@ catalogs:
     '@types/uuid':
       specifier: ^10.0.0
       version: 10.0.0
-    '@typescript-eslint/eslint-plugin':
-      specifier: ^8.8.1
-      version: 8.71.1
     '@vitest/coverage-v8':
       specifier: ^4.1.11
       version: 4.1.11
@@ -282,9 +270,6 @@ catalogs:
     jsonschema:
       specifier: ^1.5.0
       version: 1.5.0
-    magic-string:
-      specifier: ^0.30.11
-      version: 0.30.21
     npm-run-all2:
       specifier: ^8.0.4
       version: 8.0.4
@@ -306,33 +291,21 @@ catalogs:
     rolldown:
       specifier: ^1.0.0-rc.12
       version: 1.2.12
-    rollup:
-      specifier: ^4.64.0
-      version: 4.64.0
     sharp:
       specifier: ^0.34.5
       version: 0.34.5
-    shx:
-      specifier: ^0.4.0
-      version: 0.4.0
     starlight-typedoc:
       specifier: ^0.21.5
       version: 0.21.5
     tiny-invariant:
       specifier: ^1.3.3
       version: 1.3.3
-    ts-node:
-      specifier: ^10.9.1
-      version: 10.9.2
     ts-node-dev:
       specifier: ^2.0.0
       version: 2.0.0
     tsd:
       specifier: ^0.33.0
       version: 0.33.0
-    tslib:
-      specifier: ^2.8.1
-      version: 2.8.1
     tsx:
       specifier: ^4.23.15
       version: 4.23.15
@@ -405,36 +378,21 @@ importers:
       '@algorandfoundation/tealscript':
         specifier: 'catalog:'
         version: 0.107.2
-      '@eslint/js':
-        specifier: 'catalog:'
-        version: 10.0.1(eslint@10.12.0(jiti@2.6.1)(supports-color@7.2.0))
       '@noble/ed25519':
         specifier: 'catalog:'
         version: 2.3.0
-      '@rollup/plugin-json':
-        specifier: 'catalog:'
-        version: 6.1.0(rollup@4.64.0)
-      '@rollup/plugin-node-resolve':
-        specifier: 'catalog:'
-        version: 16.0.3(rollup@4.64.0)
-      '@rollup/plugin-typescript':
-        specifier: 'catalog:'
-        version: 12.3.0(rollup@4.64.0)(tslib@2.8.1)(typescript@6.0.3)
-      '@tsconfig/node22':
-        specifier: 'catalog:'
-        version: 22.0.6
       '@types/node':
         specifier: 'catalog:'
         version: 26.6.4
       '@vitest/coverage-v8':
         specifier: 'catalog:'
         version: 4.1.11(vitest@4.1.11)
+      cpy-cli:
+        specifier: 'catalog:'
+        version: 7.0.0
       eslint:
         specifier: 'catalog:'
         version: 10.12.0(jiti@2.6.1)(supports-color@7.2.0)
-      eslint-config-prettier:
-        specifier: 'catalog:'
-        version: 10.1.8(eslint@10.12.0(jiti@2.6.1)(supports-color@7.2.0))
       hi-base32:
         specifier: 'catalog:'
         version: 0.5.1
@@ -447,39 +405,30 @@ importers:
       prettier:
         specifier: 'catalog:'
         version: 3.9.9
+      replace-in-files-cli:
+        specifier: 'catalog:'
+        version: 3.0.0
       rimraf:
         specifier: 'catalog:'
         version: 6.1.3
-      rollup:
+      rolldown:
         specifier: 'catalog:'
-        version: 4.64.0
-      shx:
-        specifier: 'catalog:'
-        version: 0.4.0
+        version: 1.2.12
       tiny-invariant:
         specifier: 'catalog:'
         version: 1.3.3
       tsd:
         specifier: 'catalog:'
         version: 0.33.0
-      tslib:
-        specifier: 'catalog:'
-        version: 2.8.1
       tsx:
         specifier: 'catalog:'
         version: 4.23.15
       typescript:
         specifier: 'catalog:'
         version: 6.0.3
-      typescript-eslint:
-        specifier: 'catalog:'
-        version: 8.71.1(eslint@10.12.0(jiti@2.6.1)(supports-color@7.2.0))(supports-color@7.2.0)(typescript@6.0.3)
       vitest:
         specifier: 'catalog:'
         version: 4.1.11(@types/node@26.6.4)(@vitest/coverage-v8@4.1.11)(vite@6.4.4(@types/node@26.6.4)(jiti@2.6.1)(tsx@4.23.15)(yaml@2.9.1))
-      yaml:
-        specifier: 'catalog:'
-        version: 2.9.1
     publishDirectory: dist
 
   algokit-subscriber-ts:
@@ -497,15 +446,9 @@ importers:
       '@algorandfoundation/algokit-utils':
         specifier: workspace:*
         version: link:../algokit-utils-ts/dist
-      '@eslint/js':
-        specifier: 'catalog:'
-        version: 10.0.1(eslint@10.12.0(jiti@2.6.1)(supports-color@7.2.0))
       '@prisma/client':
         specifier: 'catalog:'
         version: 5.22.0(prisma@5.22.0)
-      '@rollup/plugin-typescript':
-        specifier: 'catalog:'
-        version: 12.3.0(rollup@4.64.0)(tslib@2.8.1)(typescript@6.0.3)
       '@types/node':
         specifier: 'catalog:'
         version: 26.6.4
@@ -524,12 +467,6 @@ importers:
       eslint:
         specifier: 'catalog:'
         version: 10.12.0(jiti@2.6.1)(supports-color@7.2.0)
-      eslint-config-prettier:
-        specifier: 'catalog:'
-        version: 10.1.8(eslint@10.12.0(jiti@2.6.1)(supports-color@7.2.0))
-      fast-glob:
-        specifier: 'catalog:'
-        version: 3.3.3
       npm-run-all2:
         specifier: 'catalog:'
         version: 8.0.4
@@ -539,36 +476,30 @@ importers:
       prisma:
         specifier: 'catalog:'
         version: 5.22.0
+      replace-in-files-cli:
+        specifier: 'catalog:'
+        version: 3.0.0
       rimraf:
         specifier: 'catalog:'
         version: 6.1.3
-      rollup:
+      rolldown:
         specifier: 'catalog:'
-        version: 4.64.0
+        version: 1.2.12
       tiny-invariant:
         specifier: 'catalog:'
         version: 1.3.3
       ts-node-dev:
         specifier: 'catalog:'
         version: 2.0.0(@types/node@26.6.4)(typescript@6.0.3)
-      tslib:
-        specifier: 'catalog:'
-        version: 2.8.1
       tsx:
         specifier: 'catalog:'
         version: 4.23.15
       typescript:
         specifier: 'catalog:'
         version: 6.0.3
-      typescript-eslint:
-        specifier: 'catalog:'
-        version: 8.71.1(eslint@10.12.0(jiti@2.6.1)(supports-color@7.2.0))(supports-color@7.2.0)(typescript@6.0.3)
       vitest:
         specifier: 'catalog:'
         version: 4.1.11(@types/node@26.6.4)(@vitest/coverage-v8@4.1.11)(vite@6.4.4(@types/node@26.6.4)(jiti@2.6.1)(tsx@4.23.15)(yaml@2.9.1))
-      yaml:
-        specifier: 'catalog:'
-        version: 2.9.1
 
   algokit-subscriber-ts/docs:
     dependencies:
@@ -593,16 +524,6 @@ importers:
       typedoc-plugin-markdown:
         specifier: 'catalog:'
         version: 4.13.1(typedoc@0.28.20(typescript@5.9.3))
-    devDependencies:
-      '@types/mdast':
-        specifier: 'catalog:'
-        version: 4.0.4
-      tsx:
-        specifier: 'catalog:'
-        version: 4.23.15
-      unist-util-visit:
-        specifier: 'catalog:'
-        version: 5.1.0
 
   algokit-utils-ts:
     dependencies:
@@ -616,12 +537,6 @@ importers:
       '@algorandfoundation/tealscript':
         specifier: 'catalog:'
         version: 0.107.2
-      '@eslint/js':
-        specifier: 'catalog:'
-        version: 10.0.1(eslint@10.12.0(jiti@2.6.1)(supports-color@7.2.0))
-      '@tsconfig/node22':
-        specifier: 'catalog:'
-        version: 22.0.6
       '@types/json-bigint':
         specifier: 'catalog:'
         version: 1.0.4
@@ -631,33 +546,15 @@ importers:
       '@types/uuid':
         specifier: 'catalog:'
         version: 10.0.0
-      '@typescript-eslint/eslint-plugin':
-        specifier: 'catalog:'
-        version: 8.71.1(@typescript-eslint/parser@8.71.1(eslint@10.12.0(jiti@2.6.1)(supports-color@7.2.0))(supports-color@7.2.0)(typescript@6.0.3))(eslint@10.12.0(jiti@2.6.1)(supports-color@7.2.0))(supports-color@7.2.0)(typescript@6.0.3)
       '@vitest/coverage-v8':
         specifier: 'catalog:'
         version: 4.1.11(vitest@4.1.11)
       cpy-cli:
         specifier: 'catalog:'
         version: 7.0.0
-      dotenv-cli:
-        specifier: 'catalog:'
-        version: 7.4.4
       eslint:
         specifier: 'catalog:'
         version: 10.12.0(jiti@2.6.1)(supports-color@7.2.0)
-      eslint-config-prettier:
-        specifier: 'catalog:'
-        version: 10.1.8(eslint@10.12.0(jiti@2.6.1)(supports-color@7.2.0))
-      eslint-plugin-unused-imports:
-        specifier: 'catalog:'
-        version: 4.4.1(@typescript-eslint/eslint-plugin@8.71.1(@typescript-eslint/parser@8.71.1(eslint@10.12.0(jiti@2.6.1)(supports-color@7.2.0))(supports-color@7.2.0)(typescript@6.0.3))(eslint@10.12.0(jiti@2.6.1)(supports-color@7.2.0))(supports-color@7.2.0)(typescript@6.0.3))(eslint@10.12.0(jiti@2.6.1)(supports-color@7.2.0))
-      fast-glob:
-        specifier: 'catalog:'
-        version: 3.3.3
-      magic-string:
-        specifier: 'catalog:'
-        version: 0.30.21
       npm-run-all2:
         specifier: 'catalog:'
         version: 8.0.4
@@ -676,18 +573,12 @@ importers:
       tiny-invariant:
         specifier: 'catalog:'
         version: 1.3.3
-      ts-node:
-        specifier: 'catalog:'
-        version: 10.9.2(@types/node@26.6.4)(typescript@6.0.3)
       tsx:
         specifier: 'catalog:'
         version: 4.23.15
       typescript:
         specifier: 'catalog:'
         version: 6.0.3
-      typescript-eslint:
-        specifier: 'catalog:'
-        version: 8.71.1(eslint@10.12.0(jiti@2.6.1)(supports-color@7.2.0))(supports-color@7.2.0)(typescript@6.0.3)
       uuid:
         specifier: 'catalog:'
         version: 14.0.2
@@ -697,9 +588,6 @@ importers:
       vitest-fetch-mock:
         specifier: 'catalog:'
         version: 0.4.5(vitest@4.1.11)
-      yaml:
-        specifier: 'catalog:'
-        version: 2.9.1
     publishDirectory: dist
 
   algokit-utils-ts/docs:
@@ -725,13 +613,54 @@ importers:
       typedoc-plugin-markdown:
         specifier: 'catalog:'
         version: 4.13.1(typedoc@0.28.20(typescript@5.9.3))
+
+  tooling:
     devDependencies:
+      '@eslint/js':
+        specifier: 'catalog:'
+        version: 10.0.1(eslint@10.12.0(jiti@2.6.1)(supports-color@7.2.0))
+      '@tsconfig/node22':
+        specifier: 'catalog:'
+        version: 22.0.6
       '@types/mdast':
         specifier: 'catalog:'
         version: 4.0.4
+      '@types/node':
+        specifier: 'catalog:'
+        version: 26.6.4
+      eslint:
+        specifier: 'catalog:'
+        version: 10.12.0(jiti@2.6.1)(supports-color@7.2.0)
+      eslint-config-prettier:
+        specifier: 'catalog:'
+        version: 10.1.8(eslint@10.12.0(jiti@2.6.1)(supports-color@7.2.0))
+      eslint-plugin-unused-imports:
+        specifier: 'catalog:'
+        version: 4.4.1(@typescript-eslint/eslint-plugin@8.71.1(@typescript-eslint/parser@8.71.1(eslint@10.12.0(jiti@2.6.1)(supports-color@7.2.0))(supports-color@7.2.0)(typescript@6.0.3))(eslint@10.12.0(jiti@2.6.1)(supports-color@7.2.0))(supports-color@7.2.0)(typescript@6.0.3))(eslint@10.12.0(jiti@2.6.1)(supports-color@7.2.0))
+      fast-glob:
+        specifier: 'catalog:'
+        version: 3.3.3
+      prettier:
+        specifier: 'catalog:'
+        version: 3.9.9
+      rolldown:
+        specifier: 'catalog:'
+        version: 1.2.12
+      typescript:
+        specifier: 'catalog:'
+        version: 6.0.3
+      typescript-eslint:
+        specifier: 'catalog:'
+        version: 8.71.1(eslint@10.12.0(jiti@2.6.1)(supports-color@7.2.0))(supports-color@7.2.0)(typescript@6.0.3)
       unist-util-visit:
         specifier: 'catalog:'
         version: 5.1.0
+      vitest:
+        specifier: 'catalog:'
+        version: 4.1.11(@types/node@26.6.4)(@vitest/coverage-v8@4.1.11)(vite@6.4.4(@types/node@26.6.4)(jiti@2.6.1)(tsx@4.23.15)(yaml@2.9.1))
+      yaml:
+        specifier: 'catalog:'
+        version: 2.9.1
 
 packages:
 
@@ -1438,37 +1367,6 @@ packages:
   '@rolldown/pluginutils@1.0.1':
     resolution: {integrity: sha512-2j9bGt5Jh8hj+vPtgzPtl72j0yRxHAyumoo6TNfAjsLB04UtpSvPbPcDcBMxz7n+9CYB0c1GxQFxYRg2jimqGw==}
 
-  '@rollup/plugin-json@6.1.0':
-    resolution: {integrity: sha512-EGI2te5ENk1coGeADSIwZ7G2Q8CJS2sF120T7jLw4xFw9n7wIOXHo+kIYRAoVpJAN+kmqZSoO3Fp4JtoNF4ReA==}
-    engines: {node: '>=14.0.0'}
-    peerDependencies:
-      rollup: ^1.20.0||^2.0.0||^3.0.0||^4.0.0
-    peerDependenciesMeta:
-      rollup:
-        optional: true
-
-  '@rollup/plugin-node-resolve@16.0.3':
-    resolution: {integrity: sha512-lUYM3UBGuM93CnMPG1YocWu7X802BrNF3jW2zny5gQyLQgRFJhV1Sq0Zi74+dh/6NBx1DxFC4b4GXg9wUCG5Qg==}
-    engines: {node: '>=14.0.0'}
-    peerDependencies:
-      rollup: ^2.78.0||^3.0.0||^4.0.0
-    peerDependenciesMeta:
-      rollup:
-        optional: true
-
-  '@rollup/plugin-typescript@12.3.0':
-    resolution: {integrity: sha512-7DP0/p7y3t67+NabT9f8oTBFE6gGkto4SA6Np2oudYmZE/m1dt8RB0SjL1msMxFpLo631qjRCcBlAbq1ml/Big==}
-    engines: {node: '>=14.0.0'}
-    peerDependencies:
-      rollup: ^2.14.0||^3.0.0||^4.0.0
-      tslib: '*'
-      typescript: '>=3.7.0'
-    peerDependenciesMeta:
-      rollup:
-        optional: true
-      tslib:
-        optional: true
-
   '@rollup/pluginutils@5.4.0':
     resolution: {integrity: sha512-MfPp06CjRLfXQ3wY0R8vJDYBy/MvVcc9OulEfR0B8Iv9ko+GCNaRZ+EpJYFl27LhKsZK0o420sYCRHCjfCgeUg==}
     engines: {node: '>=14.0.0'}
@@ -1732,9 +1630,6 @@ packages:
 
   '@types/normalize-package-data@2.4.4':
     resolution: {integrity: sha512-37i+OaWTh9qeK4LSHPsyRC7NahnGotNuZvjLSgcPzblpHB3rrCJxAOgI5gCdKm7coonsaX1Of0ILiTcnZjbfxA==}
-
-  '@types/resolve@1.20.2':
-    resolution: {integrity: sha512-60BCwRFOZCQhDncwQdxxeOEEkbc5dIMccYLwbxsS4TUNeVECQ/pBJ0j09mrHOl/JJvpRPGwO9SvE4nR2Nb/a4Q==}
 
   '@types/sax@1.2.7':
     resolution: {integrity: sha512-rO73L89PJxeYM3s3pPPjiPgVVcymqU490g0YO5n5By0k2Erzj6tay/4lr1CHAAU4JyOWd1rpQ8bCf6cZfHU96A==}
@@ -2186,10 +2081,6 @@ packages:
   deep-is@0.1.4:
     resolution: {integrity: sha512-oIPzksmTg4/MriiaYGO+okXDT7ztn/w3Eptv/+gSIdMdKsJo0u4CfYNFJPy+4SKMuCqGw2wxnA+URMg3t8a/bQ==}
 
-  deepmerge@4.3.1:
-    resolution: {integrity: sha512-3sUqbMEc77XqpdNO7FRyRog+eW3ph+GYCbj+rK+uYyRMuwsVy0rMiVtPn+QJlKFvWP/1PYpapqYn0Me2knFn+A==}
-    engines: {node: '>=0.10.0'}
-
   defu@6.1.7:
     resolution: {integrity: sha512-7z22QmUWiQ/2d0KkdYmANbRUVABpZ9SNYyH5vx6PZ+nE5bcC0l7uFvEfHlyld/HcGBFTL536ClDt3DEcSlEJAQ==}
 
@@ -2280,9 +2171,6 @@ packages:
 
   emoji-regex@9.2.2:
     resolution: {integrity: sha512-L18DaJsXSUk2+42pv8mLs5jJT2hqFkFE4j21wOmgbUqsZ2hL72NsUU785g9RXgo3s0ZNgVl42TiHp3ZtOv/Vyg==}
-
-  end-of-stream@1.4.5:
-    resolution: {integrity: sha512-ooEGc6HP26xXq/N+GCGOT0JKCLDGrq2bQUZrQ7gyrJiZANJ/8YDTxTpQBXGMn+WbIQXNVpyWymm7KYVICQnyOg==}
 
   entities@4.5.0:
     resolution: {integrity: sha512-V0hjH4dGPh9Ao5p0MoRY6BVqtwCjhz6vI5LT8AJ55H+4g9/4vbHx1I54fS0XuclLhDHArPQCiMjDxjaL8fPxhw==}
@@ -2415,10 +2303,6 @@ packages:
   eventemitter3@5.0.4:
     resolution: {integrity: sha512-mlsTRyGaPBjPedk6Bvw+aqbsXDtoAyAzm5MO7JgU+yVRyMQ5O8bD4Kcci7BS85f93veegeCPkL8R4GLClnjLFw==}
 
-  execa@1.0.0:
-    resolution: {integrity: sha512-adbxcyWV46qiHyvSp50TKt05tB4tK3HcmF7/nxfAdhnox83seTDbwnaqKO4sXRy7roHAIFqJP/Rw/AuEbX61LA==}
-    engines: {node: '>=6'}
-
   expect-type@1.4.0:
     resolution: {integrity: sha512-KfYbmpRm0VbLjEvVa9yGwCi9GI34xvi7A/HXYWQO65CSD2u3MczUJSuwXKFIxlGsgBQizV9q5J9NHj4VG0n+pA==}
     engines: {node: '>=12.0.0'}
@@ -2504,10 +2388,6 @@ packages:
   get-east-asian-width@1.7.0:
     resolution: {integrity: sha512-XjH1AECxf0giL2V1aU8vKyRR2ppRUb5c0EvT7zuJTokQ74bNo52zOtghqdWIqrhUD79fo3x0WfKZdOqxF6LG1Q==}
     engines: {node: '>=18'}
-
-  get-stream@4.1.0:
-    resolution: {integrity: sha512-GMat4EJ5161kIy2HevLlr4luNjBgvmj413KaQA7jt4V8B4RDsfpHk7WQ9GVqfYyyx8OS/L66Kox+rJRNklLK7w==}
-    engines: {node: '>=6'}
 
   github-slugger@2.0.0:
     resolution: {integrity: sha512-IaOQ9puYtjrkq7Y0Ygl9KDZnrf/aiUJYUpVf89y8kyaxbRG7Y1SrX/jaumrv81vc61+kiMempujsM3Yw7w5qcw==}
@@ -2693,10 +2573,6 @@ packages:
   inline-style-parser@0.2.7:
     resolution: {integrity: sha512-Nb2ctOyNR8DqQoR0OwRG95uNWIC0C1lCgf5Naz5H6Ji72KZ8OcFZLz2P5sNgwlyoJ8Yif11oMuYs5pBQa86csA==}
 
-  interpret@1.4.0:
-    resolution: {integrity: sha512-agE4QfB2Lkp9uICn7BAqoscw4SZP9kTE2hxiFI3jBPmXJfdqiahTbUuKGsMoN2GtqL9AxhYioAcVvgsb1HvRbA==}
-    engines: {node: '>= 0.10'}
-
   iron-webcrypto@1.2.1:
     resolution: {integrity: sha512-feOM6FaSr6rEABp/eDfVseKyTMDt+KGpeB35SkVn9Tyn0CqvVsY3EwI0v5i8nMHyJnzCIQf7nsy3p41TPkJZhg==}
 
@@ -2749,9 +2625,6 @@ packages:
     engines: {node: '>=14.16'}
     hasBin: true
 
-  is-module@1.0.0:
-    resolution: {integrity: sha512-51ypPSPCoTEIN9dy5Oy+h4pShgJmPCygKfyRCISBI+JoWT/2oJvK8QPxmwv7b/p239jXrm9M1mlQbyKJ5A152g==}
-
   is-number@7.0.0:
     resolution: {integrity: sha512-41Cifkg6e8TylSpdtTpeLVMqvSBEVzTttHvERD741+pnZ8ANv0004MRL43QKPDlK9cGvNp6NZWZUBlbGXYxxng==}
     engines: {node: '>=0.12.0'}
@@ -2767,10 +2640,6 @@ packages:
   is-plain-obj@4.1.0:
     resolution: {integrity: sha512-+Pgi+vMuUNkJyExiMBt5IlFoMyKnr5zhJ4Uspz58WOhBF5QoIZkFyNHIbBAtHwzVAgk5RtndVNsDRN61/mmDqg==}
     engines: {node: '>=12'}
-
-  is-stream@1.1.0:
-    resolution: {integrity: sha512-uQPm8kcs47jx38atAcWTVxyltQYoPT68y9aWYdV6yWXSyW8mzSat0TL6CiWdZeCdF3KrAvpVtnHbTv4RN+rqdQ==}
-    engines: {node: '>=0.10.0'}
 
   is-unicode-supported@0.1.0:
     resolution: {integrity: sha512-knxG2q4UC3u8stRGyAVJCOdxFmv5DZiRcdlIaAQXAbSfJya+OhopNotLQrstBhququ4ZpuKbDc/8S6mgXgPFPw==}
@@ -3248,10 +3117,6 @@ packages:
     engines: {node: ^20.5.0 || >=22.0.0, npm: '>= 10'}
     hasBin: true
 
-  npm-run-path@2.0.2:
-    resolution: {integrity: sha512-lJxZYlT4DW/bRUtFh1MQIWqmLwQfAxnqWG4HhEdjMlkrJYnJn0Jrr2u3mgxqaWsdiBc76TYkTG/mhrnYTuzfHw==}
-    engines: {node: '>=4'}
-
   nth-check@2.1.1:
     resolution: {integrity: sha512-lqjrjmaOoAnWfMmBPL+XNnynZh2+swxiX3WUE0s4yEHI6m+AwrK2UZOimIRl3X/4QctVqS8AiZjFqyOGrMXb/w==}
 
@@ -3285,10 +3150,6 @@ packages:
   p-filter@4.1.0:
     resolution: {integrity: sha512-37/tPdZ3oJwHaS3gNJdenCDB3Tz26i9sjhnguBtvN0vYlRIiDNnvTWkuh+0hETV9rLPdJ3rlL3yVOYPIAnM8rw==}
     engines: {node: '>=18'}
-
-  p-finally@1.0.0:
-    resolution: {integrity: sha512-LICb2p9CB7FS+0eR1oqWnHhp0FljGLZCWBE9aix0Uye9W8LTQPwMTYVGWQWIw9RdQiDg4+epXQODwIYJtSJaow==}
-    engines: {node: '>=4'}
 
   p-limit@2.3.0:
     resolution: {integrity: sha512-//88mFWSJx8lxCzwdAABTJL2MyWB12+eIY7MDL2SqLmAkeKU9qxRvWuSyTjm3FUmpBEMuFfckAIqEaVGUDxb6w==}
@@ -3359,10 +3220,6 @@ packages:
   path-is-absolute@1.0.1:
     resolution: {integrity: sha512-AVbw3UJ2e9bq64vSaS9Am0fje1Pa8pbGqTTsmXfaIiMpnr5DlDhfJOuLj9Sf95ZPVDAUerDfEk88MPmPe7UCQg==}
     engines: {node: '>=0.10.0'}
-
-  path-key@2.0.1:
-    resolution: {integrity: sha512-fEHGKCSmUSDPv4uoj8AlD+joPlq3peND+HRYyxFz4KPw4z926S/b8rIuFs2FYJg3BwsxJf6A9/3eIdLaYC+9Dw==}
-    engines: {node: '>=4'}
 
   path-key@3.1.1:
     resolution: {integrity: sha512-ojmeN0qd+y0jszEtoY48r0Peq5dwMEkIlCOu6Q5f41lfkswXuKtYrhgoTpLnyIcHm24Uhqx+5Tqm2InSwLhE6Q==}
@@ -3466,9 +3323,6 @@ packages:
   property-information@7.2.0:
     resolution: {integrity: sha512-IAtzIB6sUiWaJYrX9smp3V46pBGbBeLFRGdh25kg1334VcBlD8HzhPeNIWQH9zhGmo2itIe25EHt9dQP7G5hmg==}
 
-  pump@3.0.4:
-    resolution: {integrity: sha512-VS7sjc6KR7e1ukRFhQSY5LM2uBWAUPiOPa/A3mkKmiMwSmRFUITt0xuj+/lesgnCv+dPIEYlkzrcyXgquIHMcA==}
-
   punycode.js@2.3.1:
     resolution: {integrity: sha512-uxFIHU0YlHYhDQtV4R9J6a52SLx28BCjT+4ieh7IGbgwVJWO+km431c4yRlREUAsAmt/uMjQUyQHNEPf0M39CA==}
     engines: {node: '>=6'}
@@ -3513,10 +3367,6 @@ packages:
   readdirp@5.1.1:
     resolution: {integrity: sha512-Kko+Y5XQ6fM+Ce3dq3m9YGxnacYZYl9cA1wZjaF3Vbry2L3i1qVg8+CAgNPsXRArPMUMCaOR7oa9Nqntc43JKA==}
     engines: {node: '>= 20.19.0'}
-
-  rechoir@0.6.2:
-    resolution: {integrity: sha512-HFM8rkZ+i3zrV+4LQjwQ0W+ez98pApMGM3HUrN04j3CqzPOzl9nmP15Y8YXNm8QHGv/eacOVEjqhmWpkRV0NAw==}
-    engines: {node: '>= 0.10'}
 
   recma-build-jsx@1.0.0:
     resolution: {integrity: sha512-8GtdyqaBcDfva+GUKDr3nev3VpKAhup1+RvkMvUxURHpW7QyIvk9F5wz7Vzo06CEMSilw6uArgRqhpiUcWp8ew==}
@@ -3672,24 +3522,11 @@ packages:
     resolution: {integrity: sha512-PcByqNyT/38F2kDNi006HAMRJaULuBzq/FOsw3qdZvX/GA9W/jamDaRskgHjubHiftXK5sIFxLNkvrXUwcof6Q==}
     engines: {node: '>= 0.4'}
 
-  shelljs@0.9.2:
-    resolution: {integrity: sha512-S3I64fEiKgTZzKCC46zT/Ib9meqofLrQVbpSswtjFfAVDW+AZ54WTnAM/3/yENoxz/V1Cy6u3kiiEbQ4DNphvw==}
-    engines: {node: '>=18'}
-    hasBin: true
-
   shiki@3.23.0:
     resolution: {integrity: sha512-55Dj73uq9ZXL5zyeRPzHQsK7Nbyt6Y10k5s7OjuFZGMhpp4r/rsLBH0o/0fstIzX1Lep9VxefWljK/SKCzygIA==}
 
-  shx@0.4.0:
-    resolution: {integrity: sha512-Z0KixSIlGPpijKgcH6oCMCbltPImvaKy0sGH8AkLRXw1KyzpKtaCTizP2xen+hNDqVF4xxgvA0KXSb9o4Q6hnA==}
-    engines: {node: '>=18'}
-    hasBin: true
-
   siginfo@2.0.0:
     resolution: {integrity: sha512-ybx0WO1/8bSBLEWXZvEd7gMW3Sn3JFlW3TvX1nREbDLRNQNaeNN8WK0meBwPdAaOI7TtRRRJn/Es1zhrrCHu7g==}
-
-  signal-exit@3.0.7:
-    resolution: {integrity: sha512-wnD2ZE+l+SPC/uoS0vXeE9L1+0wuaMqKlfz9AMUo38JsyLSBWSFcHR1Rri62LZc12vLr1gb3jl7iwQhgwpAbGQ==}
 
   signal-exit@4.1.0:
     resolution: {integrity: sha512-bzyZ1e88w9O1iNJbKnOlvYTrWPDl46O1bG0D3XInv+9tkPrxrN8jUUTiFlDkkmKWgn1M6CfIA13SuGqOa9Korw==}
@@ -3785,10 +3622,6 @@ packages:
   strip-bom@3.0.0:
     resolution: {integrity: sha512-vavAMRXOgBVNF6nyEEmL3DBK19iRpDcoIwW+swQ+CbGiu7lju6t+JklA1MHweoWtadgt4ISVUsXLyDq34ddcwA==}
     engines: {node: '>=4'}
-
-  strip-eof@1.0.0:
-    resolution: {integrity: sha512-7FCwGGmx8mD5xQd3RPUvnSpUXHM3BWuzjtpD4TXsfcZ9EL4azvVVUscFYwD9nx8Kh+uCBC00XBtAykoMHwTh8Q==}
-    engines: {node: '>=0.10.0'}
 
   strip-indent@3.0.0:
     resolution: {integrity: sha512-laJTa3Jb+VQpaC6DseHhF7dXVqHTfJPCRDaEbid/drOhgitgYku/letMUqOXFoWV0zIIUbjpdH2t+tYj4bQMRQ==}
@@ -4981,31 +4814,6 @@ snapshots:
 
   '@rolldown/pluginutils@1.0.1': {}
 
-  '@rollup/plugin-json@6.1.0(rollup@4.64.0)':
-    dependencies:
-      '@rollup/pluginutils': 5.4.0(rollup@4.64.0)
-    optionalDependencies:
-      rollup: 4.64.0
-
-  '@rollup/plugin-node-resolve@16.0.3(rollup@4.64.0)':
-    dependencies:
-      '@rollup/pluginutils': 5.4.0(rollup@4.64.0)
-      '@types/resolve': 1.20.2
-      deepmerge: 4.3.1
-      is-module: 1.0.0
-      resolve: 1.22.12
-    optionalDependencies:
-      rollup: 4.64.0
-
-  '@rollup/plugin-typescript@12.3.0(rollup@4.64.0)(tslib@2.8.1)(typescript@6.0.3)':
-    dependencies:
-      '@rollup/pluginutils': 5.4.0(rollup@4.64.0)
-      resolve: 1.22.12
-      typescript: 6.0.3
-    optionalDependencies:
-      rollup: 4.64.0
-      tslib: 2.8.1
-
   '@rollup/pluginutils@5.4.0(rollup@4.64.0)':
     dependencies:
       '@types/estree': 1.0.9
@@ -5208,8 +5016,6 @@ snapshots:
       undici-types: 8.9.0
 
   '@types/normalize-package-data@2.4.4': {}
-
-  '@types/resolve@1.20.2': {}
 
   '@types/sax@1.2.7':
     dependencies:
@@ -5777,8 +5583,6 @@ snapshots:
 
   deep-is@0.1.4: {}
 
-  deepmerge@4.3.1: {}
-
   defu@6.1.7: {}
 
   dequal@2.0.3: {}
@@ -5853,10 +5657,6 @@ snapshots:
   emoji-regex@8.0.0: {}
 
   emoji-regex@9.2.2: {}
-
-  end-of-stream@1.4.5:
-    dependencies:
-      once: 1.4.0
 
   entities@4.5.0: {}
 
@@ -6044,16 +5844,6 @@ snapshots:
 
   eventemitter3@5.0.4: {}
 
-  execa@1.0.0:
-    dependencies:
-      cross-spawn: 7.0.6
-      get-stream: 4.1.0
-      is-stream: 1.1.0
-      npm-run-path: 2.0.2
-      p-finally: 1.0.0
-      signal-exit: 3.0.7
-      strip-eof: 1.0.0
-
   expect-type@1.4.0: {}
 
   expressive-code@0.41.7:
@@ -6136,10 +5926,6 @@ snapshots:
   function-bind@1.1.2: {}
 
   get-east-asian-width@1.7.0: {}
-
-  get-stream@4.1.0:
-    dependencies:
-      pump: 3.0.4
 
   github-slugger@2.0.0: {}
 
@@ -6465,8 +6251,6 @@ snapshots:
 
   inline-style-parser@0.2.7: {}
 
-  interpret@1.4.0: {}
-
   iron-webcrypto@1.2.1: {}
 
   irregular-plurals@3.5.0: {}
@@ -6506,8 +6290,6 @@ snapshots:
     dependencies:
       is-docker: 3.0.0
 
-  is-module@1.0.0: {}
-
   is-number@7.0.0: {}
 
   is-path-inside@4.0.0: {}
@@ -6515,8 +6297,6 @@ snapshots:
   is-plain-obj@1.1.0: {}
 
   is-plain-obj@4.1.0: {}
-
-  is-stream@1.1.0: {}
 
   is-unicode-supported@0.1.0: {}
 
@@ -7267,10 +7047,6 @@ snapshots:
       shell-quote: 1.12.0
       which: 5.0.0
 
-  npm-run-path@2.0.2:
-    dependencies:
-      path-key: 2.0.1
-
   nth-check@2.1.1:
     dependencies:
       boolbase: 1.0.0
@@ -7313,8 +7089,6 @@ snapshots:
   p-filter@4.1.0:
     dependencies:
       p-map: 7.0.8
-
-  p-finally@1.0.0: {}
 
   p-limit@2.3.0:
     dependencies:
@@ -7397,8 +7171,6 @@ snapshots:
 
   path-is-absolute@1.0.1: {}
 
-  path-key@2.0.1: {}
-
   path-key@3.1.1: {}
 
   path-parse@1.0.7: {}
@@ -7480,11 +7252,6 @@ snapshots:
 
   property-information@7.2.0: {}
 
-  pump@3.0.4:
-    dependencies:
-      end-of-stream: 1.4.5
-      once: 1.4.0
-
   punycode.js@2.3.1: {}
 
   punycode@2.3.1: {}
@@ -7524,10 +7291,6 @@ snapshots:
       picomatch: 4.0.7
 
   readdirp@5.1.1: {}
-
-  rechoir@0.6.2:
-    dependencies:
-      resolve: 1.22.12
 
   recma-build-jsx@1.0.0:
     dependencies:
@@ -7831,13 +7594,6 @@ snapshots:
 
   shell-quote@1.12.0: {}
 
-  shelljs@0.9.2:
-    dependencies:
-      execa: 1.0.0
-      fast-glob: 3.3.3
-      interpret: 1.4.0
-      rechoir: 0.6.2
-
   shiki@3.23.0:
     dependencies:
       '@shikijs/core': 3.23.0
@@ -7849,14 +7605,7 @@ snapshots:
       '@shikijs/vscode-textmate': 10.0.2
       '@types/hast': 3.0.5
 
-  shx@0.4.0:
-    dependencies:
-      minimist: 1.2.8
-      shelljs: 0.9.2
-
   siginfo@2.0.0: {}
-
-  signal-exit@3.0.7: {}
 
   signal-exit@4.1.0: {}
 
@@ -7945,8 +7694,6 @@ snapshots:
       ansi-regex: 6.4.0
 
   strip-bom@3.0.0: {}
-
-  strip-eof@1.0.0: {}
 
   strip-indent@3.0.0:
     dependencies:
@@ -8078,7 +7825,8 @@ snapshots:
       path-exists: 4.0.0
       read-pkg-up: 7.0.1
 
-  tslib@2.8.1: {}
+  tslib@2.8.1:
+    optional: true
 
   tsx@4.23.15:
     dependencies:

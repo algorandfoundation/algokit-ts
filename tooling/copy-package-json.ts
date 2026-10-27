@@ -39,6 +39,7 @@ const standardSectionWhitelist = [
   'publishConfig',
 ]
 
+// Run from a package directory (`tsx ../tooling/copy-package-json.ts`); writes that package's dist/package.json
 const inputFolder = '.'
 const outputFolder = join('.', 'dist')
 const main = 'index.js'

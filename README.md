@@ -35,6 +35,23 @@ pnpm --filter ./algokit-utils-ts add -D vitest@3   # fails: outside the catalog'
 
 To upgrade a dependency, change its version in the catalog and run `pnpm install`. Every package that uses it moves together. `peerDependencies` are the exception: they stay as ranges in each `package.json`.
 
+### Shared tooling
+
+The packages share one build, lint, test and docs setup, based on `algokit-utils-ts`'s. It lives in `tooling/`, a private workspace package (`algokit-tooling`, never published) that owns the dependencies its files import:
+
+| File | Used by |
+| ----------------------------------------- | ------------------------------------------------------------------------------------------------- |
+| `tsconfig.base.json` | Each package's `tsconfig.json` extends it |
+| `rolldown.ts` | Each package's `rolldown.config.ts`: ESM and CJS output with preserved modules, dependencies and peer dependencies left external |
+| `copy-package-json.ts` | Each package's build: writes `dist/package.json` |
+| `eslint.base.mjs` | Each package's `eslint.config.mjs` |
+| `vitest.base.ts` | Each package's `vitest.config.ts`, which merges its own options in |
+| `remark-fix-index-urls.ts`, `remark-rebase-links.ts` | The docs sites' `astro.config.mjs` |
+
+`.prettierrc`, `.prettierignore`, `.editorconfig` and the common `.gitignore` entries are at the root. Package-specific ignore paths are listed in the root `.prettierignore` with the package directory as a prefix, and each package's `.gitignore` keeps only its own entries.
+
+Every package builds the same way: `rolldown -c` emits the JS, `tsc --emitDeclarationOnly` emits the declarations, then `copy-package-json.ts`, copying the README and license, rewriting the README's relative links to GitHub, and type-checking the emitted declarations (`tsconfig.dist-check.json`). The client-generator adds generating its schema types and copying `bin/`.
+
 ## Releases
 
 Each package is versioned and released independently with [semfrag](https://github.com/joe-p/semfrag), which replaced semantic-release. The packages share the sections in the root `semfrag.json`. Each package has its own `CHANGELOG.md` and `changelog.d/` directory.
@@ -177,7 +194,7 @@ The packages previously installed each other from npm: client-generator used `@a
 Things that broke and how they were fixed:
 
 - **Packages are published from `dist/`**: utils and client-generator build into `dist/` and releases publish that folder, so the package roots have no `index.js`. Both now set `publishConfig.directory: "dist"` and `publishConfig.linkDirectory: true`, which makes pnpm link dependents to `dist/` rather than the package root. Because of this the dependency has to be built before its dependents are type-checked or tested. On a fresh clone the links dangle until `pnpm run build` runs.
-- **pnpm-only `publishConfig` keys leaking into the published package**: `scripts/copy-package-json.ts` copies `publishConfig` into `dist/package.json`. It now removes `directory` and `linkDirectory`, and removes `publishConfig` entirely if that leaves it empty, so the published `package.json` is the same as before.
+- **pnpm-only `publishConfig` keys leaking into the published package**: `tooling/copy-package-json.ts` (previously a `scripts/copy-package-json.ts` in each package) copies `publishConfig` into `dist/package.json`. It now removes `directory` and `linkDirectory`, and removes `publishConfig` entirely if that leaves it empty, so the published `package.json` is the same as before.
 - **Peer dependency warnings**: workspace packages had placeholder versions (`0.1.0` and `0.0.0`) because semantic-release set the real version when publishing, so peer ranges like `^9.0.0` never matched the linked copy. They now carry their real versions (see [Releases](#releases)), but between stable releases these are prereleases such as `9.2.3-beta.1`, which `^9.0.0` doesn't match either. `peerDependencyRules.allowedVersions` in `pnpm-workspace.yaml` accepts any version of the two linked packages.
 
 ### Dependency catalog
@@ -191,8 +208,8 @@ Each package previously listed its own dependency versions, and shared tools had
 
 Things that broke and how they were fixed:
 
-- **`catalog:` would be published as-is**: releases run `npm publish` on `dist/`. Unlike `pnpm publish`, it doesn't replace `catalog:` with a version, and `scripts/copy-package-json.ts` copies `dependencies` and `peerDependencies` into `dist/package.json` unchanged. The script now reads versions from `pnpm-workspace.yaml` (using `yaml`, a new dev dependency) and fails the build if a catalog entry is missing or a `workspace:` specifier would be published.
-- **TypeScript 6** (utils): `baseUrl` is deprecated and fails the `dist` type check. Nothing depended on it (there are no `paths` or imports relative to the root), so it was removed from `tsconfig.base.json`.
+- **`catalog:` would be published as-is**: releases run `npm publish` on `dist/`. Unlike `pnpm publish`, it doesn't replace `catalog:` with a version, and `copy-package-json.ts` copies `dependencies` and `peerDependencies` into `dist/package.json` unchanged. The script now reads versions from `pnpm-workspace.yaml` (using `yaml`, a new dev dependency) and fails the build if a catalog entry is missing or a `workspace:` specifier would be published.
+- **TypeScript 6** (utils): `baseUrl` is deprecated and fails the `dist` type check. Nothing depended on it (there are no `paths` or imports relative to the root), so it was removed from `tsconfig.base.json` (now `tooling/tsconfig.base.json`).
 - **ESLint 10's recommended rules** (utils): `no-useless-assignment` flagged dead `getAccountConfigFromEnvironment` calls in `getAccount` and an unused `0n` initial value in `assetOptOut`. Both were removed. `preserve-caught-error` flagged the "Fees were too small" error in `AppClient`, which now sets `cause` to the original error.
 - **Prettier 3.9** (subscriber): the subscriber code didn't match Prettier's output even before the upgrade, and formatting isn't checked in CI, so `pnpm run format` would reformat 9 files. They were left unformatted for a separate change.
 
