@@ -6,7 +6,7 @@ The goal of this library is to provide intuitive, productive utility functions t
 
 Note: If you prefer Python there's an equivalent [Python utility library](https://github.com/algorandfoundation/algokit-utils-py).
 
-[Install](#install) | [Documentation](https://joe-p.github.io/algokit-monorepo-ts/utils/)
+[Install](#install) | [Documentation](https://algorandfoundation.github.io/algokit-ts/utils/)
 
 ## Install
 
@@ -39,8 +39,8 @@ See [usage](./docs/README.md#usage) for more details.
 Whilst we aim to minimise breaking changes, there are situations where they are required.
 JSDoc deprecations should guide you through most migration paths inside your IDE, however the migration guides will provide more detailed information should you need it.
 
-If you're targetting v7, please refer to the [v7 migration guide](https://joe-p.github.io/algokit-monorepo-ts/utils/migration/v7-migration/).
-If you're targetting v8, please refer to the [v8 migration guide](https://joe-p.github.io/algokit-monorepo-ts/utils/migration/v8-migration/).
+If you're targetting v7, please refer to the [v7 migration guide](https://algorandfoundation.github.io/algokit-ts/utils/migration/v7-migration/).
+If you're targetting v8, please refer to the [v8 migration guide](https://algorandfoundation.github.io/algokit-ts/utils/migration/v8-migration/).
 
 ## Guiding principles
 

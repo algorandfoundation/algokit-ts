@@ -115,22 +115,21 @@ jobs:
           git-user-email: 179917785+engineering-ci[bot]@users.noreply.github.com
           token: ${{ steps.app_token.outputs.token }}
 
-      # TODO: re-enable npm publishing once the pipeline has been tested.
-      # # Prereleases keep the `main` dist-tag that semantic-release published
-      # # betas from main under.
-      # - name: Publish to npm
-      #   if: steps.semfrag.outputs.released == 'true'
-      #   working-directory: ${{ inputs.package }}
-      #   env:
-      #     VERSION: ${{ steps.semfrag.outputs.version }}
-      #     DIST_TAG: ${{ inputs.prerelease && 'main' || 'latest' }}
-      #   run: |
-      #     name="$(npm pkg get name | tr -d '"')"
-      #     if npm view "${name}@${VERSION}" version >/dev/null 2>&1; then
-      #       echo "${name}@${VERSION} is already published."
-      #     else
-      #       npm publish ./dist --tag "${DIST_TAG}" --access public
-      #     fi
+      # Prereleases keep the `main` dist-tag that semantic-release published
+      # betas from main under.
+      - name: Publish to npm
+        if: steps.semfrag.outputs.released == 'true'
+        working-directory: ${{ inputs.package }}
+        env:
+          VERSION: ${{ steps.semfrag.outputs.version }}
+          DIST_TAG: ${{ inputs.prerelease && 'main' || 'latest' }}
+        run: |
+          name="$(npm pkg get name | tr -d '"')"
+          if npm view "${name}@${VERSION}" version >/dev/null 2>&1; then
+            echo "${name}@${VERSION} is already published."
+          else
+            npm publish ./dist --tag "${DIST_TAG}" --access public
+          fi
 
       - name: Roll back failed release
         if: failure() || cancelled()

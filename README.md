@@ -98,12 +98,12 @@ The docs workflow (`.github/workflows/pages.yml`) runs on every push to `main` a
 Each site reads its URL from environment variables, set by the workflow from `actions/configure-pages` so the sites work under any repository name or custom domain:
 
 - `DOCS_SITE`: the origin, e.g. `https://algorandfoundation.github.io`.
-- `DOCS_BASE`: the path the site is served under, e.g. `/algokit-monorepo-ts/utils/`.
+- `DOCS_BASE`: the path the site is served under, e.g. `/algokit-ts/utils/`.
 
 Without them the sites fall back to their old standalone paths (`/algokit-utils-ts/` and `/algokit-subscriber-ts/`), so `pnpm run docs:dev` in a package works as before. To build a site the way it's deployed:
 
 ```sh
-DOCS_BASE=/algokit-monorepo-ts/utils/ pnpm --dir algokit-utils-ts run docs:build
+DOCS_BASE=/algokit-ts/utils/ pnpm --dir algokit-utils-ts run docs:build
 ```
 
 To add another package's site, build it with its own `DOCS_BASE` in `pages.yml`, copy its `dist/` into `_site/`, and link it from the landing page.

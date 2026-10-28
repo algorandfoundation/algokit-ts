@@ -7,7 +7,7 @@ import { visit } from 'unist-util-visit'
  *
  * The hand-written docs link to pages with absolute paths such as
  * `/algokit-utils-ts/capabilities/app/`, but the site can be deployed under a
- * different base (e.g. `/algokit-monorepo-ts/utils/` on the combined GitHub
+ * different base (e.g. `/algokit-ts/utils/` on the combined GitHub
  * Pages site).
  */
 export default function remarkRebaseLinks({ from, to }: { from: string; to: string }) {

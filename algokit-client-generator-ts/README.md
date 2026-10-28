@@ -1,6 +1,6 @@
 # AlgoKit TypeScript client generator (algokit-client-generator-ts)
 
-This project generates a type-safe smart contract client in TypeScript for the Algorand Blockchain that wraps the [application client](https://joe-p.github.io/algokit-monorepo-ts/utils/capabilities/app-client/) in [AlgoKit Utils](https://github.com/algorandfoundation/algokit-utils-ts) and tailors it to a specific smart contract. It does this by reading an [ARC-56](https://github.com/algorandfoundation/ARCs/pull/258) or [ARC-32](https://github.com/algorandfoundation/ARCs/blob/main/ARCs/arc-0032.md) application spec file and generating a client which exposes methods for each ABI method in the target smart contract, along with helpers to create, update, and delete the application.
+This project generates a type-safe smart contract client in TypeScript for the Algorand Blockchain that wraps the [application client](https://algorandfoundation.github.io/algokit-ts/utils/capabilities/app-client/) in [AlgoKit Utils](https://github.com/algorandfoundation/algokit-utils-ts) and tailors it to a specific smart contract. It does this by reading an [ARC-56](https://github.com/algorandfoundation/ARCs/pull/258) or [ARC-32](https://github.com/algorandfoundation/ARCs/blob/main/ARCs/arc-0032.md) application spec file and generating a client which exposes methods for each ABI method in the target smart contract, along with helpers to create, update, and delete the application.
 
 ## Usage
 
