@@ -1,223 +1,100 @@
-# AlgoKit TypeScript Monorepo
+# AlgoKit TypeScript
 
-This repository combines the following AlgoKit TypeScript projects into a single monorepo:
+This monorepo contains the core TypeScript libraries and tools for [AlgoKit](https://github.com/algorandfoundation/algokit-cli), making it easier to build, test, deploy, and index applications on the Algorand blockchain.
 
-| Directory | Source repository |
-| ------------------------------ | ------------------------------------------------------------------------ |
-| `algokit-client-generator-ts/` | https://github.com/algorandfoundation/algokit-client-generator-ts |
-| `algokit-subscriber-ts/` | https://github.com/algorandfoundation/algokit-subscriber-ts |
-| `algokit-utils-ts/` | https://github.com/algorandfoundation/algokit-utils-ts |
+## Packages
+
+| Package                                                                                                                      | Directory                                                       | Description                                                                         | Docs                                                                                                              |
+| ---------------------------------------------------------------------------------------------------------------------------- | --------------------------------------------------------------- | ----------------------------------------------------------------------------------- | ----------------------------------------------------------------------------------------------------------------- |
+| [`@algorandfoundation/algokit-utils`](https://www.npmjs.com/package/@algorandfoundation/algokit-utils)                       | [`algokit-utils-ts/`](./algokit-utils-ts)                       | Core Algorand utilities providing a high-level, intuitive interface over `algosdk`. | [Docs](https://algorandfoundation.github.io/algokit-ts/utils/) · [README](./algokit-utils-ts/README.md)           |
+| [`@algorandfoundation/algokit-client-generator`](https://www.npmjs.com/package/@algorandfoundation/algokit-client-generator) | [`algokit-client-generator-ts/`](./algokit-client-generator-ts) | Generates type-safe TypeScript clients for ARC-56 and ARC-32 smart contracts.       | [Usage](./algokit-client-generator-ts/docs/usage.md) · [README](./algokit-client-generator-ts/README.md)          |
+| [`@algorandfoundation/algokit-subscriber`](https://www.npmjs.com/package/@algorandfoundation/algokit-subscriber)             | [`algokit-subscriber-ts/`](./algokit-subscriber-ts)             | Configurable transaction subscription and indexing library for Algorand.            | [Docs](https://algorandfoundation.github.io/algokit-ts/subscriber/) · [README](./algokit-subscriber-ts/README.md) |
+
+Shared build, lint, test, and documentation configuration lives in the private [`tooling/`](./tooling) workspace package (`algokit-tooling`).
+
+## Requirements
+
+- **Node.js**: `>=22.0`
+- **pnpm**: `12.11.2` (pinned via `packageManager` in [`package.json`](./package.json))
+- **[AlgoKit CLI](https://github.com/algorandfoundation/algokit-cli)**: Required to run LocalNet for integration tests (`algokit localnet start`)
 
 ## Development
 
-The monorepo uses [pnpm workspaces](https://pnpm.io/workspaces). The pnpm version is pinned via `packageManager` in the root `package.json`.
+This repository uses [pnpm workspaces](https://pnpm.io/workspaces) with a single root lockfile and a strict dependency catalog in [`pnpm-workspace.yaml`](./pnpm-workspace.yaml).
 
 ```sh
-pnpm install         # install dependencies for every package (single root pnpm-lock.yaml)
-pnpm run build       # build all packages
-pnpm run test        # test all packages (requires `algokit localnet start`)
-pnpm run audit       # audit each package's dependencies
+# Install dependencies across all workspace packages
+pnpm install
 
-pnpm --filter ./algokit-utils-ts run test   # run a script in a single package
+# Build all packages in dependency order (utils -> client-generator -> subscriber)
+pnpm run build
+
+# Run tests across all packages (requires `algokit localnet start`)
+pnpm run test
+
+# Lint, type-check, format, and audit
+pnpm run lint
+pnpm run check-types
+pnpm run format
+pnpm run audit
 ```
 
-Packages that depend on each other use the local copy via `workspace:*`: `algokit-client-generator-ts` uses `algokit-utils-ts`, and `algokit-subscriber-ts` uses both. These links point at each dependency's built `dist/` folder, so run `pnpm run build` after a fresh clone, and after changing a package, before type-checking or testing the packages that depend on it. The root `build` script builds the packages in dependency order.
-
-Workspace-wide settings (the dependency catalog, overrides, `minimumReleaseAge`, allowed build scripts, peer dependency rules and accepted audit findings) live in `pnpm-workspace.yaml`.
-
-Dependency versions are defined once in the `catalog` in `pnpm-workspace.yaml`, and each `package.json` references them with `"<dep>": "catalog:"`. `catalogMode: strict` means you should add and update dependencies with pnpm rather than editing `package.json` by hand:
+To run a script in a single package, use `pnpm --filter`:
 
 ```sh
-pnpm --filter ./algokit-utils-ts add -D some-dep   # adds some-dep to the catalog and writes "catalog:"
-pnpm --filter ./algokit-utils-ts add -D vitest     # already cataloged: writes "catalog:"
-pnpm --filter ./algokit-utils-ts add -D vitest@3   # fails: outside the catalog's range
+pnpm --filter ./algokit-utils-ts run test
+pnpm --filter ./algokit-client-generator-ts run check-types
+pnpm --filter ./algokit-subscriber-ts run lint
 ```
 
-To upgrade a dependency, change its version in the catalog and run `pnpm install`. Every package that uses it moves together. `peerDependencies` are the exception: they stay as ranges in each `package.json`.
+> [!IMPORTANT]
+> Cross-package dependencies (`algokit-client-generator-ts` -> `algokit-utils-ts`, and `algokit-subscriber-ts` -> both) link to each dependency's built `dist/` directory. Run `pnpm run build` after cloning and after modifying an upstream package before type-checking or testing its dependents.
 
-### Shared tooling
+### Managing Dependencies
 
-The packages share one build, lint, test and docs setup, based on `algokit-utils-ts`'s. It lives in `tooling/`, a private workspace package (`algokit-tooling`, never published) that owns the dependencies its files import:
+External dependency versions are centrally managed in the `catalog` in [`pnpm-workspace.yaml`](./pnpm-workspace.yaml) with `catalogMode: strict`. Add or update dependencies using `pnpm` rather than editing `package.json` by hand:
 
-| File | Used by |
-| ----------------------------------------- | ------------------------------------------------------------------------------------------------- |
-| `tsconfig.base.json` | Each package's `tsconfig.json` extends it |
-| `rolldown.ts` | Each package's `rolldown.config.ts`: ESM and CJS output with preserved modules, dependencies and peer dependencies left external |
-| `copy-package-json.ts` | Each package's build: writes `dist/package.json` |
-| `eslint.base.mjs` | Each package's `eslint.config.mjs` |
-| `vitest.base.ts` | Each package's `vitest.config.ts`, which merges its own options in |
-| `remark-fix-index-urls.ts`, `remark-rebase-links.ts` | The docs sites' `astro.config.mjs` |
+```sh
+pnpm --filter ./algokit-utils-ts add -D <pkg>
+```
 
-`.prettierrc`, `.prettierignore`, `.editorconfig` and the common `.gitignore` entries are at the root. Package-specific ignore paths are listed in the root `.prettierignore` with the package directory as a prefix, and each package's `.gitignore` keeps only its own entries.
+### Documentation
 
-Every package builds the same way: `rolldown -c` emits the JS, `tsc --emitDeclarationOnly` emits the declarations, then `copy-package-json.ts`, copying the README and license, rewriting the README's relative links to GitHub, and type-checking the emitted declarations (`tsconfig.dist-check.json`). The client-generator adds generating its schema types and copying `bin/`.
+The documentation sites for `algokit-utils-ts` and `algokit-subscriber-ts` are built with Astro Starlight and deployed together to [GitHub Pages](https://algorandfoundation.github.io/algokit-ts/):
 
-## Releases
+```sh
+# Start a local dev server for a package's docs site
+pnpm --dir algokit-utils-ts run docs:dev
+pnpm --dir algokit-subscriber-ts run docs:dev
 
-Each package is versioned and released independently with [semfrag](https://github.com/joe-p/semfrag), which replaced semantic-release. The packages share the sections in the root `semfrag.json`. Each package has its own `CHANGELOG.md` and `changelog.d/` directory.
+# Build the docs sites
+pnpm --dir algokit-utils-ts run docs:build
+pnpm --dir algokit-subscriber-ts run docs:build
+```
 
-Every change to a package's `src/` needs a fragment in that package's `changelog.d/`. The PR workflow checks for one. A fragment is a markdown file with one or more of the sections from `semfrag.json`:
+## Contributing & Releases
 
-```md
+Each package is versioned and released independently using [semfrag](https://github.com/joe-p/semfrag).
+
+Any pull request that modifies a package's `src/` directory must include a changelog fragment file in that package's `changelog.d/` directory (e.g., `algokit-utils-ts/changelog.d/my-change.md`) containing one or more of the sections defined in [`semfrag.json`](./semfrag.json):
+
+```markdown
 ## Fixes
 
 - Describe the change from the user's point of view
 ```
 
-Fragment sections and the version bump each one triggers:
+| Section            | Version Bump |
+| ------------------ | ------------ |
+| `Breaking Changes` | `major`      |
+| `Features`         | `minor`      |
+| `Fixes`            | `patch`      |
 
-| Section | Bump |
-| ------------------ | ----- |
-| `Breaking Changes` | major |
-| `Features` | minor |
-| `Fixes` | patch |
+- **Beta releases**: Pushing to `main` automatically merges pending fragments into each package's `CHANGELOG.md` and publishes a beta version to npm under the `main` dist-tag.
+- **Stable releases**: Running the [Release workflow](./.github/workflows/release.yml) manually promotes pending beta versions to a stable release on npm under the `latest` dist-tag.
 
-The release workflow (`.github/workflows/release.yml`) runs after CI passes. It releases the packages one at a time, in dependency order: utils, client-generator, then subscriber. Each package with pending fragments is released like this:
+For deeper details on workspace architecture, shared tooling, DevPortal docs publishing, and how the repository history was combined, see [`MONOREPO.md`](./MONOREPO.md).
 
-1. **Push to `main`**: the fragments are merged into the changelog and promoted to the next beta, e.g. `9.2.3-beta.2`, which is published to npm under the `main` dist-tag.
-1. **Manual run** (*Run workflow*, choosing all packages or one): the package's betas are promoted to a stable release, e.g. `9.2.3`, and published under `latest`. This replaces the old `release` branch and *Prod Publish* workflow.
+## License
 
-Each release commits the changelog and the `package.json` version to `main`. It also creates a git tag and a GitHub release named after the package, for example `algokit-utils-v9.2.3`, `algokit-client-generator-v6.0.2` and `algokit-subscriber-v3.4.1`.
-
-Releases start from the exact commit validated by CI. Each package job passes its release commit to the next job; jobs that have nothing to release pass their input commit through unchanged. If unrelated changes advance `main`, the run stops rather than including unvalidated code. A push arriving after the branch check is also protected by the release action's non-force push. Let the newer push's workflow validate and release the remaining changes. For a stable promotion, dispatch a new manual run from the latest `main` instead of rerunning the outdated run.
-
-To preview a release locally, run [`semfrag`](https://github.com/joe-p/semfrag#install) from a package directory: `semfrag generate --dry-run`.
-
-## Docs
-
-The `algokit-utils-ts` and `algokit-subscriber-ts` docs sites are published together to this repository's GitHub Pages site, each under its own path:
-
-| Path | Site |
-| -------------- | ------------------------------------------------ |
-| `/` | Landing page linking to each site, and to the `algokit-client-generator-ts/docs` folder on GitHub (`.github/pages/index.html`) |
-| `/utils/` | `algokit-utils-ts/docs` |
-| `/subscriber/` | `algokit-subscriber-ts/docs` |
-
-The docs workflow (`.github/workflows/pages.yml`) runs on every push to `main` and can be run manually. It builds the packages and both sites, combines them with the landing page and deploys the result. A repository has only one Pages deployment, so every run rebuilds and replaces all the sites together.
-
-Each site reads its URL from environment variables, set by the workflow from `actions/configure-pages` so the sites work under any repository name or custom domain:
-
-- `DOCS_SITE`: the origin, e.g. `https://algorandfoundation.github.io`.
-- `DOCS_BASE`: the path the site is served under, e.g. `/algokit-ts/utils/`.
-
-Without them the sites fall back to their old standalone paths (`/algokit-utils-ts/` and `/algokit-subscriber-ts/`), so `pnpm run docs:dev` in a package works as before. To build a site the way it's deployed:
-
-```sh
-DOCS_BASE=/algokit-ts/utils/ pnpm --dir algokit-utils-ts run docs:build
-```
-
-To add another package's site, build it with its own `DOCS_BASE` in `pages.yml`, copy its `dist/` into `_site/`, and link it from the landing page.
-
-### DevPortal
-
-The [Algorand Developer Portal](https://github.com/algorandfoundation/devportal) imports the same docs from a tarball, `devportal-docs.tar.gz`, attached to a rolling GitHub prerelease. The DevPortal docs workflow (`.github/workflows/devportal-docs.yml`) runs on every push to `main` and can be run manually. For each package it builds the docs site, packages its content, sidebar and a `manifest.json`, and uploads the tarball to that package's release:
-
-| Package | Release |
-| ----------------------- | -------------------------------- |
-| `algokit-utils-ts` | `algokit-utils-docs-latest` |
-| `algokit-subscriber-ts` | `algokit-subscriber-docs-latest` |
-
-The sites are built with their standalone base paths (`/algokit-utils-ts/`, `/algokit-subscriber-ts/`), which the manifest's `base` passes on so the DevPortal can rewrite links.
-
-## TODO
-
-Outstanding work from the move to a monorepo and semfrag:
-
-- [ ] **npm trusted publishing**: each package's trusted publisher on npmjs.com still points at its old repository. Change it to this repository with the workflow `release.yml`.
-- [ ] **Old docs sites**: the `algokit-utils-ts` and `algokit-subscriber-ts` repositories still serve their last docs build at `algorandfoundation.github.io/algokit-utils-ts/` and `/algokit-subscriber-ts/`, and it won't be updated. The package READMEs now link to the new site. Turn off Pages in those repositories once the new site is live, or leave the old sites up for existing links.
-- [ ] **DevPortal import**: the DevPortal still imports `algokit-utils-ts` and `algokit-subscriber-ts` docs from the old repositories' `docs-latest` releases. Its import configs (`imports/configs/algokit-utils` and `imports/configs/algokit-subscriber`) need to point at this repository, and its import script (`scripts/import-release-docs.ts`) needs to support a release tag per variant, since it always uses `docs-latest`. Each package now publishes to its own release (see [DevPortal](#devportal)).
-
-## How the history was preserved
-
-Each project's full commit history reachable from its `main` branch was imported with a non-squashed subtree merge. Original commits, including their SHAs and signatures, are preserved. The monorepo is the only source of truth for future development; the imports do not require ongoing synchronization with the source repositories.
-
-Files in original commits retain their original root-level paths. The subtree import places them under each project's directory without rewriting those commits. Path-filtered commands such as `git log -- algokit-utils-ts/src/...` do not automatically show the pre-import history; inspect an original import SHA with the original paths to explore that history.
-
-The import was done with `git subtree add` (without `--squash`), using the same source commits as the initial migration:
-
-```sh
-# Start in a new, empty repository
-git init
-git checkout --orphan main
-git commit --allow-empty -m "chore: init monorepo"
-
-git subtree add --prefix=algokit-client-generator-ts \
-  ../../algorandfoundation/algokit-client-generator-ts c55e01fd7aa3b1fc90916c036d6153f832f7f379
-git subtree add --prefix=algokit-subscriber-ts \
-  ../../algorandfoundation/algokit-subscriber-ts 3710d57ac335f121ff154240cea1070495861822
-git subtree add --prefix=algokit-utils-ts \
-  ../../algorandfoundation/algokit-utils-ts d467f20a240473fcb95663a98c3dd04159485a38
-```
-
-Notes:
-
-- Only commits reachable from each repo's selected `main` tip were imported. Unmerged branch history and tag refs were not imported.
-- Original commit hashes, authors, dates, messages and signatures are unchanged. Post-import monorepo changes were replayed onto the subtree imports, so those monorepo commit hashes differ from the initial migration. Existing monorepo tags were not moved.
-- The source repos were at the following commits when they were imported:
-  - `algokit-client-generator-ts`: `c55e01f` (326 commits)
-  - `algokit-subscriber-ts`: `3710d57` (278 commits)
-  - `algokit-utils-ts`: `d467f20a` (772 commits)
-
-## Changes
-
-Changes made to the imported projects after they were combined into this monorepo.
-
-### pnpm workspaces
-
-The projects previously used npm, each with its own `package-lock.json`. They are now a single pnpm workspace with one root `pnpm-lock.yaml`. pnpm 12 is used because pnpm 11.0.6 failed to resolve some packages under `minimumReleaseAge` (registry metadata missing the `time` field).
-
-Configuration that moved to the root:
-
-- **Lockfiles**: the per-package `package-lock.json` files and the docs sites' own `pnpm-lock.yaml` files were replaced by the root `pnpm-lock.yaml`.
-- **Release age**: the per-package `.npmrc` setting `min-release-age=7` became `minimumReleaseAge: 10080` (7 days, in minutes) in `pnpm-workspace.yaml`.
-- **Overrides**: the npm `overrides` from each `package.json` were merged into `overrides` in `pnpm-workspace.yaml`. pnpm applies them to the whole workspace; where packages disagreed, the stricter range was kept.
-- **Install scripts**: pnpm only runs dependency install scripts that are explicitly allowed. `allowBuilds` in `pnpm-workspace.yaml` allows them for prisma, esbuild and sharp.
-- **Docs packages**: both docs sites were named `docs`. They are now `algokit-utils-docs` and `algokit-subscriber-docs`, marked private, and no longer pin their own `packageManager`.
-
-Things that broke and how they were fixed:
-
-- **Undeclared dependencies**: npm's flat `node_modules` let packages use dependencies they never declared. pnpm's strict layout doesn't. `@types/node` was added to all three packages and `fast-glob` to `algokit-subscriber-ts`.
-- **`preserveSymlinks` in client-generator**: `tsconfig.json` and `tsconfig.non-strict.json` set `preserveSymlinks: true`, likely a leftover from `npm link`. pnpm links packages from its store, so TypeScript could no longer resolve vitest's internal types. The option was removed.
-- **Prisma client generation**: npm ran `prisma generate` automatically from `@prisma/client`'s install script because it found the `prisma.schema` field in subscriber's `package.json`. Under pnpm that script runs from the workspace root and doesn't find the schema. Subscriber now has `"postinstall": "prisma generate"`. Scripts are stripped from the published `dist/package.json`, so this doesn't affect consumers.
-- **Audit**: `better-npm-audit` wraps `npm audit` and needs a `package-lock.json`. It was removed, and each package's `audit` script now runs `pnpm --filter . audit`, which audits only that package. The accepted findings from the `.nsprc` files moved to `auditConfig.ignoreGhsas` in `pnpm-workspace.yaml`. Only one of those findings still applies: the `braces` advisory (GHSA-vfj7-8cjw-p6xm), which has no fix. The other exceptions were for packages bundled inside npm itself, which pnpm's audit doesn't check.
-- **npm commands in scripts and docs**: `npm run`/`npx` in package scripts, VS Code launch configs and contributor docs were changed to `pnpm run`/`pnpm exec`. Install instructions for end users still use `npm install`.
-- **VS Code test launch config** (`algokit-utils-ts`): `npm test -- --run <file>` became `pnpm test --run <file>`. pnpm passes a literal `--` through to vitest, which then ignores the file filter and runs every test.
-
-### `workspace:*` linking
-
-The packages previously installed each other from npm: client-generator used `@algorandfoundation/algokit-utils@^9.0.0`, and subscriber used `@algorandfoundation/algokit-client-generator@^5.0.0` plus algokit-utils as an auto-installed peer dependency. They now use the local workspace copies:
-
-- `algokit-client-generator-ts` has `@algorandfoundation/algokit-utils: workspace:*` in `devDependencies`.
-- `algokit-subscriber-ts` has `@algorandfoundation/algokit-utils: workspace:*` and `@algorandfoundation/algokit-client-generator: workspace:*` in `devDependencies`. This moves subscriber from client-generator 5.x to the local 6.x, including the `algokitgen` binary that `algokit generate client` uses to regenerate `tests/contract/client.ts`.
-- `peerDependencies` ranges are unchanged, because they're what consumers of the published packages see. `devDependencies` aren't copied into the published `package.json`, so `workspace:*` never gets published.
-
-Things that broke and how they were fixed:
-
-- **Packages are published from `dist/`**: utils and client-generator build into `dist/` and releases publish that folder, so the package roots have no `index.js`. Both now set `publishConfig.directory: "dist"` and `publishConfig.linkDirectory: true`, which makes pnpm link dependents to `dist/` rather than the package root. Because of this the dependency has to be built before its dependents are type-checked or tested. On a fresh clone the links dangle until `pnpm run build` runs.
-- **pnpm-only `publishConfig` keys leaking into the published package**: `tooling/copy-package-json.ts` (previously a `scripts/copy-package-json.ts` in each package) copies `publishConfig` into `dist/package.json`. It now removes `directory` and `linkDirectory`, and removes `publishConfig` entirely if that leaves it empty, so the published `package.json` is the same as before.
-- **Peer dependency warnings**: workspace packages had placeholder versions (`0.1.0` and `0.0.0`) because semantic-release set the real version when publishing, so peer ranges like `^9.0.0` never matched the linked copy. They now carry their real versions (see [Releases](#releases)), but between stable releases these are prereleases such as `9.2.3-beta.1`, which `^9.0.0` doesn't match either. `peerDependencyRules.allowedVersions` in `pnpm-workspace.yaml` accepts any version of the two linked packages.
-
-### Dependency catalog
-
-Each package previously listed its own dependency versions, and shared tools had drifted apart (for example TypeScript 5.4 to 6.0 and ESLint 9 to 10). Every external dependency version now lives in the [pnpm catalog](https://pnpm.io/catalogs) in `pnpm-workspace.yaml`, and `package.json` files use `catalog:`:
-
-- **Shared dependencies** were aligned on the newest version any package used. This upgraded TypeScript to 6.0 and ESLint to 10 in client-generator and utils, Prettier from 3.2.5 to 3.9 in subscriber, and `eslint-config-prettier` (10), `cpy-cli` (7) and `@algorandfoundation/tealscript` (0.107) in utils.
-- **Single-package dependencies** were moved into the catalog with their existing ranges, so their resolved versions didn't change.
-- **Not cataloged**: `peerDependencies`, because each package's range is its own minimum supported version and is what consumers see, and the `workspace:*` links between packages.
-- **`catalogMode: strict`**: `pnpm add` writes `catalog:`, adds new dependencies to the catalog, and rejects versions outside the catalog range. This only applies to `pnpm add`. pnpm doesn't check versions edited into `package.json` by hand.
-
-Things that broke and how they were fixed:
-
-- **`catalog:` would be published as-is**: releases run `npm publish` on `dist/`. Unlike `pnpm publish`, it doesn't replace `catalog:` with a version, and `copy-package-json.ts` copies `dependencies` and `peerDependencies` into `dist/package.json` unchanged. The script now reads versions from `pnpm-workspace.yaml` (using `yaml`, a new dev dependency) and fails the build if a catalog entry is missing or a `workspace:` specifier would be published.
-- **TypeScript 6** (utils): `baseUrl` is deprecated and fails the `dist` type check. Nothing depended on it (there are no `paths` or imports relative to the root), so it was removed from `tsconfig.base.json` (now `tooling/tsconfig.base.json`).
-- **ESLint 10's recommended rules** (utils): `no-useless-assignment` flagged dead `getAccountConfigFromEnvironment` calls in `getAccount` and an unused `0n` initial value in `assetOptOut`. Both were removed. `preserve-caught-error` flagged the "Fees were too small" error in `AppClient`, which now sets `cause` to the original error.
-- **Prettier 3.9** (subscriber): the subscriber code didn't match Prettier's output even before the upgrade, and formatting isn't checked in CI, so `pnpm run format` would reformat 9 files. They were left unformatted for a separate change.
-
-### Docs publishing
-
-Each docs site was previously deployed to its own repository's GitHub Pages site, at a fixed base path (`/algokit-utils-ts/` and `/algokit-subscriber-ts/`). They're now deployed together from this repository (see [Docs](#docs)):
-
-- **Base path**: each `astro.config.mjs` reads `site` and `base` from `DOCS_SITE` and `DOCS_BASE`, falling back to the old values.
-- **Hardcoded links** (utils): many hand-written pages link to other pages with absolute paths starting `/algokit-utils-ts/`. Rather than editing them, a new remark plugin (`docs/plugins/remark-rebase-links.ts`) rewrites that prefix to the configured base at build time. The homepage hero links, which are in frontmatter and aren't processed by remark, were made relative, matching the subscriber site.
-- **DevPortal**: the per-package `publish-devportal-docs.yml` workflows were replaced by `.github/workflows/devportal-docs.yml` at the root. They used the DevPortal's shared `publish-devportal-docs` action, which can't be used from a monorepo: it names the docs after the repository and uploads every package's tarball to the same `docs-latest` release, so the packages would overwrite each other. The new workflow repeats the action's steps, with a release per package. Tarballs are no longer attached to versioned releases. The DevPortal only imports `docs-latest`, and the `v*` tags that triggered that upload no longer exist.
-- **README links**: the package READMEs now link to the new site. The utils README's migration guide links, which pointed at files that no longer exist, link to the guides on the site.
+All packages in this repository are licensed under the [MIT License](./algokit-utils-ts/LICENSE).
