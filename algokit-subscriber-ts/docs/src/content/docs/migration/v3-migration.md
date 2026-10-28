@@ -7,7 +7,7 @@ This release updates the subscriber library to support `algosdk@3`. As a result 
 
 For further information about `algosdk@3`, see [migration guide for algosdk@3](https://github.com/algorand/js-algorand-sdk/blob/main/v2_TO_v3_MIGRATION_GUIDE.md).
 
-[Details of this release are available here](https://github.com/algorandfoundation/algokit-subscriber-ts/releases/tag/v3.0.0)
+[Details of this release are available here](https://github.com/algorandfoundation/algokit-ts/releases/tag/algokit-subscriber-v3.0.0)
 
 ## Type Changes
 

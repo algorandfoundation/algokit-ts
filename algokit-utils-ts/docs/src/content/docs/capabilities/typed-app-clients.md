@@ -172,7 +172,7 @@ const factory = new MyContractFactory({
 
 ## Client usage
 
-See the [official usage docs](https://github.com/algorandfoundation/algokit-client-generator-ts/blob/main/docs/usage.md) for full details.
+See the [official usage docs](https://github.com/algorandfoundation/algokit-ts/blob/main/algokit-client-generator-ts/docs/usage.md) for full details.
 
 For a simple example that deploys a contract and calls a `"hello"` method, see below:
 

@@ -8,7 +8,7 @@ It's optional to use this functionality, since you can construct your own deploy
 
 App deployment is a higher-order use case capability provided by AlgoKit Utils that builds on top of the core capabilities, particularly [App management](/algokit-utils-ts/capabilities/app/).
 
-To see some usage examples check out the [automated tests](https://github.com/algorandfoundation/algokit-utils-ts/blob/main/src/app-deploy.spec.ts).
+To see some usage examples check out the [automated tests](https://github.com/algorandfoundation/algokit-ts/blob/main/algokit-utils-ts/src/app-deploy.spec.ts).
 
 ## Smart contract development lifecycle
 

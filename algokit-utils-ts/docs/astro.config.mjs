@@ -26,7 +26,7 @@ export default defineConfig({
         'remark-github-alerts/styles/github-base.css',
       ],
       social: [
-        { icon: 'github', label: 'GitHub', href: 'https://github.com/algorandfoundation/algokit-utils-ts' },
+        { icon: 'github', label: 'GitHub', href: 'https://github.com/algorandfoundation/algokit-ts/tree/main/algokit-utils-ts' },
         { icon: 'discord', label: 'Discord', href: 'https://discord.gg/algorand' },
       ],
       plugins: [

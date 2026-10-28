@@ -5,15 +5,15 @@ sidebar:
   order: 4
 ---
 
-The [repository](https://github.com/algorandfoundation/algokit-subscriber-ts) contains three runnable example
+The [repository](https://github.com/algorandfoundation/algokit-ts/tree/main/algokit-subscriber-ts) contains three runnable example
 subscribers under `examples/`. Each one is a complete service that demonstrates a different combination of
 filters, sync behaviour and watermark persistence.
 
 ## Running the examples
 
 ```bash
-git clone https://github.com/algorandfoundation/algokit-subscriber-ts.git
-cd algokit-subscriber-ts
+git clone https://github.com/algorandfoundation/algokit-ts.git
+cd algokit-ts/algokit-subscriber-ts
 pnpm install
 
 # Point the examples at the node you want to use
@@ -26,9 +26,9 @@ and exits.
 
 | Example                                                                                                                  | Run once                    | Run continuously     |
 | ------------------------------------------------------------------------------------------------------------------------ | --------------------------- | -------------------- |
-| [Data History Museum](https://github.com/algorandfoundation/algokit-subscriber-ts/tree/main/examples/data-history-museum) | `pnpm run dhm`               | `pnpm run watch-dhm`  |
-| [USDC transfers](https://github.com/algorandfoundation/algokit-subscriber-ts/tree/main/examples/usdc)                     | n/a — always runs in a loop | `pnpm run usdc`       |
-| [xGov voting](https://github.com/algorandfoundation/algokit-subscriber-ts/tree/main/examples/xgov-voting)                 | `pnpm run xgov`              | `pnpm run watch-xgov` |
+| [Data History Museum](https://github.com/algorandfoundation/algokit-ts/tree/main/algokit-subscriber-ts/examples/data-history-museum) | `pnpm run dhm`               | `pnpm run watch-dhm`  |
+| [USDC transfers](https://github.com/algorandfoundation/algokit-ts/tree/main/algokit-subscriber-ts/examples/usdc)                     | n/a — always runs in a loop | `pnpm run usdc`       |
+| [xGov voting](https://github.com/algorandfoundation/algokit-ts/tree/main/algokit-subscriber-ts/examples/xgov-voting)                 | `pnpm run xgov`              | `pnpm run watch-xgov` |
 
 You can also press F5 in Visual Studio Code to get breakpoint debugging against one of the examples.
 

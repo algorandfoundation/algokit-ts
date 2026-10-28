@@ -118,4 +118,4 @@ const { result, appClient } = await factory.deploy({
 const appId = result.appId
 ```
 
-Need help? Submit an issue on [GitHub](https://github.com/algorandfoundation/algokit-client-generator-ts/issues). For reference on the application specification refer to [ARC-56 specification](https://arc.algorand.foundation/ARCs/arc-0056).
+Need help? Submit an issue on [GitHub](https://github.com/algorandfoundation/algokit-ts/issues). For reference on the application specification refer to [ARC-56 specification](https://arc.algorand.foundation/ARCs/arc-0056).

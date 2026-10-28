@@ -9,7 +9,7 @@
     "build:2-emit-types": "tsc --project tsconfig.build.json --emitDeclarationOnly",
     "build:3-copy-pkg-json": "tsx ../tooling/copy-package-json.ts",
     "build:4-copy-readme": "cpy README.md LICENSE.md dist",
-    "build:5-fix-readme-links": "replace-in-files --string '(./' --replacement '(https://github.com/algorandfoundation/algokit-subscriber-ts/blob/main/' dist/README.md",
+    "build:5-fix-readme-links": "replace-in-files --string '(./' --replacement '(https://github.com/algorandfoundation/algokit-ts/blob/main/algokit-subscriber-ts/' dist/README.md",
     "build:6-check-dist-types": "tsc --project tsconfig.dist-check.json",
     "test": "vitest run --coverage --passWithNoTests",
     "test:watch": "vitest watch --coverage --passWithNoTests",
@@ -37,7 +37,8 @@
   "license": "MIT",
   "repository": {
     "type": "git",
-    "url": "https://github.com/algorandfoundation/algokit-subscriber-ts"
+    "url": "https://github.com/algorandfoundation/algokit-ts.git",
+    "directory": "algokit-subscriber-ts"
   },
   "engines": {
     "node": ">=22.0"
