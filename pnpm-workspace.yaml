@@ -71,7 +71,7 @@ catalog:
   commander: ^14.0.0
   cpy-cli: ^7.0.0
   cross-env: ^7.0.3
-  dotenv-cli: ^7.4.4
+  dotenv-cli: ^11.0.0
   eslint: ^10.12.0
   eslint-config-prettier: ^10.1.8
   eslint-plugin-unused-imports: ^4.3.0
