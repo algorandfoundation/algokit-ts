@@ -158,6 +158,19 @@ Notes:
   - `algokit-subscriber-ts`: `3710d57` (278 commits)
   - `algokit-utils-ts`: `d467f20a` (772 commits)
 
+### Post-import upstream updates
+
+The changes through `algokit-utils-ts` upstream `main` commit `6110ab468f909720dce0539036aa83e650c96a8b` (`v9.2.3-beta.2`) were reconciled with the monorepo, then the original upstream history was merged without rewriting its commits:
+
+- `22d29108`: applied the README and JSDoc typo fixes, keeping the monorepo's migration guide URLs.
+- `354f4f10`: the pnpm lockfile already resolves `shell-quote` to `1.12.0` and `source-map-js` to `1.2.2`. `handlebars` is no longer installed after removing semantic-release; its retained override now requires `^4.7.10`, matching the upstream security update.
+- `afa5c683`: no audit exception was added for npm's bundled `postcss-selector-parser`, since semantic-release and its bundled npm dependency are no longer installed.
+- `6110ab46`: upstream merge commit; no additional changes.
+
+All upstream utils `v9.*` tags are available locally as `algokit-utils-v9.*`, pointing to the same original objects. Some tags belong to other development lines and are not ancestors of `main`; importing these tags does not merge those lines. The package version and changelog now include `9.2.3-beta.2`, so semfrag will continue from that release rather than reuse its version. No fragment is retained for these already-released upstream fixes.
+
+The reconciliation merge keeps the monorepo tree because the upstream changes were applied separately as described above. Upstream commit `6110ab46` is now an ancestor of `main`, so future upstream checks can use ancestry directly.
+
 ## Changes
 
 Changes made to the imported projects after they were combined into this monorepo.

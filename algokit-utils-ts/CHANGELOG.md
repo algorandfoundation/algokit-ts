@@ -1,3 +1,9 @@
+# 9.2.3-beta.2 - October 19th, 2026
+
+## Fixes
+
+- Correct migration guide links in the README and typos in API documentation ([#625](https://github.com/algorandfoundation/algokit-utils-ts/pull/625)).
+
 # 9.2.3-beta.1 - October 5th, 2026
 
 ## Fixes
