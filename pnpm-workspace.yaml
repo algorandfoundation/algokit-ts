@@ -80,7 +80,7 @@ catalog:
   js-sha512: ^0.9.0
   json-schema-to-typescript: ^15.0.4
   jsonschema: ^1.5.0
-  npm-run-all2: ^8.0.4
+  npm-run-all2: ^9.0.4
   prettier: ^3.9.9
   prisma: ^5.15.1
   remark-github-alerts: ^0.1.1
