@@ -83,7 +83,7 @@ jobs:
 
       - name: Prepare release
         id: semfrag
-        uses: joe-p/semfrag/actions/prepare@5d7d5262582b0147cfb359379d8efebb63ac13d9 # v0.11.0
+        uses: joe-p/semfrag/actions/prepare@52b58d46a190e343201a202c9b4aab993e58b7b4 # v0.11.1
         with:
           changelog: ${{ inputs.package }}/CHANGELOG.md
           fragments-dir: ${{ inputs.package }}/changelog.d
@@ -107,7 +107,7 @@ jobs:
       - name: Commit, tag and create GitHub release
         id: publish
         if: steps.semfrag.outputs.released == 'true'
-        uses: joe-p/semfrag/actions/publish@5d7d5262582b0147cfb359379d8efebb63ac13d9 # v0.11.0
+        uses: joe-p/semfrag/actions/publish@52b58d46a190e343201a202c9b4aab993e58b7b4 # v0.11.1
         with:
           branch: main
           tag-prefix: ${{ inputs.tag-prefix }}
@@ -133,6 +133,6 @@ jobs:
 
       - name: Roll back failed release
         if: failure() || cancelled()
-        uses: joe-p/semfrag/actions/rollback@5d7d5262582b0147cfb359379d8efebb63ac13d9 # v0.11.0
+        uses: joe-p/semfrag/actions/rollback@52b58d46a190e343201a202c9b4aab993e58b7b4 # v0.11.1
         with:
           token: ${{ steps.app_token.outputs.token }}
