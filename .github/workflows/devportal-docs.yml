@@ -23,6 +23,9 @@ permissions:
 
 jobs:
   publish:
+    # Skip pushes by the release bot, which are release commits and their
+    # rollbacks.
+    if: ${{ github.event_name != 'push' || github.actor != 'engineering-ci[bot]' }}
     runs-on: ubuntu-latest
     strategy:
       fail-fast: false

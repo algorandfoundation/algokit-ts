@@ -32,8 +32,14 @@ permissions:
 # skipped by the package input doesn't skip the jobs after it.
 # Start at the CI-tested SHA and pass only this run's release commits forward.
 # If main advances independently, stop instead of releasing unvalidated code.
+#
+# Pushes made by the release bot don't release, in case one lacks `[skip ci]`,
+# so a failing release can't retrigger itself. The later jobs check
+# `needs.ci.result`, because their `!cancelled()` would run them after a skipped
+# ci.
 jobs:
   ci:
+    if: ${{ github.event_name != 'push' || github.actor != 'engineering-ci[bot]' }}
     uses: ./.github/workflows/ci.yml
 
   algokit-utils:
@@ -49,7 +55,7 @@ jobs:
 
   algokit-client-generator:
     needs: [ci, algokit-utils]
-    if: ${{ !cancelled() && !contains(needs.*.result, 'failure') && (github.event_name == 'push' || contains(fromJSON('["all","algokit-client-generator"]'), inputs.package)) }}
+    if: ${{ !cancelled() && needs.ci.result == 'success' && !contains(needs.*.result, 'failure') && (github.event_name == 'push' || contains(fromJSON('["all","algokit-client-generator"]'), inputs.package)) }}
     uses: ./.github/workflows/release-package.yml
     secrets: inherit
     with:
@@ -60,7 +66,7 @@ jobs:
 
   algokit-subscriber:
     needs: [ci, algokit-utils, algokit-client-generator]
-    if: ${{ !cancelled() && !contains(needs.*.result, 'failure') && (github.event_name == 'push' || contains(fromJSON('["all","algokit-subscriber"]'), inputs.package)) }}
+    if: ${{ !cancelled() && needs.ci.result == 'success' && !contains(needs.*.result, 'failure') && (github.event_name == 'push' || contains(fromJSON('["all","algokit-subscriber"]'), inputs.package)) }}
     uses: ./.github/workflows/release-package.yml
     secrets: inherit
     with:

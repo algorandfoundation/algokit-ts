@@ -17,6 +17,9 @@ permissions:
 
 jobs:
   build:
+    # Skip pushes by the release bot, which are release commits and their
+    # rollbacks.
+    if: ${{ github.event_name != 'push' || github.actor != 'engineering-ci[bot]' }}
     runs-on: ubuntu-latest
     steps:
       - name: Checkout

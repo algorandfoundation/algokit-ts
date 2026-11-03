@@ -28,7 +28,7 @@ jobs:
           fetch-depth: 0
 
       - name: Check changelog
-        uses: joe-p/semfrag/actions/check@5d7d5262582b0147cfb359379d8efebb63ac13d9 # v0.11.0
+        uses: joe-p/semfrag/actions/check@52b58d46a190e343201a202c9b4aab993e58b7b4 # v0.11.1
         with:
           changelog: ${{ matrix.package }}/CHANGELOG.md
           fragments-dir: ${{ matrix.package }}/changelog.d
