@@ -1,4 +1,5 @@
 // @ts-check
+import { unified } from '@astrojs/markdown-remark'
 import starlight from '@astrojs/starlight'
 import { defineConfig } from 'astro/config'
 import remarkGithubAlerts from 'remark-github-alerts'
@@ -15,7 +16,9 @@ export default defineConfig({
   site: process.env.DOCS_SITE ?? 'https://algorandfoundation.github.io',
   base,
   markdown: {
-    remarkPlugins: [remarkGithubAlerts, remarkFixIndexUrls, [remarkRebaseLinks, { from: '/algokit-utils-ts/', to: base }]],
+    processor: unified({
+      remarkPlugins: [remarkGithubAlerts, remarkFixIndexUrls, [remarkRebaseLinks, { from: '/algokit-utils-ts/', to: base }]],
+    }),
   },
   integrations: [
     starlight({

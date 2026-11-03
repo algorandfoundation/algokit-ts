@@ -1,4 +1,5 @@
 // @ts-check
+import { unified } from '@astrojs/markdown-remark'
 import starlight from '@astrojs/starlight'
 import { defineConfig } from 'astro/config'
 import remarkGithubAlerts from 'remark-github-alerts'
@@ -16,7 +17,7 @@ export default defineConfig({
   base,
   trailingSlash: 'always',
   markdown: {
-    remarkPlugins: [remarkGithubAlerts, remarkFixIndexUrls, [remarkRebaseLinks, { from: '/algokit-subscriber-ts/', to: base }]],
+    processor: unified({ remarkPlugins: [remarkGithubAlerts, remarkFixIndexUrls, [remarkRebaseLinks, { from: '/algokit-subscriber-ts/', to: base }]] }),
   },
   integrations: [
     starlight({
