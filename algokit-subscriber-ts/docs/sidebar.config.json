@@ -29,11 +29,11 @@
   {
     "label": "Migration Guides",
     "collapsed": true,
-    "autogenerate": { "directory": "migration" }
+    "items": [{ "autogenerate": { "directory": "migration" } }]
   },
   {
     "label": "API Reference",
     "collapsed": true,
-    "autogenerate": { "directory": "api" }
+    "items": [{ "autogenerate": { "directory": "api" } }]
   }
 ]

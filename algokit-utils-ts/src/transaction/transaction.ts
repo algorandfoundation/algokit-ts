@@ -444,6 +444,13 @@ export async function prepareGroupForSending(
   const executionInfo = await getGroupExecutionInfo(atc, algod, sendParams, additionalAtcContext)
   const group = atc.buildGroup()
 
+  // Transaction.applicationCall is readonly, so use Object.assign to update it without resorting to `as any`
+  const updateApplicationCall = (txn: Transaction, fields: Partial<ApplicationTransactionFields>) => {
+    Object.assign(txn, {
+      applicationCall: { ...txn.applicationCall, ...fields },
+    })
+  }
+
   const [_, additionalTransactionFees] = sendParams.coverAppCallInnerTransactionFees
     ? executionInfo.txns
         .map((txn, i) => {
@@ -516,14 +523,12 @@ export async function prepareGroupForSending(
         if (r.appLocals) throw Error('Unexpected app local at the transaction level')
         if (r.assetHoldings)
           throw Error('Unexpected asset holding at the transaction level')
-          // eslint-disable-next-line @typescript-eslint/no-explicit-any
-        ;(group[i].txn as any)['applicationCall'] = {
-          ...group[i].txn.applicationCall,
+        updateApplicationCall(group[i].txn, {
           accounts: [...(group[i].txn?.applicationCall?.accounts ?? []), ...(r.accounts ?? [])],
           foreignApps: [...(group[i].txn?.applicationCall?.foreignApps ?? []), ...(r.apps ?? [])],
           foreignAssets: [...(group[i].txn?.applicationCall?.foreignAssets ?? []), ...(r.assets ?? [])],
           boxes: [...(group[i].txn?.applicationCall?.boxes ?? []), ...(r.boxes ?? [])],
-        } satisfies Partial<ApplicationTransactionFields>
+        })
 
         const accounts = group[i].txn.applicationCall?.accounts?.length ?? 0
         if (accounts > MAX_APP_CALL_ACCOUNT_REFERENCES)
@@ -589,6 +594,36 @@ export async function prepareGroupForSending(
         return accounts + assets + apps + boxes < MAX_APP_CALL_FOREIGN_REFERENCES
       }
 
+      const addAssetReference = (txnIndex: number, asset: bigint | number) => {
+        const txn = txns[txnIndex].txn
+        const foreignAssets = txn.applicationCall?.foreignAssets ?? []
+        if (foreignAssets.some((a) => BigInt(a) === BigInt(asset))) return
+
+        updateApplicationCall(txn, {
+          foreignAssets: [...foreignAssets, typeof asset === 'bigint' ? asset : BigInt(asset)],
+        })
+      }
+
+      const addAccountReference = (txnIndex: number, account: Address) => {
+        const txn = txns[txnIndex].txn
+        const accounts = txn.applicationCall?.accounts ?? []
+        if (accounts.some((a) => a.toString() === account.toString())) return
+
+        updateApplicationCall(txn, {
+          accounts: [...accounts, account],
+        })
+      }
+
+      const addAppReference = (txnIndex: number, app: bigint | number) => {
+        const txn = txns[txnIndex].txn
+        const foreignApps = txn.applicationCall?.foreignApps ?? []
+        if (foreignApps.some((a) => BigInt(a) === BigInt(app))) return
+
+        updateApplicationCall(txn, {
+          foreignApps: [...foreignApps, typeof app === 'bigint' ? app : BigInt(app)],
+        })
+      }
+
       // If this is a asset holding or app local, first try to find a transaction that already has the account available
       if (type === 'assetHolding' || type === 'appLocal') {
         const { account } = reference as algosdk.modelsv2.ApplicationLocalReference | algosdk.modelsv2.AssetHoldingReference
@@ -611,18 +646,10 @@ export async function prepareGroupForSending(
         if (txnIndex > -1) {
           if (type === 'assetHolding') {
             const { asset } = reference as algosdk.modelsv2.AssetHoldingReference
-            // eslint-disable-next-line @typescript-eslint/no-explicit-any
-            ;(txns[txnIndex].txn as any)['applicationCall'] = {
-              ...txns[txnIndex].txn.applicationCall,
-              foreignAssets: [...(txns[txnIndex].txn?.applicationCall?.foreignAssets ?? []), ...[asset]],
-            } satisfies Partial<ApplicationTransactionFields>
+            addAssetReference(txnIndex, asset)
           } else {
             const { app } = reference as algosdk.modelsv2.ApplicationLocalReference
-            // eslint-disable-next-line @typescript-eslint/no-explicit-any
-            ;(txns[txnIndex].txn as any)['applicationCall'] = {
-              ...txns[txnIndex].txn.applicationCall,
-              foreignApps: [...(txns[txnIndex].txn?.applicationCall?.foreignApps ?? []), ...[app]],
-            } satisfies Partial<ApplicationTransactionFields>
+            addAppReference(txnIndex, app)
           }
           return
         }
@@ -645,12 +672,7 @@ export async function prepareGroupForSending(
 
         if (txnIndex > -1) {
           const { account } = reference as algosdk.modelsv2.AssetHoldingReference | algosdk.modelsv2.ApplicationLocalReference
-
-          // eslint-disable-next-line @typescript-eslint/no-explicit-any
-          ;(txns[txnIndex].txn as any)['applicationCall'] = {
-            ...txns[txnIndex].txn.applicationCall,
-            accounts: [...(txns[txnIndex].txn?.applicationCall?.accounts ?? []), ...[account]],
-          } satisfies Partial<ApplicationTransactionFields>
+          addAccountReference(txnIndex, account)
 
           return
         }
@@ -668,11 +690,9 @@ export async function prepareGroupForSending(
         })
 
         if (txnIndex > -1) {
-          // eslint-disable-next-line @typescript-eslint/no-explicit-any
-          ;(txns[txnIndex].txn as any)['applicationCall'] = {
-            ...txns[txnIndex].txn.applicationCall,
+          updateApplicationCall(txns[txnIndex].txn, {
             boxes: [...(txns[txnIndex].txn?.applicationCall?.boxes ?? []), ...[{ appIndex: app, name } satisfies TransactionBoxReference]],
-          } satisfies Partial<ApplicationTransactionFields>
+          })
 
           return
         }
@@ -709,60 +729,28 @@ export async function prepareGroupForSending(
       }
 
       if (type === 'account') {
-        // eslint-disable-next-line @typescript-eslint/no-explicit-any
-        ;(txns[txnIndex].txn as any)['applicationCall'] = {
-          ...txns[txnIndex].txn.applicationCall,
-          accounts: [...(txns[txnIndex].txn?.applicationCall?.accounts ?? []), ...[reference as Address]],
-        } satisfies Partial<ApplicationTransactionFields>
+        addAccountReference(txnIndex, reference as Address)
       } else if (type === 'app') {
-        // eslint-disable-next-line @typescript-eslint/no-explicit-any
-        ;(txns[txnIndex].txn as any)['applicationCall'] = {
-          ...txns[txnIndex].txn.applicationCall,
-          foreignApps: [
-            ...(txns[txnIndex].txn?.applicationCall?.foreignApps ?? []),
-            ...[typeof reference === 'bigint' ? reference : BigInt(reference as number)],
-          ],
-        } satisfies Partial<ApplicationTransactionFields>
+        addAppReference(txnIndex, typeof reference === 'bigint' ? reference : (reference as number))
       } else if (type === 'box') {
         const { app, name } = reference as algosdk.modelsv2.BoxReference
-        // eslint-disable-next-line @typescript-eslint/no-explicit-any
-        ;(txns[txnIndex].txn as any)['applicationCall'] = {
-          ...txns[txnIndex].txn.applicationCall,
+        updateApplicationCall(txns[txnIndex].txn, {
           boxes: [...(txns[txnIndex].txn?.applicationCall?.boxes ?? []), ...[{ appIndex: app, name } satisfies TransactionBoxReference]],
-        } satisfies Partial<ApplicationTransactionFields>
+        })
 
         if (app.toString() !== '0') {
-          // eslint-disable-next-line @typescript-eslint/no-explicit-any
-          ;(txns[txnIndex].txn as any)['applicationCall'] = {
-            ...txns[txnIndex].txn.applicationCall,
-            foreignApps: [...(txns[txnIndex].txn?.applicationCall?.foreignApps ?? []), ...[app]],
-          } satisfies Partial<ApplicationTransactionFields>
+          addAppReference(txnIndex, app)
         }
       } else if (type === 'assetHolding') {
         const { asset, account } = reference as algosdk.modelsv2.AssetHoldingReference
-        // eslint-disable-next-line @typescript-eslint/no-explicit-any
-        ;(txns[txnIndex].txn as any)['applicationCall'] = {
-          ...txns[txnIndex].txn.applicationCall,
-          foreignAssets: [...(txns[txnIndex].txn?.applicationCall?.foreignAssets ?? []), ...[asset]],
-          accounts: [...(txns[txnIndex].txn?.applicationCall?.accounts ?? []), ...[account]],
-        } satisfies Partial<ApplicationTransactionFields>
+        addAssetReference(txnIndex, asset)
+        addAccountReference(txnIndex, account)
       } else if (type === 'appLocal') {
         const { app, account } = reference as algosdk.modelsv2.ApplicationLocalReference
-        // eslint-disable-next-line @typescript-eslint/no-explicit-any
-        ;(txns[txnIndex].txn as any)['applicationCall'] = {
-          ...txns[txnIndex].txn.applicationCall,
-          foreignApps: [...(txns[txnIndex].txn?.applicationCall?.foreignApps ?? []), ...[app]],
-          accounts: [...(txns[txnIndex].txn?.applicationCall?.accounts ?? []), ...[account]],
-        } satisfies Partial<ApplicationTransactionFields>
+        addAppReference(txnIndex, app)
+        addAccountReference(txnIndex, account)
       } else if (type === 'asset') {
-        // eslint-disable-next-line @typescript-eslint/no-explicit-any
-        ;(txns[txnIndex].txn as any)['applicationCall'] = {
-          ...txns[txnIndex].txn.applicationCall,
-          foreignAssets: [
-            ...(txns[txnIndex].txn?.applicationCall?.foreignAssets ?? []),
-            ...[typeof reference === 'bigint' ? reference : BigInt(reference as number)],
-          ],
-        } satisfies Partial<ApplicationTransactionFields>
+        addAssetReference(txnIndex, typeof reference === 'bigint' ? reference : (reference as number))
       }
     }
 

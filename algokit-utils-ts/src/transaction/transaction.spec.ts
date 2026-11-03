@@ -1223,6 +1223,52 @@ describe('Resource population: meta', () => {
       expect(allResources[i]).toEqual(allResources[0])
     }
   })
+
+  test('does not duplicate references when populating asset holdings', async () => {
+    const { algorand, context } = fixture
+
+    const testAccount = context.testAccount
+
+    const v9AppFactory = algorand.client.getAppFactory({
+      appSpec: JSON.stringify(v9ARC32),
+      defaultSender: testAccount,
+    })
+
+    const v9AppClient = (await v9AppFactory.send.create({ method: 'createApplication' })).appClient
+
+    await v9AppClient.fundAppAccount({ amount: (218_000).microAlgo() })
+
+    const accounts = [0, 1, 2, 3].map(() => algorand.account.random().addr)
+    const asset = (await algorand.send.assetCreate({ sender: testAccount, total: 1n })).assetId
+    const app = v9AppClient.appId
+
+    // Using the same asset and app for each account means that both asset holdings and app locals are
+    // referenced for the same accounts, which previously caused the asset to be added multiple times.
+    const appCall = await v9AppClient.params.call({
+      method: 'manyResources',
+      args: [accounts, [asset, asset, asset, asset], [app, app, app, app], [1, 2, 3, 4]],
+    })
+
+    const composer = algorand.newGroup().addAppCallMethodCall(appCall)
+
+    for (let i = 0; i < 10; i++) {
+      composer.addAppCallMethodCall(await v9AppClient.params.call({ method: 'dummy', note: `${i}` }))
+    }
+
+    const atc = (await composer.build()).atc
+    const populatedAtc = await populateAppCallResources(atc, algorand.client.algod)
+
+    for (const { txn } of populatedAtc.buildGroup()) {
+      const assets = (txn.applicationCall?.foreignAssets ?? []).map((a) => a.toString())
+      expect(new Set(assets).size, 'duplicate asset reference').toBe(assets.length)
+
+      const referencedAccounts = (txn.applicationCall?.accounts ?? []).map((a) => a.toString())
+      expect(new Set(referencedAccounts).size, 'duplicate account reference').toBe(referencedAccounts.length)
+
+      const apps = (txn.applicationCall?.foreignApps ?? []).map((a) => a.toString())
+      expect(new Set(apps).size, 'duplicate app reference').toBe(apps.length)
+    }
+  })
 })
 
 describe('abi return', () => {
