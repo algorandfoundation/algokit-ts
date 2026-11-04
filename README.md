@@ -91,7 +91,8 @@ Any pull request that modifies a package's `src/` directory must include a chang
 | `Fixes`            | `patch`      |
 
 - **Beta releases**: Pushing to `main` automatically merges pending fragments into each package's `CHANGELOG.md` and publishes a beta version to npm under the `main` dist-tag.
-- **Stable releases**: Running the [Release workflow](./.github/workflows/release.yml) manually promotes pending beta versions to a stable release on npm under the `latest` dist-tag.
+- **Stable releases**: Running the [Release workflow](./.github/workflows/release.yml) manually with *Stable release?* checked promotes pending beta versions to a stable release on npm under the `latest` dist-tag.
+- **Retrying a beta release**: Running the workflow manually with *Stable release?* unchecked (the default) publishes betas like a push does, to retry a push's release that failed and was rolled back.
 
 For deeper details on workspace architecture, shared tooling, DevPortal docs publishing, and how the repository history was combined, see [`MONOREPO.md`](./MONOREPO.md).
 

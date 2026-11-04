@@ -1,15 +1,21 @@
 name: Release
 
 # Pushes to main publish a beta of each package with pending changelog
-# fragments (npm dist-tag `main`). Running this workflow manually promotes the
-# selected packages' betas to stable releases (npm dist-tag `latest`).
+# fragments (npm dist-tag `main`). Running this workflow manually publishes
+# betas like a push does, to retry a push's release that failed and was rolled
+# back. Checking `stable` instead promotes the selected packages' betas to
+# stable releases (npm dist-tag `latest`).
 on:
   push:
     branches: [main]
   workflow_dispatch:
     inputs:
+      stable:
+        description: Stable release? (unchecked publishes betas, e.g. to retry a failed push release)
+        type: boolean
+        default: false
       package:
-        description: Package to promote to a stable release
+        description: Package to release
         type: choice
         default: all
         options:
@@ -51,7 +57,7 @@ jobs:
       ref: ${{ github.sha }}
       package: algokit-utils-ts
       tag-prefix: algokit-utils-v
-      prerelease: ${{ github.event_name == 'push' && 'beta' || '' }}
+      prerelease: ${{ (github.event_name == 'push' || !inputs.stable) && 'beta' || '' }}
 
   algokit-client-generator:
     needs: [ci, algokit-utils]
@@ -62,7 +68,7 @@ jobs:
       ref: ${{ needs.algokit-utils.outputs.commit-sha || github.sha }}
       package: algokit-client-generator-ts
       tag-prefix: algokit-client-generator-v
-      prerelease: ${{ github.event_name == 'push' && 'beta' || '' }}
+      prerelease: ${{ (github.event_name == 'push' || !inputs.stable) && 'beta' || '' }}
 
   algokit-subscriber:
     needs: [ci, algokit-utils, algokit-client-generator]
@@ -73,4 +79,4 @@ jobs:
       ref: ${{ needs.algokit-client-generator.outputs.commit-sha || needs.algokit-utils.outputs.commit-sha || github.sha }}
       package: algokit-subscriber-ts
       tag-prefix: algokit-subscriber-v
-      prerelease: ${{ github.event_name == 'push' && 'beta' || '' }}
+      prerelease: ${{ (github.event_name == 'push' || !inputs.stable) && 'beta' || '' }}
