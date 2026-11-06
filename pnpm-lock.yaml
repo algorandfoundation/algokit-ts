@@ -202,8 +202,8 @@ catalogs:
       specifier: ^10.0.1
       version: 10.0.1
     '@noble/ed25519':
-      specifier: ^2.3.0
-      version: 2.3.0
+      specifier: ^3.2.0
+      version: 3.2.0
     '@prisma/client':
       specifier: ^5.15.1
       version: 5.22.0
@@ -383,7 +383,7 @@ importers:
         version: 0.107.2
       '@noble/ed25519':
         specifier: 'catalog:'
-        version: 2.3.0
+        version: 3.2.0
       '@types/node':
         specifier: 'catalog:'
         version: 26.6.4
@@ -1342,8 +1342,8 @@ packages:
       '@emnapi/core': ^1.7.1 || 2.0.0-beta.2
       '@emnapi/runtime': ^1.7.1 || 2.0.0-beta.2
 
-  '@noble/ed25519@2.3.0':
-    resolution: {integrity: sha512-M7dvXL2B92/M7dw9+gzuydL8qn/jiqNHaoR3Q+cb1q1GHV7uwE17WCyFMG+Y+TZb5izcaXk5TdJRrDUxHXL78A==}
+  '@noble/ed25519@3.2.0':
+    resolution: {integrity: sha512-criDgRlnUA09hchYrTy/JUWPIEap5rZxQe6wDWzRx51oWWpDRcUpuNzlgPxDJaOK6AsW9c0wKcj3rKRv6t+bPQ==}
 
   '@nodelib/fs.scandir@2.1.5':
     resolution: {integrity: sha512-vq24Bq3ym5HEQm2NKCr3yXDwjc7vTsEThRDnkp2DK9p1uqLR+DHurm/NOTo0KG7HYHU7eppKZj3MyqYuMBf62g==}
@@ -5017,7 +5017,7 @@ snapshots:
       '@tybys/wasm-util': 0.10.4
     optional: true
 
-  '@noble/ed25519@2.3.0': {}
+  '@noble/ed25519@3.2.0': {}
 
   '@nodelib/fs.scandir@2.1.5':
     dependencies:
