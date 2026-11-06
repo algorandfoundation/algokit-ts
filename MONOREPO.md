@@ -75,11 +75,13 @@ Fragment sections and the version bump each one triggers:
 The release workflow (`.github/workflows/release.yml`) runs after CI passes. It releases the packages one at a time, in dependency order: utils, client-generator, then subscriber. Each package with pending fragments is released like this:
 
 1. **Push to `main`**: the fragments are merged into the changelog and promoted to the next beta, e.g. `9.2.3-beta.2`, which is published to npm under the `main` dist-tag.
-1. **Manual run** (*Run workflow*, choosing all packages or one): the package's betas are promoted to a stable release, e.g. `9.2.3`, and published under `latest`. This replaces the old `release` branch and *Prod Publish* workflow.
+1. **Manual run with *Stable release?* checked** (*Run workflow*, choosing all packages or one): the package's betas are promoted to a stable release, e.g. `9.2.3`, and published under `latest`. This replaces the old `release` branch and *Prod Publish* workflow.
+
+A manual run with *Stable release?* unchecked (the default) publishes betas exactly like a push to `main`. Use it to retry a push's release that failed and was rolled back: the rollback's revert commit is marked `[skip ci]`, so no push run will release those fragments otherwise.
 
 Each release commits the changelog and the `package.json` version to `main`. It also creates a git tag and a GitHub release named after the package, for example `algokit-utils-v9.2.3`, `algokit-client-generator-v6.0.2` and `algokit-subscriber-v3.4.1`.
 
-Releases start from the exact commit validated by CI. Each package job passes its release commit to the next job; jobs that have nothing to release pass their input commit through unchanged. If unrelated changes advance `main`, the run stops rather than including unvalidated code. A push arriving after the branch check is also protected by the release action's non-force push. Let the newer push's workflow validate and release the remaining changes. For a stable promotion, dispatch a new manual run from the latest `main` instead of rerunning the outdated run.
+Releases start from the exact commit validated by CI. Each package job passes its release commit to the next job; jobs that have nothing to release pass their input commit through unchanged. If unrelated changes advance `main`, the run stops rather than including unvalidated code. A push arriving after the branch check is also protected by the release action's non-force push. Let the newer push's workflow validate and release the remaining changes. For a manual run, dispatch a new run from the latest `main` instead of rerunning the outdated run.
 
 To preview a release locally, run [`semfrag`](https://github.com/joe-p/semfrag#install) from a package directory: `semfrag generate --dry-run`.
 
