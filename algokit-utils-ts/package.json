@@ -1,6 +1,6 @@
 {
   "name": "@algorandfoundation/algokit-utils",
-  "version": "9.2.3-beta.2",
+  "version": "9.2.3-beta.3",
   "private": false,
   "description": "A set of core Algorand utilities written in TypeScript and released via npm that make it easier to build solutions on Algorand.",
   "author": "Algorand Foundation",
