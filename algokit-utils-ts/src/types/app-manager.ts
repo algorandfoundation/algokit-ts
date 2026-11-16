@@ -518,19 +518,6 @@ export class AppManager {
   }
 
   /**
-   * Performs template substitution of a teal file.
-   *
-   * Looks for `TMPL_{parameter}` for template replacements.
-   *
-   * @param tealTemplateCode The TEAL template code to make parameter replacements in
-   * @param templateParams Any parameters to replace in the teal code
-   * @returns The TEAL code with replacements
-   * @example
-   * ```typescript
-   * const tealCode = AppManager.replaceTealTemplateParams(tealTemplate, { TMPL_APP_ID: 12345n });
-   * ```
-   */
-  /**
    * Returns leftover `TMPL_*` tokens in TEAL (ignoring comments and quoted strings).
    * Used to fail compilation with a clear error instead of algod's ParseUint message.
    */
@@ -557,6 +544,19 @@ export class AppManager {
     return [...found]
   }
 
+  /**
+   * Performs template substitution of a teal file.
+   *
+   * Looks for `TMPL_{parameter}` for template replacements.
+   *
+   * @param tealTemplateCode The TEAL template code to make parameter replacements in
+   * @param templateParams Any parameters to replace in the teal code
+   * @returns The TEAL code with replacements
+   * @example
+   * ```typescript
+   * const tealCode = AppManager.replaceTealTemplateParams(tealTemplate, { TMPL_APP_ID: 12345n });
+   * ```
+   */
   static replaceTealTemplateParams(tealTemplateCode: string, templateParams?: TealTemplateParams) {
     if (templateParams !== undefined) {
       for (const key in templateParams) {
