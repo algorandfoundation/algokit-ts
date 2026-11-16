@@ -157,7 +157,7 @@ async function captureTraces(algorand: AlgorandClient, sender: TransactionSigner
   } finally {
     Config.events.off(EventType.TxnGroupSimulated, onSimulated)
     Config.configure({ debug: original.debug, projectRoot: original.projectRoot, traceAll: original.traceAll })
-    rmSync(debugRoot, { recursive: true, ignoreErrors: true })
+    rmSync(debugRoot, { recursive: true, force: true })
   }
 }
 
