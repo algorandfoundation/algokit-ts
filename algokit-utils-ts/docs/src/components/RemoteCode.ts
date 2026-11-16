@@ -1,5 +1,6 @@
+import { existsSync } from 'fs';
 import fs from 'fs/promises';
-import { URL } from 'url';
+import { pathToFileURL, URL } from 'url';
 
 export interface CodeResult {
   content: string;
@@ -94,9 +95,28 @@ export function dedentCode(lines: string[]): string {
 const LOCAL_REPO_RAW_PREFIX =
   'https://raw.githubusercontent.com/algorandfoundation/algokit-ts/';
 
-// The monorepo root (file paths in raw URLs include the package directory, e.g.
-// `algokit-utils-ts/examples/...`). Resolved relative to this file, so it breaks if RemoteCode.ts moves
-const REPO_ROOT_URL = new URL('../../../../', import.meta.url);
+/**
+ * Finds the monorepo root (the directory holding `pnpm-workspace.yaml`) by walking
+ * up from the working directory. File paths in raw URLs include the package
+ * directory (e.g. `algokit-utils-ts/examples/...`), so they resolve against it.
+ * `import.meta.url` can't be used: during `astro build` it points at the bundled
+ * chunk under `docs/dist/`, not at this file.
+ */
+function findRepoRoot(): URL | null {
+  let dir = pathToFileURL(`${process.cwd()}/`);
+  for (;;) {
+    if (existsSync(new URL('pnpm-workspace.yaml', dir))) {
+      return dir;
+    }
+    const parent = new URL('../', dir);
+    if (parent.href === dir.href) {
+      return null;
+    }
+    dir = parent;
+  }
+}
+
+const REPO_ROOT_URL = findRepoRoot();
 
 /**
  * Maps a raw.githubusercontent.com URL for this repository to the same file
@@ -105,7 +125,7 @@ const REPO_ROOT_URL = new URL('../../../../', import.meta.url);
  * Returns null if src points outside this repository.
  */
 export function localPathForRepoUrl(src: string): URL | null {
-  if (!src.startsWith(LOCAL_REPO_RAW_PREFIX)) {
+  if (!REPO_ROOT_URL || !src.startsWith(LOCAL_REPO_RAW_PREFIX)) {
     return null;
   }
   const segments = src.slice(LOCAL_REPO_RAW_PREFIX.length).split('/');
