@@ -17,7 +17,7 @@ Operations whose effects cannot be undone are collected in [Safety Consideration
 Creating an ASA raises the creator's minimum balance requirement by 0.1 Algo, so any account able to cover that increase and the transaction fee can create one. The sender becomes the asset's creator, and the entire supply starts in their account. `algorand.send.assetCreate` builds, signs, and submits the transaction, and the result carries the new asset's ID.
 
 <RemoteCode
-  src="https://raw.githubusercontent.com/algorandfoundation/algokit-utils-ts/main/examples/concepts/assets.algo.ts"
+  src="https://raw.githubusercontent.com/algorandfoundation/algokit-ts/main/algokit-utils-ts/examples/concepts/assets.algo.ts"
   snippet="CREATE_ASSET"
   lang="ts"
   frame="none"
@@ -32,7 +32,7 @@ An account cannot receive or hold units of an asset it has not opted into. Optin
 Each holding raises the account's minimum balance requirement by 0.1 Algo, so an account pays for the assets it chooses to hold. The opting-in account signs and sends the transaction itself.
 
 <RemoteCode
-  src="https://raw.githubusercontent.com/algorandfoundation/algokit-utils-ts/main/examples/concepts/assets.algo.ts"
+  src="https://raw.githubusercontent.com/algorandfoundation/algokit-ts/main/algokit-utils-ts/examples/concepts/assets.algo.ts"
   snippet="OPT_IN_ASSET"
   lang="ts"
   frame="none"
@@ -41,7 +41,7 @@ Each holding raises the account's minimum balance requirement by 0.1 Algo, so an
 To opt into several assets at once, `algorand.asset.bulkOptIn(...)` takes a list of asset IDs and batches the opt-in transactions into atomic groups of up to 16, the protocol's transaction group limit.
 
 <RemoteCode
-  src="https://raw.githubusercontent.com/algorandfoundation/algokit-utils-ts/main/examples/concepts/assets.algo.ts"
+  src="https://raw.githubusercontent.com/algorandfoundation/algokit-ts/main/algokit-utils-ts/examples/concepts/assets.algo.ts"
   snippet="BULK_OPT_IN_ASSET"
   lang="ts"
   frame="none"
@@ -52,7 +52,7 @@ To opt into several assets at once, `algorand.asset.bulkOptIn(...)` takes a list
 Closing a holding releases the 0.1 Algo it reserved. `AssetOptOutParams` takes the asset's `creator`, which receives any units still held — so `algorand.send.assetOptOut` checks the balance is zero before submitting, unless `ensureZeroBalance: false` says otherwise.
 
 <RemoteCode
-  src="https://raw.githubusercontent.com/algorandfoundation/algokit-utils-ts/main/examples/concepts/assets.algo.ts"
+  src="https://raw.githubusercontent.com/algorandfoundation/algokit-ts/main/algokit-utils-ts/examples/concepts/assets.algo.ts"
   snippet="OPT_OUT_ASSET"
   lang="ts"
   frame="none"
@@ -61,7 +61,7 @@ Closing a holding releases the 0.1 Algo it reserved. `AssetOptOutParams` takes t
 `algorand.asset.bulkOptOut(...)` closes several holdings the same way, with the same zero-balance check applied to each.
 
 <RemoteCode
-  src="https://raw.githubusercontent.com/algorandfoundation/algokit-utils-ts/main/examples/concepts/assets.algo.ts"
+  src="https://raw.githubusercontent.com/algorandfoundation/algokit-ts/main/algokit-utils-ts/examples/concepts/assets.algo.ts"
   snippet="BULK_OPT_OUT_ASSET"
   lang="ts"
   frame="none"
@@ -72,7 +72,7 @@ Closing a holding releases the 0.1 Algo it reserved. `AssetOptOutParams` takes t
 A transfer moves units between two accounts that have both opted into the asset. The sender needs at least the amount being sent, and neither holding may be frozen.
 
 <RemoteCode
-  src="https://raw.githubusercontent.com/algorandfoundation/algokit-utils-ts/main/examples/concepts/assets.algo.ts"
+  src="https://raw.githubusercontent.com/algorandfoundation/algokit-ts/main/algokit-utils-ts/examples/concepts/assets.algo.ts"
   snippet="TRANSFER_ASSET"
   lang="ts"
   frame="none"
@@ -87,7 +87,7 @@ An asset carries four optional authority addresses: `manager`, `reserve`, `freez
 The `manager` can reassign any of the four addresses. `AssetConfigParams` replaces all of them at once rather than patching one field, so an address left unset is submitted as empty and the role is cleared for good. Pass every address you intend to keep.
 
 <RemoteCode
-  src="https://raw.githubusercontent.com/algorandfoundation/algokit-utils-ts/main/examples/concepts/assets.algo.ts"
+  src="https://raw.githubusercontent.com/algorandfoundation/algokit-ts/main/algokit-utils-ts/examples/concepts/assets.algo.ts"
   snippet="RECONFIGURE_ASSET"
   lang="ts"
   frame="none"
@@ -98,7 +98,7 @@ The `manager` can reassign any of the four addresses. `AssetConfigParams` replac
 The `freeze` address can stop a single account from moving a single asset. `AssetFreezeParams` names the account and carries a `frozen` flag, so the same call reverses the freeze by passing `false`.
 
 <RemoteCode
-  src="https://raw.githubusercontent.com/algorandfoundation/algokit-utils-ts/main/examples/concepts/assets.algo.ts"
+  src="https://raw.githubusercontent.com/algorandfoundation/algokit-ts/main/algokit-utils-ts/examples/concepts/assets.algo.ts"
   snippet="FREEZE_ASSET"
   lang="ts"
   frame="none"
@@ -109,7 +109,7 @@ The `freeze` address can stop a single account from moving a single asset. `Asse
 The `clawback` address can move units out of any opted-in account without the holder's consent. There is no dedicated params type for it: a clawback is an `AssetTransferParams` sent by the clawback address, with `clawbackTarget` naming the account the units come from.
 
 <RemoteCode
-  src="https://raw.githubusercontent.com/algorandfoundation/algokit-utils-ts/main/examples/concepts/assets.algo.ts"
+  src="https://raw.githubusercontent.com/algorandfoundation/algokit-ts/main/algokit-utils-ts/examples/concepts/assets.algo.ts"
   snippet="CLAWBACK_ASSET"
   lang="ts"
   frame="none"
@@ -123,7 +123,7 @@ Beyond the bulk helpers above, the `AssetManager` on `algorand.asset` answers tw
 - `algorand.asset.getAccountInformation(sender, assetId)` returns the given account's holding for the asset.
 
 <RemoteCode
-  src="https://raw.githubusercontent.com/algorandfoundation/algokit-utils-ts/main/examples/concepts/assets.algo.ts"
+  src="https://raw.githubusercontent.com/algorandfoundation/algokit-ts/main/algokit-utils-ts/examples/concepts/assets.algo.ts"
   snippet="ASSET_MANAGER_QUERIES"
   lang="ts"
   frame="none"
@@ -134,7 +134,7 @@ Beyond the bulk helpers above, the `AssetManager` on `algorand.asset` answers tw
 Destroying an asset removes it from the ledger and releases the creator's 0.1 Algo. The `manager` sends the transaction, and every unit must be back in the creator's account first — an asset with units still circulating cannot be destroyed.
 
 <RemoteCode
-  src="https://raw.githubusercontent.com/algorandfoundation/algokit-utils-ts/main/examples/concepts/assets.algo.ts"
+  src="https://raw.githubusercontent.com/algorandfoundation/algokit-ts/main/algokit-utils-ts/examples/concepts/assets.algo.ts"
   snippet="DESTROY_ASSET"
   lang="ts"
   frame="none"

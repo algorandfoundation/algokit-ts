@@ -1,12 +1,10 @@
 {
-  "extends": "../tsconfig.base.json",
+  "extends": "../../tooling/tsconfig.base.json",
   "compilerOptions": {
     "noEmit": true,
-    "moduleResolution": "Bundler",
-    "typeRoots": ["../node_modules/@types", "../node_modules/.pnpm/node_modules/@types"],
     "paths": {
-      "@algorandfoundation/algokit-utils": ["src/index.ts"],
-      "@algorandfoundation/algokit-utils/*": ["src/*"]
+      "@algorandfoundation/algokit-utils": ["../src/index.ts"],
+      "@algorandfoundation/algokit-utils/*": ["../src/*"]
     }
   },
   "include": ["**/*.ts"],

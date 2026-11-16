@@ -7,7 +7,7 @@ library abstraction.
 
 ## Running
 
-Start LocalNet (`algokit localnet start`), then from the repo root:
+Start LocalNet (`algokit localnet start`), then from the `algokit-utils-ts` package directory:
 
 ```bash
 # one example
@@ -24,12 +24,12 @@ No env vars needed — examples use `AlgorandClient.defaultLocalNet()`.
 
 The `--tsconfig examples/tsconfig.json` flag is required: `examples/tsconfig.json`
 aliases the `@algorandfoundation/algokit-utils` package name to the local `src/`
-(via `baseUrl` + `paths`), so the examples run against the in-repo source with no
+(via `paths`), so the examples run against the in-repo source with no
 build step. Without it the package name resolves to the unbuilt `dist/` and fails.
 
 Each script runs end-to-end against LocalNet and asserts its own results, so a
 non-zero exit code means the example is broken. Paths in `applications.algo.ts`
-are relative to the repo root, so always run from there.
+are relative to the package directory, so always run from there.
 
 ## Snippet markers
 
@@ -67,7 +67,7 @@ the markers, and a `main().catch(...)` call at the bottom. Name concept files
 import RemoteCode from '/src/components/RemoteCode.astro'
 
 <RemoteCode
-  src="https://raw.githubusercontent.com/algorandfoundation/algokit-utils-ts/main/examples/concepts/algorand_client.algo.ts"
+  src="https://raw.githubusercontent.com/algorandfoundation/algokit-ts/main/algokit-utils-ts/examples/concepts/algorand_client.algo.ts"
   snippet="INSTANTIATE_ALGORAND_CLIENT"
   lang="ts"
 />

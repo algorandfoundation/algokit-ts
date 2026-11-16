@@ -19,7 +19,7 @@ When a smart contract call fails, algod reports a `logic eval error` that identi
 Any send that fails logic evaluation raises a `LogicError` when the client holds the failing program's source map. Clients created through a factory, or clients that compiled the app's programs themselves, hold one automatically. If the app spec also names an `errorMessage` for that program counter, `AppClient` wraps the `LogicError` as the `cause` of a runtime error:
 
 <RemoteCode
-  src="https://raw.githubusercontent.com/algorandfoundation/algokit-utils-ts/refs/heads/main/examples/concepts/errors_and_debugging.algo.ts"
+  src="https://raw.githubusercontent.com/algorandfoundation/algokit-ts/refs/heads/main/algokit-utils-ts/examples/concepts/errors_and_debugging.algo.ts"
   snippet="INSPECT_LOGIC_ERROR"
   lang="ts"
   frame="none"
@@ -38,7 +38,7 @@ The parsed details live on `led`: the failing `txId`, the `msg` reported by algo
 Source maps are produced when the programs compile, so a client constructed later doesn't hold them, whether it was built from an app ID or in another process entirely. `exportSourceMaps()` returns an `AppSourceMaps` you can serialize and store. `importSourceMaps()` restores the maps onto a fresh client, re-enabling TEAL line resolution in `LogicError`:
 
 <RemoteCode
-  src="https://raw.githubusercontent.com/algorandfoundation/algokit-utils-ts/refs/heads/main/examples/concepts/errors_and_debugging.algo.ts"
+  src="https://raw.githubusercontent.com/algorandfoundation/algokit-ts/refs/heads/main/algokit-utils-ts/examples/concepts/errors_and_debugging.algo.ts"
   snippet="EXPORT_IMPORT_SOURCE_MAPS"
   lang="ts"
   frame="none"
@@ -53,7 +53,7 @@ Every send funnels through a `TransactionComposer`. When sending or simulating f
 `algorand.registerErrorTransformer(fn)` applies a transformer to every group and send the client creates from then on, and `unregisterErrorTransformer(fn)` removes it again:
 
 <RemoteCode
-  src="https://raw.githubusercontent.com/algorandfoundation/algokit-utils-ts/refs/heads/main/examples/concepts/errors_and_debugging.algo.ts"
+  src="https://raw.githubusercontent.com/algorandfoundation/algokit-ts/refs/heads/main/algokit-utils-ts/examples/concepts/errors_and_debugging.algo.ts"
   snippet="REGISTER_ERROR_TRANSFORMER"
   lang="ts"
   frame="none"
@@ -82,7 +82,7 @@ The library reads one process-wide configuration object, the `Config` singleton,
 - `logger` replaces the logger the library writes through, covered under [Control Logging](#control-logging) below.
 
 <RemoteCode
-  src="https://raw.githubusercontent.com/algorandfoundation/algokit-utils-ts/refs/heads/main/examples/concepts/errors_and_debugging.algo.ts"
+  src="https://raw.githubusercontent.com/algorandfoundation/algokit-ts/refs/heads/main/algokit-utils-ts/examples/concepts/errors_and_debugging.algo.ts"
   snippet="CONFIGURE_DEBUG"
   lang="ts"
   frame="none"

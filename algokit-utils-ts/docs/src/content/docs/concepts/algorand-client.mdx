@@ -15,7 +15,7 @@ Create one client at startup and share it across your application; every capabil
 Static factory methods cover the common ways to connect:
 
 <RemoteCode
-  src="https://raw.githubusercontent.com/algorandfoundation/algokit-utils-ts/main/examples/concepts/algorand_client.algo.ts"
+  src="https://raw.githubusercontent.com/algorandfoundation/algokit-ts/main/algokit-utils-ts/examples/concepts/algorand_client.algo.ts"
   snippet="INSTANTIATE_ALGORAND_CLIENT"
   lang="ts"
   frame="none"
@@ -54,7 +54,7 @@ The client is configured through setter methods — `setSigner()` and `setDefaul
 Sending follows one pattern regardless of transaction type: fill in a params object (`PaymentParams`, `AssetTransferParams`, `AppCallParams`, and so on) and pass it to the matching method on `algorand.send`. The client builds the transaction, signs it, submits it, and waits for confirmation:
 
 <RemoteCode
-  src="https://raw.githubusercontent.com/algorandfoundation/algokit-utils-ts/main/examples/concepts/algorand_client.algo.ts"
+  src="https://raw.githubusercontent.com/algorandfoundation/algokit-ts/main/algokit-utils-ts/examples/concepts/algorand_client.algo.ts"
   snippet="SEND_PAYMENT"
   lang="ts"
   frame="none"
@@ -73,7 +73,7 @@ The same pattern applies to every transaction type.
 In the example above, the signer was passed explicitly. This is rarely necessary: the client maintains a registry of signers keyed by sender address, and any transaction without an explicit signer is signed by the signer registered for its sender. Accounts created or loaded through `algorand.account` (such as `algorand.account.random()` or `algorand.account.fromEnvironment()`) register their signer automatically. For accounts obtained elsewhere, register the signer explicitly:
 
 <RemoteCode
-  src="https://raw.githubusercontent.com/algorandfoundation/algokit-utils-ts/main/examples/concepts/algorand_client.algo.ts"
+  src="https://raw.githubusercontent.com/algorandfoundation/algokit-ts/main/algokit-utils-ts/examples/concepts/algorand_client.algo.ts"
   snippet="SIGNER_CONFIG"
   lang="ts"
   frame="none"
@@ -92,7 +92,7 @@ Signers are resolved in order: an explicit `signer` on the params wins, then the
 AlgoKit Utils wraps [`algosdk`](https://github.com/algorand/js-algorand-sdk) rather than replacing it. For operations the library doesn't cover, the underlying SDK clients remain directly accessible:
 
 <RemoteCode
-  src="https://raw.githubusercontent.com/algorandfoundation/algokit-utils-ts/main/examples/concepts/algorand_client.algo.ts"
+  src="https://raw.githubusercontent.com/algorandfoundation/algokit-ts/main/algokit-utils-ts/examples/concepts/algorand_client.algo.ts"
   snippet="SDK_CLIENTS"
   lang="ts"
   frame="none"
@@ -105,7 +105,7 @@ Which clients are available depends on how the `AlgorandClient` was created: `de
 Every transaction the client builds consumes _suggested parameters_ — algod's recommended values for the fee, the current round (which anchors the transaction's validity range), and network identifiers such as the genesis hash. Rather than paying a round trip to the node for every transaction, the client caches the last response briefly. Both the caching behavior and the defaults derived from it are adjustable:
 
 <RemoteCode
-  src="https://raw.githubusercontent.com/algorandfoundation/algokit-utils-ts/main/examples/concepts/algorand_client.algo.ts"
+  src="https://raw.githubusercontent.com/algorandfoundation/algokit-ts/main/algokit-utils-ts/examples/concepts/algorand_client.algo.ts"
   snippet="SUGGESTED_PARAMS_CONFIG"
   lang="ts"
   frame="none"

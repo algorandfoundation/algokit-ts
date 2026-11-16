@@ -74,7 +74,7 @@ const appClient = algorand.client.getTypedAppClientById(HelloWorldClient, {
 
 <LinkCard
   title="Typed Client Usage"
-  href="https://github.com/algorandfoundation/algokit-client-generator-ts/blob/main/docs/usage.md"
+  href="https://github.com/algorandfoundation/algokit-ts/blob/main/algokit-client-generator-ts/docs/usage.md"
   description="The full API of generated typed factories and clients"
 />
 
@@ -85,7 +85,7 @@ The rest of this page works with `AppFactory` and `AppClient` directly, identify
 Deployment starts with a factory. Get one from an [`AlgorandClient`](/algokit-utils-ts/concepts/algorand-client/) by passing the contents of the app spec file your contract's build emitted:
 
 <RemoteCode
-  src="https://raw.githubusercontent.com/algorandfoundation/algokit-utils-ts/main/examples/concepts/applications.algo.ts"
+  src="https://raw.githubusercontent.com/algorandfoundation/algokit-ts/main/algokit-utils-ts/examples/concepts/applications.algo.ts"
   snippet="GET_APP_FACTORY"
   lang="ts"
   frame="none"
@@ -102,7 +102,7 @@ The `defaultSender` becomes the sender for every call made through the factory a
 `factory.deploy()` performs an idempotent deployment. It resolves the app by its name and creator account, creates the app only if it doesn't already exist, and returns an `AppClient` pointing at the result:
 
 <RemoteCode
-  src="https://raw.githubusercontent.com/algorandfoundation/algokit-utils-ts/main/examples/concepts/applications.algo.ts"
+  src="https://raw.githubusercontent.com/algorandfoundation/algokit-ts/main/algokit-utils-ts/examples/concepts/applications.algo.ts"
   snippet="DEPLOY_APP"
   lang="ts"
   frame="none"
@@ -120,7 +120,7 @@ Contracts can defer constants to deployment time: a `TemplateVar` in Algorand Ty
 The remaining examples on this page use a `State` test contract that declares a `TMPL_VALUE` constant alongside the update and delete gates; deploying it fills in all three:
 
 <RemoteCode
-  src="https://raw.githubusercontent.com/algorandfoundation/algokit-utils-ts/main/examples/concepts/applications.algo.ts"
+  src="https://raw.githubusercontent.com/algorandfoundation/algokit-ts/main/algokit-utils-ts/examples/concepts/applications.algo.ts"
   snippet="TEMPLATE_VARIABLES"
   lang="ts"
   frame="none"
@@ -165,7 +165,7 @@ Each parameter chooses an action. Both default to `Fail`, and because the schema
 Redeploying unchanged code performs no transactions at all. Here a changed template value turns a redeploy into an in-place update:
 
 <RemoteCode
-  src="https://raw.githubusercontent.com/algorandfoundation/algokit-utils-ts/main/examples/concepts/applications.algo.ts"
+  src="https://raw.githubusercontent.com/algorandfoundation/algokit-ts/main/algokit-utils-ts/examples/concepts/applications.algo.ts"
   snippet="REDEPLOY_APP"
   lang="ts"
   frame="none"
@@ -180,7 +180,7 @@ To find the deployed app, `deploy()` reads deployment metadata that the library 
 The app's account frequently needs a balance, for example to cover the [minimum balance requirement](https://dev.algorand.co/concepts/smart-contracts/costs-constraints#mbr) of box storage. `fundAppAccount` is a payment to the app's address with the receiver filled in:
 
 <RemoteCode
-  src="https://raw.githubusercontent.com/algorandfoundation/algokit-utils-ts/main/examples/concepts/applications.algo.ts"
+  src="https://raw.githubusercontent.com/algorandfoundation/algokit-ts/main/algokit-utils-ts/examples/concepts/applications.algo.ts"
   snippet="FUND_APP_ACCOUNT"
   lang="ts"
   frame="none"
@@ -189,7 +189,7 @@ The app's account frequently needs a balance, for example to cover the [minimum 
 Deployment scripts conventionally fund straight after `deploy()`, keyed off the result's `operationPerformed`, so the account is topped up only when the deployment produced a fresh app instance:
 
 <RemoteCode
-  src="https://raw.githubusercontent.com/algorandfoundation/algokit-utils-ts/main/examples/concepts/applications.algo.ts"
+  src="https://raw.githubusercontent.com/algorandfoundation/algokit-ts/main/algokit-utils-ts/examples/concepts/applications.algo.ts"
   snippet="FUND_APP_ACCOUNT_ON_CREATE"
   lang="ts"
   frame="none"
@@ -200,7 +200,7 @@ Deployment scripts conventionally fund straight after `deploy()`, keyed off the 
 When the app is already deployed, construct a client for it directly:
 
 <RemoteCode
-  src="https://raw.githubusercontent.com/algorandfoundation/algokit-utils-ts/main/examples/concepts/applications.algo.ts"
+  src="https://raw.githubusercontent.com/algorandfoundation/algokit-ts/main/algokit-utils-ts/examples/concepts/applications.algo.ts"
   snippet="GET_APP_CLIENT"
   lang="ts"
   frame="none"
@@ -224,7 +224,7 @@ An app spec can also embed the IDs of its published deployments in a `networks` 
 A method call names an ABI method and passes arguments as plain TypeScript values. The client encodes them per the app spec, sends the call, and decodes the return value into `return`:
 
 <RemoteCode
-  src="https://raw.githubusercontent.com/algorandfoundation/algokit-utils-ts/main/examples/concepts/applications.algo.ts"
+  src="https://raw.githubusercontent.com/algorandfoundation/algokit-ts/main/algokit-utils-ts/examples/concepts/applications.algo.ts"
   snippet="CALL_APP_METHOD"
   lang="ts"
   frame="none"
@@ -253,7 +253,7 @@ An app spec can declare a method as `readonly`. The client never submits a trans
 When the app spec declares a default value for an argument, pass `undefined` and the client fills it in:
 
 <RemoteCode
-  src="https://raw.githubusercontent.com/algorandfoundation/algokit-utils-ts/main/examples/concepts/applications.algo.ts"
+  src="https://raw.githubusercontent.com/algorandfoundation/algokit-ts/main/algokit-utils-ts/examples/concepts/applications.algo.ts"
   snippet="DEFAULT_ARGUMENTS"
   lang="ts"
   frame="none"
@@ -264,7 +264,7 @@ When the app spec declares a default value for an argument, pass `undefined` and
 ABI methods can declare transactions as arguments. Build the transaction without sending it and pass it in `args`; the client groups it in front of the method call so the contract can inspect it:
 
 <RemoteCode
-  src="https://raw.githubusercontent.com/algorandfoundation/algokit-utils-ts/main/examples/concepts/applications.algo.ts"
+  src="https://raw.githubusercontent.com/algorandfoundation/algokit-ts/main/algokit-utils-ts/examples/concepts/applications.algo.ts"
   snippet="CALL_APP_METHOD_WITH_TXN_ARG"
   lang="ts"
   frame="none"
@@ -283,7 +283,7 @@ An ARC-56 app spec declares the app's state — keys and maps in global, local, 
 ### Global State
 
 <RemoteCode
-  src="https://raw.githubusercontent.com/algorandfoundation/algokit-utils-ts/main/examples/concepts/applications.algo.ts"
+  src="https://raw.githubusercontent.com/algorandfoundation/algokit-ts/main/algokit-utils-ts/examples/concepts/applications.algo.ts"
   snippet="READ_GLOBAL_STATE"
   lang="ts"
   frame="none"
@@ -294,7 +294,7 @@ An ARC-56 app spec declares the app's state — keys and maps in global, local, 
 Local state is stored per account, so the account must have opted in to the app and the accessor takes its address:
 
 <RemoteCode
-  src="https://raw.githubusercontent.com/algorandfoundation/algokit-utils-ts/main/examples/concepts/applications.algo.ts"
+  src="https://raw.githubusercontent.com/algorandfoundation/algokit-ts/main/algokit-utils-ts/examples/concepts/applications.algo.ts"
   snippet="READ_LOCAL_STATE"
   lang="ts"
   frame="none"
@@ -305,7 +305,7 @@ Local state is stored per account, so the account must have opted in to the app 
 Boxes require the app account to hold a balance for their minimum balance requirement, covered by `fundAppAccount` above. Transactions that touch a box must declare it in `boxReferences` — a `string` or `Uint8Array` name for the app's own boxes, or a `BoxReference` with an `appId` for another app's box:
 
 <RemoteCode
-  src="https://raw.githubusercontent.com/algorandfoundation/algokit-utils-ts/main/examples/concepts/applications.algo.ts"
+  src="https://raw.githubusercontent.com/algorandfoundation/algokit-ts/main/algokit-utils-ts/examples/concepts/applications.algo.ts"
   snippet="READ_BOX_STATE"
   lang="ts"
   frame="none"
@@ -318,7 +318,7 @@ For state not declared in the app spec, the client also exposes raw readers — 
 When a smart contract call fails, algod reports a `logic eval error` identifying only a program counter position. When the client holds a TEAL source map from compilation — clients created through a factory, or that have compiled the app's programs themselves — or the app spec carries its TEAL `source` and `sourceInfo`, the failure is decoded into a [`LogicError`](/algokit-utils-ts/api/types/logic-error/classes/logicerror/) locating the failing line in the TEAL source. The `State` contract's `error` method fails deliberately, so the `logic eval error` the library logs here is the expected input:
 
 <RemoteCode
-  src="https://raw.githubusercontent.com/algorandfoundation/algokit-utils-ts/main/examples/concepts/applications.algo.ts"
+  src="https://raw.githubusercontent.com/algorandfoundation/algokit-ts/main/algokit-utils-ts/examples/concepts/applications.algo.ts"
   snippet="HANDLE_LOGIC_ERROR"
   lang="ts"
   frame="none"
@@ -343,7 +343,7 @@ The factory and client build on lower-level interfaces on `AlgorandClient` that 
 Here a bare creation goes through the transaction layer, and the `AppManager` reads the app back:
 
 <RemoteCode
-  src="https://raw.githubusercontent.com/algorandfoundation/algokit-utils-ts/main/examples/concepts/applications.algo.ts"
+  src="https://raw.githubusercontent.com/algorandfoundation/algokit-ts/main/algokit-utils-ts/examples/concepts/applications.algo.ts"
   snippet="CREATE_AND_READ_APP"
   lang="ts"
   frame="none"

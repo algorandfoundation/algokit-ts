@@ -92,10 +92,11 @@ export function dedentCode(lines: string[]): string {
 }
 
 const LOCAL_REPO_RAW_PREFIX =
-  'https://raw.githubusercontent.com/algorandfoundation/algokit-utils-ts/';
+  'https://raw.githubusercontent.com/algorandfoundation/algokit-ts/';
 
-// Resolved relative to this file, so it breaks if RemoteCode.ts moves
-const REPO_ROOT_URL = new URL('../../../', import.meta.url);
+// The monorepo root (file paths in raw URLs include the package directory, e.g.
+// `algokit-utils-ts/examples/...`). Resolved relative to this file, so it breaks if RemoteCode.ts moves
+const REPO_ROOT_URL = new URL('../../../../', import.meta.url);
 
 /**
  * Maps a raw.githubusercontent.com URL for this repository to the same file

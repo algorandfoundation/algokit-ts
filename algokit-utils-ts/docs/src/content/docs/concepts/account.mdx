@@ -42,7 +42,7 @@ Each is detailed below; for full signatures and every parameter, see the [`Accou
 Generate a new, cryptographically random account. Each account has a freshly generated private/public key pair.
 
 <RemoteCode
-  src="https://raw.githubusercontent.com/algorandfoundation/algokit-utils-ts/main/examples/concepts/accounts.algo.ts"
+  src="https://raw.githubusercontent.com/algorandfoundation/algokit-ts/main/algokit-utils-ts/examples/concepts/accounts.algo.ts"
   snippet="RANDOM_ACCOUNT"
   lang="ts"
   frame="none"
@@ -53,7 +53,7 @@ Generate a new, cryptographically random account. Each account has a freshly gen
 Create an account from an existing 25-word mnemonic phrase, allowing account recovery and reuse of predefined test accounts. An optional second argument sets the sender address, for when the mnemonic belongs to the authorising key of a rekeyed account.
 
 <RemoteCode
-  src="https://raw.githubusercontent.com/algorandfoundation/algokit-utils-ts/main/examples/concepts/accounts.algo.ts"
+  src="https://raw.githubusercontent.com/algorandfoundation/algokit-ts/main/algokit-utils-ts/examples/concepts/accounts.algo.ts"
   snippet="FROM_MNEMONIC"
   lang="ts"
   frame="none"
@@ -64,7 +64,7 @@ Create an account from an existing 25-word mnemonic phrase, allowing account rec
 Get or create an account from environment variables. When running against LocalNet, this will create a funded wallet if it doesn't exist.
 
 <RemoteCode
-  src="https://raw.githubusercontent.com/algorandfoundation/algokit-utils-ts/main/examples/concepts/accounts.algo.ts"
+  src="https://raw.githubusercontent.com/algorandfoundation/algokit-ts/main/algokit-utils-ts/examples/concepts/accounts.algo.ts"
   snippet="FROM_ENVIRONMENT"
   lang="ts"
   frame="none"
@@ -84,7 +84,7 @@ When running LocalNet, you have an instance of the [Key Management Daemon](https
 The simplest way to get an account by name is `algorand.account.fromKmd`, which registers the returned account as a signer:
 
 <RemoteCode
-  src="https://raw.githubusercontent.com/algorandfoundation/algokit-utils-ts/main/examples/concepts/accounts.algo.ts"
+  src="https://raw.githubusercontent.com/algorandfoundation/algokit-ts/main/algokit-utils-ts/examples/concepts/accounts.algo.ts"
   snippet="FROM_KMD"
   lang="ts"
   frame="none"
@@ -95,7 +95,7 @@ Without a `predicate` it returns a random account from the wallet, and throws if
 Other operations, such as creating and renaming a wallet, can also be performed via the KMD client:
 
 <RemoteCode
-  src="https://raw.githubusercontent.com/algorandfoundation/algokit-utils-ts/main/examples/concepts/accounts.algo.ts"
+  src="https://raw.githubusercontent.com/algorandfoundation/algokit-ts/main/algokit-utils-ts/examples/concepts/accounts.algo.ts"
   snippet="KMD_WALLET_ADMIN"
   lang="ts"
   frame="none"
@@ -104,7 +104,7 @@ Other operations, such as creating and renaming a wallet, can also be performed 
 The KMD SDK is fairly low level, so to make use of it directly there is a fair bit of boilerplate. This is abstracted away into the `KmdAccountManager` class (exported from `@algorandfoundation/algokit-utils/types/kmd-account-manager`), which you can access from [`AlgorandClient`](/algokit-utils-ts/concepts/algorand-client/) via `algorand.account.kmd` or instantiate directly (passing in a `ClientManager`):
 
 <RemoteCode
-  src="https://raw.githubusercontent.com/algorandfoundation/algokit-utils-ts/main/examples/concepts/accounts.algo.ts"
+  src="https://raw.githubusercontent.com/algorandfoundation/algokit-ts/main/algokit-utils-ts/examples/concepts/accounts.algo.ts"
   snippet="KMD_ACCOUNT_MANAGER"
   lang="ts"
   frame="none"
@@ -119,7 +119,7 @@ The methods that are available are:
 | `getLocalNetDispenserAccount` | Loads the default LocalNet dispenser account                |
 
 <RemoteCode
-  src="https://raw.githubusercontent.com/algorandfoundation/algokit-utils-ts/main/examples/concepts/accounts.algo.ts"
+  src="https://raw.githubusercontent.com/algorandfoundation/algokit-ts/main/algokit-utils-ts/examples/concepts/accounts.algo.ts"
   snippet="KMD_MANAGER_METHODS"
   lang="ts"
   frame="none"
@@ -147,7 +147,7 @@ All Algorand accounts require a minimum balance to be registered in the ledger. 
 | `dispenserFromEnvironment()` | A dispenser from environment variables, falling back to LocalNet |
 
 <RemoteCode
-  src="https://raw.githubusercontent.com/algorandfoundation/algokit-utils-ts/main/examples/concepts/accounts.algo.ts"
+  src="https://raw.githubusercontent.com/algorandfoundation/algokit-ts/main/algokit-utils-ts/examples/concepts/accounts.algo.ts"
   snippet="DISPENSER"
   lang="ts"
   frame="none"
@@ -160,7 +160,7 @@ All Algorand accounts require a minimum balance to be registered in the ledger. 
 `ensureFunded` checks the balance of an account and transfers Algo from a dispenser if the balance falls below the required spending threshold (accounting for the minimum balance requirement).
 
 <RemoteCode
-  src="https://raw.githubusercontent.com/algorandfoundation/algokit-utils-ts/main/examples/concepts/accounts.algo.ts"
+  src="https://raw.githubusercontent.com/algorandfoundation/algokit-ts/main/algokit-utils-ts/examples/concepts/accounts.algo.ts"
   snippet="ENSURE_FUNDED"
   lang="ts"
   frame="none"
@@ -171,7 +171,7 @@ Returns the result of the funding transaction along with the `amountFunded`, or 
 `ensureFundedFromEnvironment` does the same, but sources the dispenser from the environment (per `dispenserFromEnvironment`), making the code portable across environments without hardcoding account details.
 
 <RemoteCode
-  src="https://raw.githubusercontent.com/algorandfoundation/algokit-utils-ts/main/examples/concepts/accounts.algo.ts"
+  src="https://raw.githubusercontent.com/algorandfoundation/algokit-ts/main/algokit-utils-ts/examples/concepts/accounts.algo.ts"
   snippet="ENSURE_FUNDED_FROM_ENVIRONMENT"
   lang="ts"
   frame="none"
@@ -182,7 +182,7 @@ Returns the result of the funding transaction along with the `amountFunded`, or 
 `ensureFundedFromTestNetDispenserApi` tops up an account from the TestNet Dispenser API when its balance is below the threshold. The dispenser client is authenticated via the `ALGOKIT_DISPENSER_ACCESS_TOKEN` environment variable, so the same call works in CI/CD pipelines and automated tests.
 
 <RemoteCode
-  src="https://raw.githubusercontent.com/algorandfoundation/algokit-utils-ts/main/examples/concepts/accounts.algo.ts"
+  src="https://raw.githubusercontent.com/algorandfoundation/algokit-ts/main/algokit-utils-ts/examples/concepts/accounts.algo.ts"
   snippet="TESTNET_DISPENSER_ENSURE_FUNDED"
   lang="ts"
   frame="none"
@@ -191,7 +191,7 @@ Returns the result of the funding transaction along with the `amountFunded`, or 
 It throws if the client isn't pointed at TestNet. To fund an account with a fixed amount immediately (without a balance check), use the same dispenser client directly.
 
 <RemoteCode
-  src="https://raw.githubusercontent.com/algorandfoundation/algokit-utils-ts/main/examples/concepts/accounts.algo.ts"
+  src="https://raw.githubusercontent.com/algorandfoundation/algokit-ts/main/algokit-utils-ts/examples/concepts/accounts.algo.ts"
   snippet="TESTNET_DISPENSER_FUND"
   lang="ts"
   frame="none"
@@ -233,7 +233,7 @@ While `TransactionSignerAccount` is the main type used to represent an account t
 If you want to have a default signer that is used to sign transactions without a registered signer (rather than throwing an exception) then you can `setDefaultSigner`:
 
 <RemoteCode
-  src="https://raw.githubusercontent.com/algorandfoundation/algokit-utils-ts/main/examples/concepts/accounts.algo.ts"
+  src="https://raw.githubusercontent.com/algorandfoundation/algokit-ts/main/algokit-utils-ts/examples/concepts/accounts.algo.ts"
   snippet="SET_DEFAULT_SIGNER"
   lang="ts"
   frame="none"
@@ -244,7 +244,7 @@ If you want to have a default signer that is used to sign transactions without a
 There are two methods to register a signer: `setSignerFromAccount`, which takes any [account based object](#underlying-account-classes) that combines signer and sender (`TransactionSignerAccount` | `Account` | `SigningAccount` | `LogicSigAccount` | `MultisigAccount`), or `setSigner` which takes the sender address and the `TransactionSigner`. Both return the `AccountManager`, so calls can be chained:
 
 <RemoteCode
-  src="https://raw.githubusercontent.com/algorandfoundation/algokit-utils-ts/main/examples/concepts/accounts.algo.ts"
+  src="https://raw.githubusercontent.com/algorandfoundation/algokit-ts/main/algokit-utils-ts/examples/concepts/accounts.algo.ts"
   snippet="REGISTER_SIGNERS"
   lang="ts"
   frame="none"
@@ -253,7 +253,7 @@ There are two methods to register a signer: `setSignerFromAccount`, which takes 
 `setSignerFromAccount` accepts any of the underlying account classes:
 
 <RemoteCode
-  src="https://raw.githubusercontent.com/algorandfoundation/algokit-utils-ts/main/examples/concepts/accounts.algo.ts"
+  src="https://raw.githubusercontent.com/algorandfoundation/algokit-ts/main/algokit-utils-ts/examples/concepts/accounts.algo.ts"
   snippet="SET_SIGNER_FROM_ACCOUNT_TYPES"
   lang="ts"
   frame="none"
@@ -264,7 +264,7 @@ There are two methods to register a signer: `setSignerFromAccount`, which takes 
 [`AlgorandClient`](/algokit-utils-ts/concepts/algorand-client/) will automatically retrieve a signer when signing a transaction, but if you need to get a `TransactionSigner` externally to do something more custom then you can `getSigner` for a given sender address:
 
 <RemoteCode
-  src="https://raw.githubusercontent.com/algorandfoundation/algokit-utils-ts/main/examples/concepts/accounts.algo.ts"
+  src="https://raw.githubusercontent.com/algorandfoundation/algokit-ts/main/algokit-utils-ts/examples/concepts/accounts.algo.ts"
   snippet="GET_SIGNER"
   lang="ts"
   frame="none"
@@ -277,7 +277,7 @@ If there is no signer registered for that sender address it will either return t
 A signer can be overridden per transaction. Create an unsigned transaction and pass the signer explicitly when adding it to a group:
 
 <RemoteCode
-  src="https://raw.githubusercontent.com/algorandfoundation/algokit-utils-ts/main/examples/concepts/accounts.algo.ts"
+  src="https://raw.githubusercontent.com/algorandfoundation/algokit-ts/main/algokit-utils-ts/examples/concepts/accounts.algo.ts"
   snippet="OVERRIDE_SIGNER"
   lang="ts"
   frame="none"
@@ -303,7 +303,7 @@ You can also pass in `rekeyTo` as a [common transaction parameter](/algokit-util
 In the following example, `accountA` is rekeyed to `accountB`. After rekeying, a transaction from `accountA` must be authorized by `accountB`'s private key.
 
 <RemoteCode
-  src="https://raw.githubusercontent.com/algorandfoundation/algokit-utils-ts/main/examples/concepts/accounts.algo.ts"
+  src="https://raw.githubusercontent.com/algorandfoundation/algokit-ts/main/algokit-utils-ts/examples/concepts/accounts.algo.ts"
   snippet="REKEY_ACCOUNT"
   lang="ts"
   frame="none"
@@ -325,7 +325,7 @@ A multisignature account is an ordered set of addresses with a threshold and ver
 Use `multisig` to register and return a multisig account with one or more signing keys loaded. The example below creates a 2-of-3 multisig account that requires only 2 signatures from the 3 possible signers to authorize transactions.
 
 <RemoteCode
-  src="https://raw.githubusercontent.com/algorandfoundation/algokit-utils-ts/main/examples/concepts/accounts.algo.ts"
+  src="https://raw.githubusercontent.com/algorandfoundation/algokit-ts/main/algokit-utils-ts/examples/concepts/accounts.algo.ts"
   snippet="MULTISIG"
   lang="ts"
   frame="none"
@@ -342,7 +342,7 @@ Throughout this page, accounts are reached through `algorand.account` — the `A
 To get an instance of `AccountManager`, you can use either [`AlgorandClient`](/algokit-utils-ts/concepts/algorand-client/) via `algorand.account` or instantiate it directly (passing in a [`ClientManager`](/algokit-utils-ts/api/types/client-manager/classes/clientmanager/)):
 
 <RemoteCode
-  src="https://raw.githubusercontent.com/algorandfoundation/algokit-utils-ts/main/examples/concepts/accounts.algo.ts"
+  src="https://raw.githubusercontent.com/algorandfoundation/algokit-ts/main/algokit-utils-ts/examples/concepts/accounts.algo.ts"
   snippet="ACCOUNT_MANAGER"
   lang="ts"
   frame="none"
