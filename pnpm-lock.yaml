@@ -361,7 +361,7 @@ importers:
     dependencies:
       algosdk:
         specifier: ^3.2.0
-        version: 3.8.0
+        version: 3.9.0
       chalk:
         specifier: 'catalog:'
         version: 5.6.2
@@ -438,7 +438,7 @@ importers:
     dependencies:
       algosdk:
         specifier: ^3.8.0
-        version: 3.8.0
+        version: 3.9.0
       js-sha512:
         specifier: 'catalog:'
         version: 0.9.0
@@ -534,8 +534,8 @@ importers:
   algokit-utils-ts:
     dependencies:
       algosdk:
-        specifier: ^3.5.2
-        version: 3.8.0
+        specifier: ^3.9.0
+        version: 3.9.0
       buffer:
         specifier: 'catalog:'
         version: 6.0.3
@@ -1913,9 +1913,9 @@ packages:
     resolution: {integrity: sha512-08k7pBQnkaUB5p+jL7f1TRaUIlTSDE0cesFu1mD7llLao+1cAhtvvZmGE3OnisTd0xOn118QMw74SRqddqaYvw==}
     engines: {node: '>= 14'}
 
-  algosdk@3.8.0:
-    resolution: {integrity: sha512-Q8MIQY/H21eTfc/zy/xce8kewlpK/t+Tt33StaamtHNycHLTLK004zsuMHN2Q++3MA4MdowOML1kFDox2hAqeg==}
-    engines: {node: '>=18.0.0'}
+  algosdk@3.9.0:
+    resolution: {integrity: sha512-v6DoM9UNWVmoKAhF9a/jQa6TnvCB5kf+lDlURdS3Qn1gLGxmEtkLmW5aUzBzgJXp18euvm8eS/0bNYFdB9bcVQ==}
+    engines: {node: '>=22.0'}
 
   am-i-vibing@0.5.0:
     resolution: {integrity: sha512-KLcsDhqf1XRrJmJr+9I/C0EX2K+sGrAGZFgkmd84c8TJO9zJBu+/kFInjazu1KfJWFhWDKdRWkpBzEs7s35DVA==}
@@ -5515,7 +5515,7 @@ snapshots:
 
   algorand-msgpack@1.1.0: {}
 
-  algosdk@3.8.0:
+  algosdk@3.9.0:
     dependencies:
       algorand-msgpack: 1.1.0
       hi-base32: 0.5.1
