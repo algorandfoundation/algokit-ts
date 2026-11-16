@@ -1,0 +1,12 @@
+{
+  "extends": "../../tooling/tsconfig.base.json",
+  "compilerOptions": {
+    "noEmit": true,
+    "paths": {
+      "@algorandfoundation/algokit-utils": ["../src/index.ts"],
+      "@algorandfoundation/algokit-utils/*": ["../src/*"]
+    }
+  },
+  "include": ["**/*.ts"],
+  "exclude": []
+}
