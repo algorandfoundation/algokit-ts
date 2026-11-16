@@ -64,7 +64,7 @@
     "buffer": "catalog:"
   },
   "peerDependencies": {
-    "algosdk": "^3.5.2"
+    "algosdk": "^3.9.0"
   },
   "devDependencies": {
     "@algorandfoundation/tealscript": "catalog:",

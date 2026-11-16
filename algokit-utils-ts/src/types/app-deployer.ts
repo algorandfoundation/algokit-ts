@@ -42,7 +42,7 @@ export type AppDeployParams = Expand<
     metadata: AppDeployMetadata
     /** Any deploy-time parameters to replace in the TEAL code before compiling it (used if teal code is passed in as a string) */
     deployTimeParams?: TealTemplateParams
-    /** What action to perform if a schema break (storage schema or extra pages change) is detected:
+    /** What action to perform if a breaking local schema change is detected:
      *
      * * `fail` - Fail the deployment (throw an error, **default**)
      * * `replace` - Delete the old app and create a new one
@@ -57,6 +57,11 @@ export type AppDeployParams = Expand<
      * * `append` - Deploy a new app and leave the old one as is
      */
     onUpdate?: 'update' | 'replace' | 'fail' | 'append' | OnUpdate
+    /** Whether an update is allowed to reduce the app's global schema or extra program pages, default: `false`.
+     *
+     * The target sizes are taken from `createParams` (or `updateParams.resize` if supplied); a reduction is never inferred
+     * from the supplied programs. */
+    allowStateShrinking?: boolean
     /** Create transaction parameters to use if a create needs to be issued as part of deployment */
     createParams: AppCreateParams | AppCreateMethodCall
     /** Update transaction parameters to use if an update needs to be issued as part of deployment */
@@ -138,7 +143,7 @@ export class AppDeployer {
    *
    * **Note:** When using the return from this function be sure to check `operationPerformed` to get access to various return properties like `transaction`, `confirmation` and `deleteResult`.
    *
-   * **Note:** if there is a breaking state schema change to an existing app (and `onSchemaBreak` is set to `'replace'`) the existing app will be deleted and re-created.
+   * **Note:** if there is a breaking local state schema change to an existing app (and `onSchemaBreak` is set to `'replace'`) the existing app will be deleted and re-created. Global schema and extra program pages can be changed during an update.
    *
    * **Note:** if there is an update (different TEAL code) to an existing app (and `onUpdate` is set to `'replace'`) the existing app will be deleted and re-created.
    * @param deployment The arguments to control the app deployment
@@ -175,13 +180,15 @@ export class AppDeployer {
       deployTimeParams,
       onSchemaBreak,
       onUpdate,
+      allowStateShrinking,
       createParams,
-      updateParams,
+      updateParams: suppliedUpdateParams,
       deleteParams,
       existingDeployments,
       ignoreCache,
       ...sendParams
     } = deployment
+    const updateParams: AppDeployParams['updateParams'] = { ...suppliedUpdateParams }
 
     // Set creation note
 
@@ -370,17 +377,28 @@ export class AppDeployer {
     const newClearBytes = Buffer.from(clearStateProgram)
     const newApproval = newApprovalBytes.toString('base64')
     const newClear = newClearBytes.toString('base64')
-    const newExtraPages = calculateExtraProgramPages(newApprovalBytes, newClearBytes)
+    const requiredExtraPages = calculateExtraProgramPages(newApprovalBytes, newClearBytes)
+
+    // Work out the sizes the app should end up with. Anything the caller hasn't asked for keeps its current value, with the
+    // exception of extra program pages, which are grown if that's what it takes to fit the new programs. Reductions are only
+    // ever made because they were explicitly asked for, via `updateParams.resize` or `createParams`.
+    const newSchema =
+      updateParams.resize?.schema ??
+      (createParams.schema
+        ? { globalInts: createParams.schema.globalInts, globalByteSlices: createParams.schema.globalByteSlices }
+        : { globalInts: existingAppRecord.globalInts, globalByteSlices: existingAppRecord.globalByteSlices })
+    const newExtraPages = updateParams.resize?.extraPages ?? Math.max(createParams.extraProgramPages ?? extraPages, requiredExtraPages)
 
     // Check for changes
 
-    const isUpdate = newApproval !== existingApproval || newClear !== existingClear
+    const isResize =
+      existingAppRecord.globalInts !== newSchema.globalInts ||
+      existingAppRecord.globalByteSlices !== newSchema.globalByteSlices ||
+      extraPages !== newExtraPages
+    const isUpdate = newApproval !== existingApproval || newClear !== existingClear || isResize
     const isSchemaBreak =
       existingAppRecord.localInts < (createParams.schema?.localInts ?? 0) ||
-      existingAppRecord.globalInts < (createParams.schema?.globalInts ?? 0) ||
-      existingAppRecord.localByteSlices < (createParams.schema?.localByteSlices ?? 0) ||
-      existingAppRecord.globalByteSlices < (createParams.schema?.globalByteSlices ?? 0) ||
-      extraPages < newExtraPages
+      existingAppRecord.localByteSlices < (createParams.schema?.localByteSlices ?? 0)
 
     if (isSchemaBreak) {
       Config.getLogger(sendParams?.suppressLog).warn(`Detected a breaking app schema change in app ${existingApp.appId}:`, {
@@ -435,6 +453,20 @@ export class AppDeployer {
       }
 
       if (onUpdate === 'update' || onUpdate === OnUpdate.UpdateApp) {
+        const shrinks =
+          newSchema.globalInts < existingAppRecord.globalInts ||
+          newSchema.globalByteSlices < existingAppRecord.globalByteSlices ||
+          newExtraPages < extraPages
+        if (shrinks && !allowStateShrinking) {
+          throw new Error(
+            `This app update will shrink app ${existingApp.appId} from ` +
+              `${existingAppRecord.globalInts} global ints, ${existingAppRecord.globalByteSlices} global byte slices and ` +
+              `${extraPages} extra program pages to ` +
+              `${newSchema.globalInts} global ints, ${newSchema.globalByteSlices} global byte slices and ` +
+              `${newExtraPages} extra program pages. To allow this, set "allowStateShrinking" to true`,
+          )
+        }
+
         if (existingApp.updatable) {
           Config.getLogger(sendParams?.suppressLog).info(`App is updatable and onUpdate=UpdateApp, updating app...`)
         } else {
@@ -443,6 +475,10 @@ export class AppDeployer {
           )
         }
 
+        // Every value has to be supplied when resizing, since the network applies them all as absolute values
+        if (isResize) {
+          updateParams.resize = { schema: newSchema, extraPages: newExtraPages }
+        }
         return await updateApp(existingApp)
       }
 
