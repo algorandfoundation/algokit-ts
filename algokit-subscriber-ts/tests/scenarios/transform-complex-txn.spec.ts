@@ -183,6 +183,7 @@ describe('Complex transaction with many nested inner transactions', () => {
     expect(getSubscribedTransactionForDiff(txn)).toMatchInlineSnapshot(`
       {
         "applicationTransaction": {
+          "access": [],
           "accounts": [],
           "applicationArgs": [
             "AA==",
@@ -192,6 +193,7 @@ describe('Complex transaction with many nested inner transactions', () => {
           ],
           "applicationId": 1390675395n,
           "approvalProgram": "",
+          "boxReferences": [],
           "clearStateProgram": "",
           "extraProgramPages": 0,
           "foreignApps": [],

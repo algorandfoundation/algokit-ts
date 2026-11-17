@@ -318,23 +318,45 @@ export function getIndexerTransactionFromAlgodTransaction(t: TransactionInBlock,
             applicationArgs: transaction.applicationCall!.appArgs.map((a) => a),
             foreignApps: transaction.applicationCall!.foreignApps.map((a) => a),
             foreignAssets: transaction.applicationCall!.foreignAssets.map((a) => a),
-            ...(transaction.applicationCall
-              ? {
-                globalStateSchema: new algosdk.indexerModels.StateSchema({
-                  numByteSlice: transaction.applicationCall.numGlobalByteSlices,
-                  numUint: transaction.applicationCall.numGlobalInts,
-                }),
-              }
-              : undefined),
-            ...(transaction.applicationCall
-              ? {
-                localStateSchema: new algosdk.indexerModels.StateSchema({
-                  numByteSlice: transaction.applicationCall.numLocalByteSlices,
-                  numUint: transaction.applicationCall.numLocalInts,
-                }),
-              }
-              : undefined),
+            globalStateSchema: new algosdk.indexerModels.StateSchema({
+              numByteSlice: transaction.applicationCall!.numGlobalByteSlices,
+              numUint: transaction.applicationCall!.numGlobalInts,
+            }),
+            localStateSchema: new algosdk.indexerModels.StateSchema({
+              numByteSlice: transaction.applicationCall!.numLocalByteSlices,
+              numUint: transaction.applicationCall!.numLocalInts,
+            }),
             accounts: transaction.applicationCall!.accounts.map((a) => a),
+            boxReferences:
+              transaction.applicationCall!.boxes?.map((b) => {
+                return new algosdk.indexerModels.BoxReference({ app: b.appIndex, name: b.name })
+              }) ?? [],
+            access:
+              transaction.applicationCall!.access?.map((ar) => {
+                return new algosdk.indexerModels.ResourceRef({
+                  address: ar.address,
+                  applicationId: ar.appIndex,
+                  assetId: ar.assetIndex,
+                  box: ar.box
+                    ? new algosdk.indexerModels.BoxReference({
+                      app: ar.box.appIndex,
+                      name: ar.box.name,
+                    })
+                    : undefined,
+                  holding: ar.holding
+                    ? new algosdk.indexerModels.HoldingRef({
+                      address: ar.holding.address,
+                      asset: ar.holding.assetIndex,
+                    })
+                    : undefined,
+                  local: ar.locals
+                    ? new algosdk.indexerModels.LocalsRef({
+                      address: ar.locals.address,
+                      app: ar.locals.appIndex,
+                    })
+                    : undefined,
+                })
+              }) ?? [],
             extraProgramPages: transaction.applicationCall!.extraPages,
             rejectVersion: transaction.applicationCall!.rejectVersion || undefined,
           }),
